@@ -1,0 +1,24 @@
+allprojects {
+
+    group = 'com.trenurbanoapp'
+    version = '1.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven { url "http://download.java.net/maven/2" }
+        maven {
+            name 'Open Source Geospatial Foundation Repository'
+            url 'http://download.osgeo.org/webdav/geotools/'
+        }
+    }
+}

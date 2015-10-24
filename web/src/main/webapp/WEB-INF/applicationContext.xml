@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+    <bean class="com.trenurbanoapp.config.PropertyConfig"/>
+
+    <bean class="com.trenurbanoapp.config.JsonConfig"/>
+    <bean class="com.trenurbanoapp.config.VehicleSnapshotAlgConfig"/>
+    <import resource="classpath:com/trenurbanoapp/datasource-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/dao-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/service-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/task-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/rest-client-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/webapi-context.xml"/>
+
+</beans>

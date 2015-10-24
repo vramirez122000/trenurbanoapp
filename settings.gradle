@@ -1,0 +1,8 @@
+rootProject.name = 'trenurbanoapp'
+include ':trenurbanoapp-web'
+include ':scraper-model'
+include ':webapi-client'
+
+project(':trenurbanoapp-web').projectDir = "$rootDir/web" as File
+project(':scraper-model').projectDir = "$rootDir/scraper-model" as File
+project(':webapi-client').projectDir = "$rootDir/webapi-client" as File

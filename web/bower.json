@@ -1,0 +1,11 @@
+{
+  "name": "trenurbanoapp",
+  "version": "1.1.0",
+  "dependencies": {
+    "momentjs": "~2.5",
+    "fastclick": "~1.0.6",
+    "mustache": "~2.2.0",
+    "heatmap": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.zip"
+  },
+  "devDependencies": {}
+}

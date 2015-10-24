@@ -1,0 +1,31 @@
+@media (min-width: 1200px) {
+    .container {
+        width: 900px;
+    }
+}
+
+a, .clickable {
+    cursor: pointer;
+}
+
+.routeLabel {
+    font-weight: bold;
+    border-radius: 3px;
+    color: white;
+    padding: .1em .3em;
+    border: 1px solid;
+}
+
+.table-hover tbody tr:hover > td {
+    cursor: pointer
+}
+
+.navbar.visible-xs .btn {
+    padding: .3em .5em;
+}
+
+.navbar-header{
+    margin-left:5px;
+    width:103%;
+}
+

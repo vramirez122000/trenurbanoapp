@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:Configuration hierarchy="pr" description="Puerto Rico"
+                   xmlns:tns="http://www.example.org/Holiday" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.example.org/Holiday Holiday.xsd">
+    <tns:Holidays>
+        <!--Año Nuevo
+        Dia de Reyes
+        Nat Eugenio M. de Hosto
+        Nat mqartin Luther  King
+        Nat Jorge Washington
+        Dia de la abolicion
+        Vienes Santos
+        Nat Jose de Diego
+        Dia de la Recordacion
+        dia de la Independencio de E.E. U.U
+        Nat Luis M. Rivera
+        Dia de ELA
+        Dia Jose C. barbosa
+        Dia del Trabajo
+        Dia de la Raza
+        Dia del Veterano
+        Dia descubrimiento de P. R.
+        Dia de accion de Gracias
+        Navidad-->
+
+
+        <tns:Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+        <tns:Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+        <tns:Fixed month="JANUARY" day="11" descriptionPropertiesKey="HOSTOS"/>
+        <tns:Fixed month="MARCH" day="22" descriptionPropertiesKey="ABOLITION_OF_SLAVERY"/>
+        <tns:Fixed month="APRIL" day="15" descriptionPropertiesKey="JOSE_DE_DIEGO"/>
+        <tns:Fixed month="JULY" day="4" validFrom="1776" descriptionPropertiesKey="INDEPENDENCE"/>
+        <tns:Fixed month="JULY" day="15" validFrom="1776" descriptionPropertiesKey="LUIS_MUNOS_RIVERA"/>
+        <tns:Fixed month="JULY" day="25" descriptionPropertiesKey="CONSTITUTION_DAY"/>
+        <tns:Fixed month="JULY" day="27" descriptionPropertiesKey="JOSE_CELSO_BARBOSA"/>
+        <tns:Fixed month="OCTOBER" day="12" descriptionPropertiesKey="COLUMBUS_DAY"/>
+        <tns:Fixed month="NOVEMBER" day="11" descriptionPropertiesKey="VETERANS_DAY"/>
+        <tns:Fixed month="NOVEMBER" day="19" descriptionPropertiesKey="DISCOVERY_OF_PR"/>
+        <tns:Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+
+
+        <tns:FixedWeekday which="THIRD" weekday="MONDAY" month="JANUARY" validFrom="1983"
+                          descriptionPropertiesKey="MARTIN_LUTHER_KING_JR_DAY"/>
+        <tns:FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968"
+                          descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+        <tns:FixedWeekday which="LAST" weekday="MONDAY" month="MAY" validFrom="1968"
+                          descriptionPropertiesKey="MEMORIAL"/>
+        <tns:FixedWeekday which="FIRST" weekday="MONDAY" month="SEPTEMBER" validFrom="1895"
+                          descriptionPropertiesKey="LABOUR_DAY"/>
+        <tns:FixedWeekday which="FOURTH" weekday="THURSDAY" month="NOVEMBER" validFrom="1863"
+                          descriptionPropertiesKey="THANKSGIVING"/>
+        <tns:ChristianHoliday type="GOOD_FRIDAY"/>
+
+    </tns:Holidays>
+</tns:Configuration>

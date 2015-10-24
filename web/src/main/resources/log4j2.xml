@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+    </Appenders>
+    <Loggers>
+
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <logger name="com.trenurbanoapp" level="info" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+
+        <logger name="log4jdbc.log4j2" level="info" additivity="false">
+            <MarkerFilter marker="LOG4JDBC_NON_STATEMENT" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <MarkerFilter marker="LOG4JDBC_INSERT" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <appender-ref ref="Console"/>
+        </logger>
+
+    </Loggers>
+</Configuration>

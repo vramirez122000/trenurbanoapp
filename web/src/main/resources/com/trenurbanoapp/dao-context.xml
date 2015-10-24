@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <cache:annotation-driven />
+
+    <bean id="abstractMappingDao" abstract="true">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="scheduleDao" class="com.trenurbanoapp.dao.jdbc.ScheduleDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="mapperDao" class="com.trenurbanoapp.dao.jdbc.VehicleStateDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="vehicleDao" class="com.trenurbanoapp.dao.jdbc.VehicleDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="statsLogDao" class="com.trenurbanoapp.dao.jdbc.StatsLogDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="geofenceDao" class="com.trenurbanoapp.dao.jdbc.GeofenceDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="routeDao" class="com.trenurbanoapp.dao.jdbc.RouteDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="stopDao" class="com.trenurbanoapp.dao.jdbc.StopDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="subrouteDao" class="com.trenurbanoapp.dao.jdbc.SubrouteDaoJdbc" parent="abstractMappingDao"/>
+    <bean id="configurationDao" class="com.trenurbanoapp.dao.jdbc.ConfigurationDaoJdbc" parent="abstractMappingDao"/>
+
+    <!-- generic cache manager -->
+    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="miscCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="vehicleCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="geofenceCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopsByRouteCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="routesByStopCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="subroutesByIdCache"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="allRoutes"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopById"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="allStopAreas"/>
+            </set>
+        </property>
+    </bean>
+
+
+</beans>

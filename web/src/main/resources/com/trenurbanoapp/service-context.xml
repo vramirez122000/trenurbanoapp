@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="trainScheduleService" class="com.trenurbanoapp.service.impl.ScheduleServiceImpl"/>
+
+    <bean id="mapperService" class="com.trenurbanoapp.service.impl.MapperServiceImpl">
+        <property name="statsLogDao" ref="statsLogDao"/>
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="objectMapper" ref="objectMapper"/>
+        <property name="routeDao" ref="routeDao"/>
+        <property name="stopDao" ref="stopDao"/>
+        <property name="subrouteDao" ref="subrouteDao"/>
+    </bean>
+
+    <bean id="vehicleSnapshotService" class="com.trenurbanoapp.service.impl.VehicleSnapshotServiceImpl">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="vehicleDao" ref="vehicleDao"/>
+    </bean>
+
+</beans>

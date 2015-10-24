@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+        <property name="socketTimeout" value="5000" />
+        <property name="connectTimeout" value="5000" />
+        <property name="connectionRequestTimeout" value="5000" />
+    </bean>
+
+    <bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClients" factory-method="custom">
+        <property name="defaultRequestConfig">
+            <bean factory-bean="requestConfigBuilder" factory-method="build" />
+        </property>
+        <property name="userAgent" value="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)"/>
+    </bean>
+
+    <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build" />
+
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="requestFactory">
+            <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+                <constructor-arg ref="httpClient"/>
+                <property name="readTimeout" value="5000"/>
+                <property name="connectTimeout" value="5000"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="asyncRestTemplate" class="org.springframework.web.client.AsyncRestTemplate">
+        <constructor-arg>
+            <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"/>
+        </constructor-arg>
+    </bean>
+
+</beans>
