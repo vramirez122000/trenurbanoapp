@@ -9,7 +9,7 @@ Escrita en Java con Spring, sobre la base de datos PostgreSQL con la extensión 
 
 ## Compilar codigo java y javascript
 
-    $ ./gradlew
+    $ ./gradlew install
     $ cd web
     $ bower install
     $ grunt
@@ -37,5 +37,5 @@ Puedes correr Tren Urbano App en tu contenedor web favorito (e.g. Tomcat 7+). Lo
     -Dlog4jdbc.drivers=org.postgis.DriverWrapper 
 
 
-    # Configuracion de BD
-    -Dconfig.property.file=/path/to/config.properties
+    # Configuracion de BD. Archivo de ejemplo incluído en el directorio db/
+    -Dconfig.property.file=/absolute/path/to/config.properties
