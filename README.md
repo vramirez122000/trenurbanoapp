@@ -3,7 +3,7 @@ La legendaria aplicación de transporte público del Área Metro de San Juan
 
 Escrita en Java con Spring, sobre la base de datos PostgreSQL con la extensión PostGIS
 
-## Instalar herramientas
+## Instalar herramientas para compilar javascript
 
     $ sudo npm -g install bower grunt-cli
 
@@ -16,7 +16,7 @@ Escrita en Java con Spring, sobre la base de datos PostgreSQL con la extensión 
 
 ## Base de datos
 
-Véase el proceso de instalación de PostgreSQL para su sistema operativo.
+Véase el proceso de instalación de PostgreSQL v9.2+ y PostGIS para su sistema operativo.
 
 ### Crear
 
@@ -29,9 +29,13 @@ Véase el proceso de instalación de PostgreSQL para su sistema operativo.
 
     $ cat db/ref_data.sql db/log_schema.sql | psql -U postgres -d tuapp
 
-### Correr
+### Cómo correr el sistema
 
-Puedes correr Tren Urbano App en tu contenedor web favorito (e.g. Tomcat 7+). Las siguientes argumentos del JVM son requeridos:
+Puedes correr Tren Urbano App en tu contenedor web favorito (e.g. Tomcat 7+). Los siguientes argumentos del JVM son requeridos:
 
-    -Dconfig.property.file=/path/to/config.properties #
-    -Dlog4jdbc.drivers=org.postgis.DriverWrapper # Marronazo que registra el Driver de POSTGIS con el mecanismo de escupir SQL a la consola 
+    # Marronazo que registra el Driver de POSTGIS con el mecanismo de escupir SQL a la consola 
+    -Dlog4jdbc.drivers=org.postgis.DriverWrapper 
+
+
+    # Configuracion de BD
+    -Dconfig.property.file=/path/to/config.properties
