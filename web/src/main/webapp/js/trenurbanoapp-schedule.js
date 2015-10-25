@@ -1,4 +1,4 @@
-/* requires jquery, mustache, momentjs */
+/* requires jquery, momentjs */
 var TU = TU || {};
 TU.SCHED = (function(my, $) {
     "use strict";
