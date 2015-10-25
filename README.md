@@ -1,18 +1,15 @@
 # Tren Urbano App
-La legendaria aplicación de transporte público del Área Metro de San Juan. Escrita en Java 8, sobre la base de datos PostgreSQL versión 9.2+ con la extensión PostGIS
+
+La legendaria aplicación de transporte público del Área Metro de San Juan. Escrita en Java 8, 
+sobre la base de datos PostgreSQL versión 9.2+ con la extensión PostGIS
 
 ## Build
 
-### Instalar node, npm y bower para manejar dependencias de javascript
-
-    $ sudo npm -g install bower
+Luego de instalar Java 8 JDK y NodeJS NPM
 
 ### Compilar codigo java y javascript
 
-    $ ./gradlew install
-    $ cd web
-    $ bower install
-    $ grunt
+    $ ./gradlew build install
 
 ## Base de datos
 

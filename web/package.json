@@ -2,10 +2,13 @@
   "name": "trenurbanoapp-web",
   "version": "1.1.0",
   "devDependencies": {
+    "bower": "~1.6.5",
     "grunt": "~0.4.2",
+    "grunt-cli": "~0.1.13",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-jshint": "~0.6.3",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.2"
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-concat": "~0.5.1"
   }
 }

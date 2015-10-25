@@ -1,3 +1,8 @@
+plugins {
+    id "com.moowork.node" version "0.11"
+    id "com.moowork.grunt" version "0.11"
+}
+
 apply plugin: 'war'
 
 def springVersion = '4.2.1.RELEASE'
@@ -6,6 +11,23 @@ def log4j2Version = '2.3'
 def geotoolsVersion = '12.5'
 
 description = 'Tren Urbano App Web'
+
+task bowerInstall(type: NodeTask) {
+    script = file('node_modules/bower/bin/bower')
+    args = ['install']
+    inputs.files file('bower.json')
+    outputs.files file('src/main/webapp/jspkg')
+}
+
+// processes your package.json before running grunt build
+bowerInstall.dependsOn 'npmInstall'
+
+// runs "bower install"
+grunt_default.dependsOn 'bowerInstall'
+
+// runs "grunt build" as part of your gradle build
+build.dependsOn grunt_default
+
 dependencies {
     compile project(':webapi-client')
     compile group: 'javax.servlet', name: 'jstl', version: '1.2'
