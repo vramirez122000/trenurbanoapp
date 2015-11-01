@@ -41,7 +41,8 @@ public class ScheduleDaoJdbc implements ScheduleDao {
             "  stop_area.desc stop_area, " +
             "  dest.desc      dest, " +
             "  schedule.schedule_type       schedule_type, " +
-            "  schedule.stop_time             stop_time_as_sql_time " +
+            "  schedule.stop_time             stop_time_as_sql_time, " +
+            "  schedule.error_minutes              " +
             "FROM route " +
             "  JOIN schedule ON route.name = schedule.route " +
             "  JOIN stop_area ON stop_area.id = schedule.stop_area " +

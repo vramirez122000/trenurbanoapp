@@ -9,6 +9,11 @@ import java.awt.*;
  */
 public class Funcs {
 
+    /**
+     * Darken color in html hexadecimal Rgb format
+     * @param hexRgb example '#34F56A' or '34F56A'
+     * @return HexRgb formatted string
+     */
     public static String darken(String hexRgb) {
         Color c = Color.decode(hexRgb).darker();
         return String.format("#%s%s%s",

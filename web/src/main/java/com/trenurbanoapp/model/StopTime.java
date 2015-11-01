@@ -1,10 +1,7 @@
 package com.trenurbanoapp.model;
 
 import java.sql.Time;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -28,6 +25,7 @@ public class StopTime {
     private String scheduleType;
     private String color;
     private String station;
+    private int errorMinutes;
 
     public String getRoute() {
         return route;
@@ -100,6 +98,23 @@ public class StopTime {
         return ChronoUnit.SECONDS.between(LocalTime.now(), stopTime);
     }
 
+    public String getStopTimeEtaString() {
+        Duration duration = Duration.between(LocalTime.now(), stopTime);
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+        StringBuilder builder = new StringBuilder();
+        if(absSeconds >= 3600) {
+            builder.append(absSeconds / 3600).append(" hr ");
+        }
+        if(absSeconds >= 60) {
+            builder.append((absSeconds % 3600) / 60).append(" min ");
+        }
+        builder.append(absSeconds % 60).append(" s");
+        String positive = builder.toString();
+        return seconds < 0 ? "-" + positive : positive;
+    }
+
+
     public String getColor() {
         return color;
     }
@@ -114,5 +129,13 @@ public class StopTime {
 
     public void setStation(String station) {
         this.station = station;
+    }
+
+    public int getErrorMinutes() {
+        return errorMinutes;
+    }
+
+    public void setErrorMinutes(int errorMinutes) {
+        this.errorMinutes = errorMinutes;
     }
 }

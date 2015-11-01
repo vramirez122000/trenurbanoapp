@@ -25,6 +25,7 @@
         <c:forEach items="${stopTimes}" var="stopTime">
             <jsp:useBean id="stopTime" scope="page" type="com.trenurbanoapp.model.StopTime"/>
             <c:set var="darkColor" value="${tu:darken(stopTime.color)}"/>
+            <c:set var="plusMinus" value="${stopTime.errorMinutes > 0 ? ' &plusmn; '.concat(stopTime.errorMinutes).concat(' min') : ''}"/>
             <tr>
                 <td>
                     <div class="row">
@@ -41,20 +42,18 @@
                             </div>
                             <div class="row etaDiv">
                                 <div class="stopTime" style="display: none">${stopTime.stopTimeEpochMillis}</div>
-                                <div class="col-xs-6">Espera</div>
-                                <div class="col-xs-6 etaString" style="font-weight: bold">
-                                    <c:if test="${stopTime.stopTimeEtaSeconds > 3600}">
-                                        <fmt:formatNumber maxFractionDigits="0"
-                                                          value="${stopTime.stopTimeEtaSeconds / 3600}"/> hr
-                                    </c:if>
-                                    <fmt:formatNumber maxFractionDigits="0"
-                                                      value="${stopTime.stopTimeEtaSeconds / 60}"/>
-                                    min ${stopTime.stopTimeEtaSeconds % 60} s
+                                <div class="col-xs-4">Espera</div>
+                                <div class="col-xs-8" style="font-weight: bold">
+                                    <span class="etaString">
+                                            ${stopTime.stopTimeEtaString}
+                                    </span>${plusMinus}
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-6">Itinerario</div>
-                                <div class="col-xs-6"><strong>${stopTime.stopTimeString}</strong></div>
+                                <div class="col-xs-4">${stopTime.errorMinutes > 0 ? 'Estimado' : 'Itinerario' }</div>
+                                <div class="col-xs-8">
+                                    <strong>${stopTime.stopTimeString}${plusMinus}</strong>
+                                </div>
                             </div>
                         </div>
                         <div class="col-xs-2 text-right">
@@ -70,6 +69,12 @@
         </c:forEach>
         </tbody>
     </table>
+</c:if>
+
+<c:if test="${empty stopTimes && not empty station}">
+    <div class="alert alert-warning">
+        <span id="alertTxt">No se encontraron viajes en la parada seleccionada</span>
+    </div>
 </c:if>
 
 </body>
