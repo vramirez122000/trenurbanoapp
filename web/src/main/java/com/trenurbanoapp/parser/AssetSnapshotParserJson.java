@@ -8,10 +8,12 @@ import com.trenurbanoapp.scraper.model.LatLng;
 import com.trenurbanoapp.scraper.parser.AssetSnapshotParseListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.LocalDateTime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * User: victor
@@ -42,9 +44,9 @@ public class AssetSnapshotParserJson {
             throw new RuntimeException("timeStamp field expected");
         }
         parser.nextToken();
-        LocalDateTime timeStamp = new LocalDateTime(parser.getLongValue());
+        Date timeStamp = new Date(parser.getLongValue());
         for (AssetSnapshotParseListener listener : listeners) {
-            listener.parseBegin(timeStamp.toDate());
+            listener.parseBegin(timeStamp);
         }
 
         while (parser.nextToken() != JsonToken.END_OBJECT) {

@@ -37,37 +37,37 @@ public class ScheduleDaoJdbc implements ScheduleDao {
             "  route.full_name     route_full_name, " +
             "  route.route_group   route_group, " +
             "  route.color, " +
-            "  stop_area.name station, " +
-            "  stop_area.full_name stop_area, " +
-            "  dest.full_name      dest, " +
-            "  trainschedule.schedule_type       schedule_type, " +
-            "  trainschedule.arrival             stop_time_as_sql_time " +
+            "  stop_area.id station, " +
+            "  stop_area.desc stop_area, " +
+            "  dest.desc      dest, " +
+            "  schedule.schedule_type       schedule_type, " +
+            "  schedule.stop_time             stop_time_as_sql_time " +
             "FROM route " +
-            "  JOIN trainschedule ON route.name = trainschedule.route " +
-            "  JOIN stop_area ON stop_area.name = trainschedule.station " +
-            "  JOIN stop_area dest ON dest.name = trainschedule.direction " +
+            "  JOIN schedule ON route.name = schedule.route " +
+            "  JOIN stop_area ON stop_area.id = schedule.stop_area " +
+            "  JOIN stop_area dest ON dest.id = schedule.direction " +
             "WHERE " +
-            " trainschedule.direction <> trainschedule.station " +
-            "  AND trainschedule.arrival > ? ";
+            " schedule.direction <> schedule.stop_area " +
+            "  AND schedule.stop_time > ? ";
 
     @Override
     public List<StopTime> getNextStopTimes(String stopArea, LocalTime localTime) {
-        String sql = STOP_TIME_QUERY + " AND stop_area.name = ? ORDER BY arrival LIMIT 10 ";
+        String sql = STOP_TIME_QUERY + " AND stop_area.id = ? ORDER BY stop_time LIMIT 10 ";
         return jdbcTemplate.query(sql, stopTimeMapper, Time.valueOf(localTime), stopArea);
     }
 
     @Override
     public List<StopTime> getNextStopTimes(double lat, double lng, LocalTime localTime) {
         String sql = STOP_TIME_QUERY +
-                " AND stop_area.name = (select name from stop_area order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) ) limit 1) " +
-                " ORDER BY arrival limit 10 ";
+                " AND stop_area.id = (select id from stop_area order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) ) limit 1) " +
+                " ORDER BY stop_time limit 10 ";
         return jdbcTemplate.query(sql, stopTimeMapper, Time.valueOf(localTime), lng, lat);
     }
 
     @Override
     @Cacheable("allStopAreas")
     public List<IdDesc> findAllStopAreas() {
-        String sql = "SELECT * FROM stop_area";
+        String sql = "SELECT * FROM stop_area order by sort_order";
         return jdbcTemplate.query(sql, ScheduleDaoJdbc::mapStopArea);
     }
 
@@ -77,8 +77,14 @@ public class ScheduleDaoJdbc implements ScheduleDao {
         return jdbcTemplate.queryForObject(sql, ScheduleDaoJdbc::mapStopArea, lng, lat);
     }
 
+    @Override
+    public List<IdDesc> findStopAreasByDistance(double lat, double lng) {
+        String sql = "select * from stop_area order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) )";
+        return jdbcTemplate.query(sql, ScheduleDaoJdbc::mapStopArea, lng, lat);
+    }
+
     private static IdDesc mapStopArea(ResultSet rs, int rowNum) throws SQLException{
-        return new IdDesc(rs.getString("name"), rs.getString("full_name"));
+        return new IdDesc(rs.getString("id"), rs.getString("desc"));
     }
 
 }

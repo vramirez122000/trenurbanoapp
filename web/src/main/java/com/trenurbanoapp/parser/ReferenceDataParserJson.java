@@ -7,10 +7,13 @@ import com.trenurbanoapp.scraper.model.Asset;
 import com.trenurbanoapp.scraper.parser.ReferenceDataParseListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.LocalDateTime;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneId;
 
 /**
  * User: victor
@@ -42,7 +45,7 @@ public class ReferenceDataParserJson {
             throw new RuntimeException("timeStamp field expected");
         }
         parser.nextToken();
-        LocalDateTime timeStamp = new LocalDateTime(parser.getLongValue());
+        LocalDateTime timeStamp = Instant.ofEpochMilli(parser.getLongValue()).atZone(ZoneId.systemDefault()).toLocalDateTime();
         for (ReferenceDataParseListener listener : listeners) {
             listener.parseBegin();
         }

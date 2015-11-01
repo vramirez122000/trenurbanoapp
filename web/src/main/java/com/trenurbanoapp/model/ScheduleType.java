@@ -7,10 +7,10 @@ package com.trenurbanoapp.model;
 public enum ScheduleType {
 
     //Weekday not holiday
-    WORKDAY("D\u00EDa de Trabajo"),
+    WORKDAY("D\u00EDa laboral"),
 
     //Weekend or holiday
-    RESTDAY("D\u00EDa Feriado o Fin de Semana"),
+    RESTDAY("Feriado o Fin de Semana"),
 
     LOW_SEASON_WORKDAY("D\u00EDa de Trabajo en Temporada Baja");
 

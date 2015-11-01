@@ -4,6 +4,7 @@ import com.trenurbanoapp.model.RouteGroup;
 import com.trenurbanoapp.model.ScheduleType;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
+import de.jollyday.ManagerParameters;
 
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -27,6 +28,17 @@ class ScheduleTypeCalculator {
         }
 
         final DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if(routeGroup == RouteGroup.E40) {
+            if (DayOfWeek.SUNDAY == dayOfWeek) {
+                return ScheduleType.RESTDAY;
+            }
+            if (getHolidayManager(RouteGroup.ATI).isHoliday(date)) {
+                return ScheduleType.RESTDAY;
+            }
+            return ScheduleType.WORKDAY;
+        }
+
+
         if (dayOfWeek == DayOfWeek.SATURDAY
                 || dayOfWeek == DayOfWeek.SUNDAY) {
             return ScheduleType.RESTDAY;
@@ -34,9 +46,7 @@ class ScheduleTypeCalculator {
 
 
         final HolidayManager holidayManager = getHolidayManager(routeGroup);
-        Calendar cal = Calendar.getInstance();
-        cal.set(date.getYear(), date.getMonth().getValue(), date.getDayOfMonth());
-        if (holidayManager.isHoliday(cal)) {
+        if (holidayManager.isHoliday(date)) {
             return ScheduleType.RESTDAY;
         }
 
@@ -50,7 +60,7 @@ class ScheduleTypeCalculator {
 
     private static HolidayManager getHolidayManager(RouteGroup routeGroup) {
         URL resource = ScheduleTypeCalculator.class.getClassLoader().getResource("holidays/Holidays_" + routeGroup.name() + ".xml");
-        return HolidayManager.getInstance(resource);
+        return HolidayManager.getInstance(ManagerParameters.create(resource));
     }
 
     private static ScheduleType getTrenUrbanoWorkdayType(LocalDate date, HolidayManager holidayManager) {
@@ -80,7 +90,7 @@ class ScheduleTypeCalculator {
             if(GOOD_FRIDAY.equals(holiday.getPropertiesKey())) {
                 goodFriday = LocalDate.of(
                         holiday.getDate().getYear(),
-                        holiday.getDate().getMonthOfYear(),
+                        holiday.getDate().getMonth(),
                         holiday.getDate().getDayOfMonth());
             }
         }

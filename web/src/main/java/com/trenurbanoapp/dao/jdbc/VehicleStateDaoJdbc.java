@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.trenurbanoapp.dao.VehicleStateDao;
 import com.trenurbanoapp.model.VehicleState;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -275,7 +275,7 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
                 params.putAll(TRAIL_MAPPER.reverseMap(vehicleState.getTrail(), action));
             }
             if(vehicleState.getLastTrailChange() != null) {
-                params.put("last_trail_change", vehicleState.getLastTrailChange().toDate());
+                params.put("last_trail_change", vehicleState.getLastTrailChange());
             }
 
             if(action == Action.INSERT) {
@@ -307,10 +307,7 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
             if(rs.getObject("trail") != null) {
                 v.setTrail(TRAIL_MAPPER.mapRow(rs, rowNum));
             }
-            Date lastTrailChange = rs.getTimestamp("last_trail_change");
-            if(lastTrailChange != null) {
-                v.setLastTrailChange(new LocalDateTime(lastTrailChange.getTime()));
-            }
+            v.setLastTrailChange(rs.getTimestamp("last_trail_change"));
             return v;
         }
     }

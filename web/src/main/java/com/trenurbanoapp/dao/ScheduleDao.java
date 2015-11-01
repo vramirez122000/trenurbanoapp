@@ -18,4 +18,6 @@ public interface ScheduleDao {
     List<IdDesc> findAllStopAreas();
 
     IdDesc findNearestStopArea(double lat, double lng);
+
+    List<IdDesc> findStopAreasByDistance(double lat, double lng);
 }

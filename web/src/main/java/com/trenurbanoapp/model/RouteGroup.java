@@ -12,6 +12,7 @@ public enum RouteGroup {
     ATI("Autoridad de Transporte Integrado"),
     TREN_URBANO("Autoridad de Transporte Integrado"),
     ACUAEXPRESO("Acuaexpreso"),
+    E40("E40"),
     ;
 
     private String name;
