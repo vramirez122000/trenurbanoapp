@@ -7,8 +7,10 @@ import com.trenurbanoapp.scraper.model.LatLng;
 import com.trenurbanoapp.service.VehicleSnapshotAlgService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +32,7 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
         if(vehicleState != null) {
             view.setWithinServiceArea(vehicleState.isWithinServiceArea());
             if(vehicleState.getLastTrailChange() != null) {
-                view.setPositionChange(vehicleState.getLastTrailChange().toDate().getTime());
+                view.setPositionChange(vehicleState.getLastTrailChange().getTime());
             }
             ImmutableSet<Integer> possibleGeofenceRoutes = vehicleState.getPossibleGeofenceRoutesAsSet();
             view.setInRoute(possibleGeofenceRoutes.contains(vehicleState.getLastKnownRouteGeofenceId()));
@@ -68,7 +70,7 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
             v.getRecentSpeeds().clear();
             v.setAvgSpeed(0F);
             v.setTrail(trail);
-            v.setLastTrailChange(LocalDateTime.now());
+            v.setLastTrailChange(new Date());
             v.setWithinServiceArea(true);
             vehicleStateDao.updateVehicleState(v);
             return;
@@ -113,7 +115,7 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
 
         v.setWithinServiceArea(!containingRouteGeofences.isEmpty());
         v.setTrail(assetSnapshot.getTrail());
-        v.setLastTrailChange(LocalDateTime.now());
+        v.setLastTrailChange(new Date());
         if(assetSnapshot.getTrail().size() > 1) {
             v.setCardinalDirection(bearingToCardinal(bearing(assetSnapshot.getTrail().get(assetSnapshot.getTrail().size() - 1), assetSnapshot.getTrail().get(0))));
         }

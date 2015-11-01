@@ -65,7 +65,7 @@ public class UpdateVehiclePositionsCacheTasks {
             position.setTrail(state.getTrail());
             position.setWithinServiceArea(state.isWithinServiceArea());
             if(state.getLastTrailChange() != null) {
-                position.setPositionChange(state.getLastTrailChange().toDate().getTime());
+                position.setPositionChange(state.getLastTrailChange().getTime());
             }
             state.setPossibleSubrouteIds(vehicleStateDao.getPossibleSubroutes(state.getAssetId()));
             ImmutableSet<Integer> possibleSubroutes = state.getPossibleSubroutesAsSet();

@@ -36,9 +36,9 @@ public class RouteDaoJdbc implements RouteDao {
                 "    route.priority, " +
                 "    route.color " +
                 "FROM route " +
-                "LEFT JOIN trainschedule ON route.name = trainschedule.route " +
+                "LEFT JOIN schedule ON route.name = schedule.route " +
                 "where st_dwithin(st_transform(route.geom, 32161), st_transform(st_setSrid(st_point(?, ?), 4326), 32161), 300) " +
-                "and trainschedule.route is null " +
+                "and schedule.route is null " +
                 "order by route.priority ";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Route.class), lng, lat);
     }

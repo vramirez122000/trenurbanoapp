@@ -10,9 +10,9 @@ import com.trenurbanoapp.scraper.model.LatLng;
 import com.trenurbanoapp.service.VehicleSnapshotAlgService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import java.util.*;
 
@@ -81,7 +81,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             view.setTrail(assetSnapshot.getTrail());
             view.setWithinServiceArea(vehicleState.isWithinServiceArea());
             if(vehicleState.getLastTrailChange() != null) {
-                view.setPositionChange(vehicleState.getLastTrailChange().toDate().getTime());
+                view.setPositionChange(vehicleState.getLastTrailChange().getTime());
             }
             ImmutableSet<Integer> possibleSubroutes = vehicleState.getPossibleSubroutesAsSet();
             view.setInRoute(possibleSubroutes.contains(vehicleState.getLastKnownSubrouteId()));
@@ -148,7 +148,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                     v.getRecentSpeeds().clear();
                     v.setAvgSpeed(0F);
                     v.setTrail(currTrail);
-                    v.setLastTrailChange(LocalDateTime.now());
+                    v.setLastTrailChange(new Date());
                     v.setWithinServiceArea(true);
                     vehicleStateDao.updateVehicleState(v);
                     return;
@@ -171,7 +171,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             return;
         }
 
-        long secondsSinceMove = new Duration(v.getLastTrailChange().toDateTime(), DateTime.now()).getMillis() / 1000;
+        long secondsSinceMove = (System.currentTimeMillis() - v.getLastTrailChange().getTime()) / 1000;
         if(v.getTripId() != null && secondsSinceMove < 120) {
             Stop closestStop = stopDao.getClosestStopWithin10Meters(assetSnapshot.getTrail());
             if(closestStop != null && (v.getStopId() == null || closestStop.getId() != v.getStopId())) {
@@ -189,7 +189,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                 float speedInMetersPerSecond = calcSpeed(currTrail, v.getTrail(), v.getLastTrailChange());
                 v.addSpeed(speedInMetersPerSecond);
                 v.setTrail(assetSnapshot.getTrail());
-                v.setLastTrailChange(LocalDateTime.now());
+                v.setLastTrailChange(new Date());
                 v.setWithinOrigin(false);
                 v.setCardinalDirection(bearingToCardinal(bearing(currTrail.get(currTrail.size() - 1), currTrail.get(0))));
                 vehicleStateDao.updateVehicleState(v);
@@ -218,7 +218,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                 && lastKnownSubroute != null
                 && lastKnownSubroute.getNextSubrouteId() != null
                 && containingSubrouteIds.contains(lastKnownSubroute.getNextSubrouteId())) {
-            setSubroute(v, Arrays.asList(lastKnownSubroute.getNextSubrouteId()), currTrail);
+            setSubroute(v, Collections.singletonList(lastKnownSubroute.getNextSubrouteId()), currTrail);
         } else if (v.getLastKnownSubrouteId() == null
                 || !newPossibleSubroute.contains(v.getLastKnownSubrouteId())
                 || newPossibleSubroute.isEmpty()) {
@@ -244,7 +244,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
         v.addSpeed(speedInMetersPerSecond);
 
         v.setTrail(currTrail);
-        v.setLastTrailChange(LocalDateTime.now());
+        v.setLastTrailChange(new Date());
         v.setWithinServiceArea(!containingSubrouteIds.isEmpty());
         v.setWithinOrigin(false);
         v.setCardinalDirection(bearingToCardinal(bearing(currTrail.get(currTrail.size() - 1), currTrail.get(0))));

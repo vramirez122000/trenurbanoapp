@@ -52,7 +52,7 @@ public class ScheduleController {
         } else if (!stopTimes.isEmpty()) {
             model.put("station", stopTimes.get(0).getStation());
         } else {
-            model.put("station", null);
+            model.put("station", "");
         }
 
         return new ModelAndView("schedule_results", model);

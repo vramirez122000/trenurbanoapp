@@ -4,8 +4,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.trenurbanoapp.scraper.model.LatLng;
-import org.joda.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -24,7 +24,7 @@ public class VehicleState {
     private Map<Integer, Boolean> possibleSubrouteIds = new HashMap<>();
     private boolean withinServiceArea;
     private List<LatLng> trail;
-    private LocalDateTime lastTrailChange;
+    private Date lastTrailChange;
     private Deque<Float> recentSpeeds = new ArrayDeque<>(10);
     private Float avgSpeed;
     private Float subrouteMeasure;
@@ -112,11 +112,11 @@ public class VehicleState {
         this.trail = trail;
     }
 
-    public LocalDateTime getLastTrailChange() {
+    public Date getLastTrailChange() {
         return lastTrailChange;
     }
 
-    public void setLastTrailChange(LocalDateTime lastTrailChange) {
+    public void setLastTrailChange(Date lastTrailChange) {
         this.lastTrailChange = lastTrailChange;
     }
 

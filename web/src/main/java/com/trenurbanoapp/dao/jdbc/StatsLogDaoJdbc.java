@@ -6,7 +6,7 @@ import com.trenurbanoapp.model.VehicleState;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import org.postgis.PGgeometry;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,7 +70,7 @@ public class StatsLogDaoJdbc implements StatsLogDao {
         params.put("subroute_gid", v.getLastKnownSubrouteId());
         params.put("asset_id", v.getAssetId());
         params.put("stop_gid", stopId);
-        params.put("stamp", new Timestamp(DateTime.now().getMillis()));
+        params.put("stamp", new Timestamp(System.currentTimeMillis()));
         params.put("trail", safeLineString(trail));
         log.debug("inserting into trip log {}", params);
         tripLogInsert.execute(params);

@@ -8,10 +8,10 @@ import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ public abstract class VehicleSnapshotAlgServiceBase {
             VehicleState newVState = new VehicleState();
             newVState.setAssetId(assetSnapshot.getAssetId());
             newVState.setTrail(assetSnapshot.getTrail());
-            newVState.setLastTrailChange(LocalDateTime.now());
+            newVState.setLastTrailChange(new Date());
             vehicleStateDao.insertVehicleState(newVState);
             return false;
         }
@@ -72,7 +72,7 @@ public abstract class VehicleSnapshotAlgServiceBase {
         return Math.atan2(y, x);
     }
 
-    protected float calcSpeed(List<LatLng> currTrail, List<LatLng> prevTrail, LocalDateTime lastTrailChange) {
+    protected float calcSpeed(List<LatLng> currTrail, List<LatLng> prevTrail, Date lastTrailChange) {
         if (prevTrail.isEmpty() || currTrail.isEmpty()) {
             return 0;
         }
@@ -80,7 +80,7 @@ public abstract class VehicleSnapshotAlgServiceBase {
         LatLng prevPosition = CrsConversion.convertToNad83(prevTrail.get(0));
         LatLng currPosition = CrsConversion.convertToNad83(currTrail.get(0));
         float distance = (float) Math.sqrt(Math.pow(prevPosition.getLat() - currPosition.getLat(), 2) + Math.pow(prevPosition.getLng() - currPosition.getLng(), 2));
-        float timeInSeconds = new Duration(lastTrailChange.toDateTime(), DateTime.now()).getMillis() / 1000F;
+        float timeInSeconds = System.currentTimeMillis() - lastTrailChange.getTime() / 1000;
         return distance / timeInSeconds;
     }
 
