@@ -34,18 +34,17 @@
                      src="<c:url value="/images/trenurbano_icon_banner468.png"/>"/>
             </h1>
 
-            <p>Escoja la estaci&oacute;n y le mostramos los tiempos de llegada de los pr&oacute;ximos
-                trenes en ambas
-                direcciones.</p>
+            <p>Escoja la parada y le mostramos los tiempos de los pr&oacute;ximos
+                viajes en transporte p&uacute;blico.</p>
         </div>
 
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="station" class="control-label">Escoja la estación</label>
+                <label for="station" class="control-label">Escoja la parada</label>
 
                 <div class="input-group">
                     <select id="station" name="station" class="form-control station-select">
-                        <option value="">-- Escoja la Estaci&oacute;n --</option>
+                        <option value="">-- Escoja la parada --</option>
                         <jsp:useBean id="stations" scope="request" type="java.util.List"/>
                         <c:forEach items="${stations}" var="varStation">
                             <jsp:useBean id="varStation" scope="page" type="com.trenurbanoapp.model.IdDesc"/>
@@ -87,10 +86,10 @@
 
     <div class="visible-xs">
         <div class="form-group">
-            <label for="station-mobile" class="control-label">Escoja la estación</label>
+            <label for="station-mobile" class="control-label">Seleccione la parada</label>
             <div class="input-group">
                 <select id="station-mobile" name="station" class="form-control station-select">
-                    <option value="">-- Escoja la Estaci&oacute;n --</option>
+                    <option value="">-- Seleccione la parada --</option>
                     <c:forEach items="${stations}" var="varStation">
                         <option value="${varStation.id}"
                                 <c:if test="${sessionScope.station == varStation.id}">selected="selected"</c:if>>
