@@ -8,7 +8,7 @@ apply plugin: 'war'
 def springVersion = '4.2.1.RELEASE'
 def jacksonVersion = '2.6.1'
 def log4j2Version = '2.3'
-def geotoolsVersion = '12.5'
+def geotoolsVersion = '13.2'
 
 description = 'Tren Urbano App Web'
 
@@ -30,46 +30,42 @@ build.dependsOn grunt_default
 
 dependencies {
     compile project(':webapi-client')
-    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
-    compile(group: 'org.springframework', name: 'spring-context-support', version: springVersion) {
-        exclude(module: 'commons-logging')
+    compile "javax.servlet:jstl:1.2"
+    compile("org.springframework:spring-context-support:$springVersion") {
+        exclude module: 'commons-logging'
     }
-    compile(group: 'org.springframework', name: 'spring-webmvc', version: springVersion) {
-        exclude(module: 'commons-logging')
+    compile("org.springframework:spring-webmvc:$springVersion") {
+        exclude module: 'commons-logging'
     }
-    compile(group: 'org.springframework', name: 'spring-jdbc', version: springVersion) {
-        exclude(module: 'commons-logging')
+    compile("org.springframework:spring-jdbc:$springVersion") {
+        exclude module: 'commons-logging'
     }
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.3') {
-        exclude(module: 'commons-logging')
+    compile('org.apache.httpcomponents:httpclient:4.3.3') {
+        exclude module: 'commons-logging'
     }
-    compile group: 'de.jollyday', name: 'jollyday', version: '0.5.1'
-    compile group: 'com.zaxxer', name: 'HikariCP', version: '2.4.1'
-    compile(group: 'org.postgis', name: 'postgis-jdbc', version: '1.3.3') {
-        exclude(module: 'postgresql')
+    compile "de.jollyday:jollyday:0.5.1"
+    compile "com.zaxxer:HikariCP:2.4.1"
+    compile("org.postgis:postgis-jdbc:1.3.3") {
+        exclude module: 'postgresql'
     }
-    compile group: 'org.postgresql', name: 'postgresql', version: '9.4-1202-jdbc42'
-    compile group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4', version: '1.16'
-    compile group: 'com.google.guava', name: 'guava', version: '17.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
-    compile group: 'de.grundid.opendatalab', name: 'geojson-jackson', version: '1.5.1'
-    compile group: 'javax.inject', name: 'javax.inject', version: '1'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2'
+    compile "org.postgresql:postgresql:9.4-1202-jdbc42"
+    compile "org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16"
+    compile "com.google.guava:guava:17.0"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "de.grundid.opendatalab:geojson-jackson:1.5.1"
+    compile "javax.inject:javax.inject:1"
+    compile "org.apache.commons:commons-lang3:3.4"
+    compile "commons-beanutils:commons-beanutils:1.9.2"
 
 
-    compile group: 'de.grundid.opendatalab', name: 'geojson-jackson', version: '1.2'
-    compile group: 'org.geotools', name: 'gt-referencing', version: geotoolsVersion
-    compile group: 'org.geotools', name: 'gt-epsg-extension', version: geotoolsVersion
-    compile group: 'org.geotools', name: 'gt-epsg-wkt', version: geotoolsVersion
+    compile "de.grundid.opendatalab:geojson-jackson:1.2"
 
+    compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
+    runtime "org.apache.logging.log4j:log4j-jcl:$log4j2Version"
+    runtime "org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version"
 
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api',  version: log4j2Version
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core',  version: log4j2Version
-    runtime group: 'org.apache.logging.log4j', name: 'log4j-jcl',  version: log4j2Version
-    runtime group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl',  version: log4j2Version
-
-    testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
-    testCompile group: 'junit', name: 'junit', version: '4.8.1'
-    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
+    testCompile "org.springframework:spring-test:$springVersion"
+    testCompile "junit:junit:4.8.1"
+    providedCompile "javax.servlet:javax.servlet-api:3.0.1"
 }
