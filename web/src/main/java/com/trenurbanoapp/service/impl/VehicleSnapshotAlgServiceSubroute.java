@@ -197,8 +197,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             }
         }
 
-        List<LatLng> currTrailNad83 = CrsConversion.convertToNad83(currTrail);
-        Map<Integer, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithinDistance(currTrailNad83, 30);
+        Map<Integer, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithinDistance(currTrail, 30);
         Set<Integer> containingSubrouteIds = subrouteViews.keySet();
         ImmutableSet<Integer> oldPossibleSubroutes = v.getPossibleSubroutesAsSet();
         Set<Integer> newPossibleSubroute = new HashSet<>(containingSubrouteIds);

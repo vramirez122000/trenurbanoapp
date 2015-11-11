@@ -16,7 +16,7 @@ WITH RECURSIVE t(n) AS (
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
   (SELECT
-     'C35' :: varchar(3) route,
+     'C36' :: varchar(3) route,
      'SAGRADO_CORAZON' :: varchar(20) stop_area,
      'PUNTA_LAS_MARIAS' :: varchar(20) direction,
      'WORKDAY' :: VARCHAR(10) schedule_type,
@@ -31,7 +31,7 @@ WITH RECURSIVE t(n) AS (
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
   (SELECT
-     'C35' :: varchar(3) route,
+     'C36' :: varchar(3) route,
      'SAGRADO_CORAZON' :: varchar(20) stop_area,
      'PUNTA_LAS_MARIAS' :: varchar(20) direction,
      'WORKDAY' :: VARCHAR(10) schedule_type,
@@ -46,7 +46,7 @@ WITH RECURSIVE t(n) AS (
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
   (SELECT
-     'C35' :: varchar(3) route,
+     'C36' :: varchar(3) route,
      'SAGRADO_CORAZON' :: varchar(20) stop_area,
      'PUNTA_LAS_MARIAS' :: varchar(20) direction,
      'WORKDAY' :: VARCHAR(10) schedule_type,

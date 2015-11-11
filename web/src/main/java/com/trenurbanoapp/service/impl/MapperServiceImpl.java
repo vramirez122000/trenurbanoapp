@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 import org.geojson.*;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -170,7 +169,7 @@ public class MapperServiceImpl implements MapperService {
 
     @Override
     public List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng latLng) {
-        return subrouteDao.getDistanceAlongNearbySubroutes2(CrsConversion.convertToNad83(latLng));
+        return subrouteDao.getDistanceAlongNearbySubroutes(latLng);
     }
 
 

@@ -4,6 +4,7 @@ import com.trenurbanoapp.model.RouteGroup;
 import com.trenurbanoapp.model.ScheduleType;
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
+import de.jollyday.ManagerParameter;
 import de.jollyday.ManagerParameters;
 
 import java.net.URL;
@@ -32,7 +33,8 @@ class ScheduleTypeCalculator {
             if (DayOfWeek.SUNDAY == dayOfWeek) {
                 return ScheduleType.RESTDAY;
             }
-            if (getHolidayManager(RouteGroup.ATI).isHoliday(date)) {
+            HolidayManager atiHolidays = getHolidayManager(RouteGroup.ATI);
+            if (atiHolidays.isHoliday(date)) {
                 return ScheduleType.RESTDAY;
             }
             return ScheduleType.WORKDAY;
@@ -59,8 +61,10 @@ class ScheduleTypeCalculator {
     }
 
     private static HolidayManager getHolidayManager(RouteGroup routeGroup) {
-        URL resource = ScheduleTypeCalculator.class.getClassLoader().getResource("holidays/Holidays_" + routeGroup.name() + ".xml");
-        return HolidayManager.getInstance(ManagerParameters.create(resource));
+        String path = "holidays/Holidays_" + routeGroup.name() + ".xml";
+        URL resource = ScheduleTypeCalculator.class.getClassLoader().getResource(path);
+        ManagerParameter params = ManagerParameters.create(resource);
+        return HolidayManager.getInstance(params);
     }
 
     private static ScheduleType getTrenUrbanoWorkdayType(LocalDate date, HolidayManager holidayManager) {

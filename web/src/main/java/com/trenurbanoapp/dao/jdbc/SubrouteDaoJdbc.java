@@ -4,6 +4,8 @@ import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.model.Subroute;
 import com.trenurbanoapp.model.SubrouteView;
 import com.trenurbanoapp.scraper.model.LatLng;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +15,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +24,18 @@ import java.util.Map;
  */
 public class SubrouteDaoJdbc implements SubrouteDao {
 
+    private static final Logger log = LogManager.getLogger(SubrouteDaoJdbc.class);
+
     private JdbcOperations jdbcTemplate;
-    private RowMapper<Subroute> rowMapper = new RowMapper<Subroute>() {
-        @Override
-        public Subroute mapRow(ResultSet rs, int i) throws SQLException {
-            Subroute s = new Subroute();
-            s.setGid(rs.getInt("gid"));
-            s.setRouteName(rs.getString("name"));
-            s.setDestination(rs.getString("dest"));
-            s.setDestinationId((Integer) rs.getObject("dest_id"));
-            s.setNextSubrouteId((Integer) rs.getObject("next_id"));
-            s.setOriginId((Integer) rs.getObject("origin_id"));
-            return s;
-        }
+    private RowMapper<Subroute> rowMapper = (rs, i) -> {
+        Subroute s = new Subroute();
+        s.setGid(rs.getInt("gid"));
+        s.setRouteName(rs.getString("name"));
+        s.setDestination(rs.getString("dest"));
+        s.setDestinationId((Integer) rs.getObject("dest_id"));
+        s.setNextSubrouteId((Integer) rs.getObject("next_id"));
+        s.setOriginId((Integer) rs.getObject("origin_id"));
+        return s;
     };
 
     public void setDataSource(DataSource dataSource) {
@@ -43,33 +43,52 @@ public class SubrouteDaoJdbc implements SubrouteDao {
     }
 
     @Override
-    public List<Map<String, Object>> getDistanceAlongNearbySubroutes2(LatLng position) {
-        String sql = "SELECT * FROM ( " +
-                "SELECT subroute_intersection_view.gid, subroute_intersection_view.name subroute, dest, vehicle.name vehicle_name, vehicle.asset_id, " +
-                " cast(ST_InterpolatePoint(geom_with_m, ST_Line_Interpolate_Point((geom_dump).geom, 0.5)) - vehicle_state.subroute_m AS INT) distance, " +
-                " vehicle_state.avg_speed, vehicle_state.location_desc, vehicle_state.cardinal_dir, " +
-                " vehicle_state.stop_gid, route_color, lpad(cast(stop.ama_id as varchar), 4, '0') stop_ama_id, stop.descriptio " +
-                "FROM ( " +
-                "   SELECT subroute.gid, subroute.name, subroute.dest, subroute.geom_with_m, route.color route_color, " +
-                "   ST_Dump ( " +
-                "      ST_Intersection ( " +
-                "         subroute.geom, ST_Buffer(position.point, 300) " +
-                "      ) " +
-                "   ) geom_dump " +
-                "   FROM ref.subroute as subroute JOIN ref.route as route ON subroute.name = route.name, " +
-                "   (SELECT ? point) position " +
-                "   WHERE route.gpsenabled = TRUE AND ST_DWithin(subroute.geom, position.point, 300) " +
-                ") subroute_intersection_view " +
-                "JOIN ref.vehicle_state as vehicle_state ON vehicle_state.last_known_subroute_id = subroute_intersection_view.gid " +
-                "JOIN ref.vehicle as vehicle ON vehicle_state.asset_id = vehicle.asset_id " +
-                "LEFT JOIN ref.stop as stop ON vehicle_state.stop_gid = stop.gid " +
-                "WHERE vehicle_state.subroute_m IS NOT NULL " +
-                ") vehicle_distances " +
-                "WHERE vehicle_distances.distance > 0 ";
+    public List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng position) {
+        String sql = "with position as ( " +
+                "  SELECT ST_Transform(?, ?) point " +
+                "), " +
+                "subroute_intersection_view as ( " +
+                "  /* Select segments of subroute that intersect with a 300m buffer around the position */ " +
+                "  SELECT " +
+                "   cast(subroute.gid as int4) gid, " +
+                "   subroute.name, " +
+                "   subroute.dest, " +
+                "   subroute.geom_with_m, " +
+                "   route.color route_color, " +
+                "   ST_Dump ( ST_Intersection ( subroute.geom, ST_Buffer(position.point, 300) ) ) geom_dump " +
+                "  FROM subroute " +
+                "   JOIN route ON route.gpsenabled = true and subroute.name = route.name " +
+                "   JOIN position ON ST_DWithin(subroute.geom, position.point, 300) " +
+                "), " +
+                "vehicle_distances as ( " +
+                " SELECT " +
+                "  subroute_intersection_view.gid, " +
+                "  subroute_intersection_view.name subroute, " +
+                "  subroute_intersection_view.dest, " +
+                "  cast(ST_InterpolatePoint(" +
+                "       subroute_intersection_view.geom_with_m, " +
+                "       ST_Line_Interpolate_Point((subroute_intersection_view.geom_dump).geom, 0.5)" +
+                "     ) - vehicle_state.subroute_m AS INT) distance, " +
+                "  vehicle.name vehicle_name, " +
+                "  vehicle.asset_id, " +
+                "  vehicle_state.avg_speed, " +
+                "  vehicle_state.location_desc, " +
+                "  vehicle_state.cardinal_dir, " +
+                "  vehicle_state.stop_gid, " +
+                "  route_color, " +
+                "  lpad(cast(stop.ama_id as varchar), 4, '0') stop_ama_id, " +
+                "  stop.descriptio " +
+                " FROM subroute_intersection_view " +
+                "  JOIN vehicle_state ON subroute_intersection_view.gid = vehicle_state.last_known_subroute_id " +
+                "  JOIN vehicle ON vehicle_state.asset_id = vehicle.asset_id " +
+                "  LEFT JOIN stop ON vehicle_state.stop_gid = stop.gid " +
+                " where vehicle_state.subroute_m IS NOT NULL " +
+                ") " +
+                "select * from vehicle_distances " +
+                "where distance > 0; ";
 
-        PGgeometry geom = new PGgeometry(Mappers.toPoint(position, Mappers.NAD83_SRID));
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, geom);
-        return results;
+        PGgeometry geom = new PGgeometry(Mappers.toPoint(position, Mappers.WGS84_SRID));
+        return jdbcTemplate.queryForList(sql, geom, Mappers.NAD83_SRID);
     }
 
     @Override
@@ -79,32 +98,39 @@ public class SubrouteDaoJdbc implements SubrouteDao {
             throw new IllegalArgumentException("linestring must have more than 1 point");
         }
 
-        PGgeometry geom = new PGgeometry(Mappers.toLineString(line, Mappers.NAD83_SRID));
-        String sql = "SELECT gid, name, dest, dest_id, next_id, origin_id, subroute_position, " +
-                " trail_azimuth, subroute_azimuth, trail_length, subroute_length, subroute_m  " +
-                " FROM ( " +
-                "     SELECT " +
-                "        gid, name, dest, dest_id, next_id, origin_id, " +
-                "        ST_PointN((geom_dump).geom, 1) subroute_position, " +
-                "        ST_Length(trail) trail_length, " +
-                "        ST_Length((geom_dump).geom) subroute_length, " +
-                "        ST_Azimuth(ST_Startpoint(trail), st_endpoint(trail)) trail_azimuth, " +
-                "        ST_Azimuth(ST_Startpoint((geom_dump).geom),st_endpoint((geom_dump).geom)) subroute_azimuth," +
-                "        ST_InterpolatePoint(geom_with_m, ST_PointN((geom_dump).geom, 1)) subroute_m " +
-                "     FROM ( " +
-                "        SELECT subroute.gid, subroute.name, subroute.dest, subroute.dest_id, subroute.next_id, subroute.origin_id, " +
-                "            vehicle_trail.trail, subroute.geom_with_m, " +
-                "            ST_Dump ( " +
-                "               ST_Intersection ( " +
-                "                  subroute.geom, ST_Buffer(vehicle_trail.trail,30,'endcap=flat') " +
-                "               ) " +
-                "            ) geom_dump " +
-                "        FROM " +
-                "            ref.subroute as subroute JOIN ref.route as route ON subroute.name = route.name, " +
-                "            (SELECT ST_Reverse(?) AS trail ) vehicle_trail " +
-                "        WHERE route.gpsenabled = TRUE AND ST_DWithin(subroute.geom, vehicle_trail.trail, 30) " +
-                "     ) subroute_intersection_view " +
-                " ) segment_azimuths " +
+        PGgeometry geom = new PGgeometry(Mappers.toLineString(line, Mappers.WGS84_SRID));
+        String sql = "with vehicle_trail as ( " +
+                "  SELECT ST_Transform(ST_Reverse(?), 32161) AS trail " +
+                "), subroute_intersection_view as ( " +
+                " SELECT " +
+                "  subroute.gid, " +
+                "  subroute.name, " +
+                "  subroute.dest, " +
+                "  subroute.dest_id, " +
+                "  subroute.next_id, " +
+                "  subroute.origin_id, " +
+                "  vehicle_trail.trail, " +
+                "  subroute.geom_with_m, " +
+                "  ST_Dump ( " +
+                "    ST_Intersection ( subroute.geom, ST_Buffer(vehicle_trail.trail, 30, 'endcap=flat') ) " +
+                "  ) geom_dump " +
+                " FROM subroute " +
+                "  JOIN route ON route.gpsenabled = true and subroute.name = route.name " +
+                "  JOIN vehicle_trail on ST_DWithin(subroute.geom, vehicle_trail.trail, 30) " +
+                "), segment_azimuths as ( " +
+                " SELECT " +
+                "   gid, name, dest, dest_id, next_id, origin_id, " +
+                "   ST_PointN((geom_dump).geom, 1) subroute_position, " +
+                "   ST_Length(trail) trail_length, " +
+                "   ST_Length((geom_dump).geom) subroute_length, " +
+                "   ST_Azimuth(ST_Startpoint(trail), st_endpoint(trail)) trail_azimuth, " +
+                "   ST_Azimuth(ST_Startpoint((geom_dump).geom),st_endpoint((geom_dump).geom)) subroute_azimuth, " +
+                "   ST_InterpolatePoint(geom_with_m, ST_PointN((geom_dump).geom, 1)) subroute_m " +
+                " FROM subroute_intersection_view " +
+                ") " +
+                "SELECT gid, name, dest, dest_id, next_id, origin_id, subroute_position, " +
+                " trail_azimuth, subroute_azimuth, trail_length, subroute_length, subroute_m " +
+                " FROM segment_azimuths " +
                 " WHERE least ( " +
                 "   2 * pi() - abs(trail_azimuth - subroute_azimuth), " +
                 "   abs(trail_azimuth - subroute_azimuth) " +
@@ -130,18 +156,11 @@ public class SubrouteDaoJdbc implements SubrouteDao {
     }
 
     @Override
-    public float getMeasure(int subrouteId, LatLng point) {
-        String sql = "SELECT ST_InterpolatePoint(ref.subroute.geom_with_m, ?) FROM ref.subroute WHERE gid = ? ";
-        return jdbcTemplate.queryForObject(sql, Float.class, Mappers.toPGGeometry(point, Mappers.NAD83_SRID), subrouteId);
-    }
-
-    @Override
     @Cacheable("subroutesByIdCache")
     public Subroute getSubroute(int id) {
         List<Subroute> results = jdbcTemplate.query("SELECT gid, name, dest, dest_id, next_id, origin_id FROM ref.subroute WHERE gid = ?", rowMapper, id);
         return !results.isEmpty() ? results.get(0) : null;
     }
-
 
     @Override
     public Map<String, Object> isWithinOriginOrDestination(List<LatLng> line, int subrouteGid) {

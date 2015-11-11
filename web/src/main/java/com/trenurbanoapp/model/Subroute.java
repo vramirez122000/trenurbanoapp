@@ -1,5 +1,7 @@
 package com.trenurbanoapp.model;
 
+import org.geojson.LineString;
+
 /**
  * Created by victor on 4/23/14.
  */
@@ -11,6 +13,7 @@ public class Subroute {
     private Integer destinationId;
     private Integer nextSubrouteId;
     private Integer originId;
+    private LineString geom;
 
     public int getGid() {
         return gid;
@@ -58,6 +61,14 @@ public class Subroute {
 
     public void setOriginId(Integer originId) {
         this.originId = originId;
+    }
+
+    public LineString getGeom() {
+        return geom;
+    }
+
+    public void setGeom(LineString geom) {
+        this.geom = geom;
     }
 
     @Override

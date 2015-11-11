@@ -12,11 +12,9 @@ import java.util.Map;
  */
 public interface SubrouteDao {
 
-    List<Map<String, Object>> getDistanceAlongNearbySubroutes2(LatLng position);
+    List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng position);
 
     Map<Integer, SubrouteView> getGpsEnabledSubroutesWithinDistance(List<LatLng> line, int distanceInMeters, Integer... subset);
-
-    float getMeasure(int subrouteId, LatLng point);
 
     Subroute getSubroute(int id);
 
