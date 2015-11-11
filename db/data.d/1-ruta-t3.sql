@@ -74,8 +74,7 @@ INSERT INTO SCHEDULE (ROUTE, STOP_AREA, DIRECTION, SCHEDULE_TYPE, STOP_TIME) VAL
   ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '21:20:00'),
   ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '21:40:00'),
   ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '22:00:00'),
-  ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '22:20:00'),
-  ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '22:40:00'),
+  ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '22:30:00'),
   ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '23:00:00');
 
 -- Sagrado a San Juan, dia laboral
@@ -152,14 +151,13 @@ INSERT INTO SCHEDULE (ROUTE, STOP_AREA, DIRECTION, SCHEDULE_TYPE, STOP_TIME) VAL
   ('T3', 'SAGRADO_CORAZON', 'SAN_JUAN', 'WORKDAY', TIME '21:50:00'),
   ('T3', 'SAGRADO_CORAZON', 'SAN_JUAN', 'WORKDAY', TIME '22:10:00'),
   ('T3', 'SAGRADO_CORAZON', 'SAN_JUAN', 'WORKDAY', TIME '22:30:00'),
-  ('T3', 'SAGRADO_CORAZON', 'SAN_JUAN', 'WORKDAY', TIME '22:50:00'),
   ('T3', 'SAGRADO_CORAZON', 'SAN_JUAN', 'WORKDAY', TIME '23:00:00');
 
 
 WITH RECURSIVE t(n) AS (
   VALUES (time'06:00:00')
   UNION ALL
-  SELECT n + interval '20 min' FROM t WHERE n < time'23:00:00'
+  SELECT n + interval '20 min' FROM t WHERE n + interval '20 min' <= time'23:00:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
 (SELECT
@@ -174,7 +172,8 @@ insert into schedule(route, stop_area, direction, schedule_type, stop_time)
 WITH RECURSIVE t(n) AS (
   VALUES (time'06:10:00')
   UNION ALL
-  SELECT n + interval '20 min' FROM t WHERE n < time'22:30:00'
+  SELECT n + interval '20 min' FROM t
+  WHERE n + interval '20 min' <= time'22:30:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
 (SELECT
