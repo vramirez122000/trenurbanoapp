@@ -3,6 +3,9 @@
 La legendaria aplicación de transporte público del Área Metro de San Juan. Escrita en Java 8, 
 sobre la base de datos PostgreSQL versión 9.2+ con la extensión PostGIS
 
+![screenshot](tuapp-screens "Screenshot")
+
+
 ## Build
 
 Requisitos
