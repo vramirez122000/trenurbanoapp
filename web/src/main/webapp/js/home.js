@@ -3,6 +3,14 @@ var currPosition;
 
 function main() {
 
+    if(TU.SCHED.isIOS9WebView()) {
+        var $alertMsg = $('#alertMsg');
+        $alertMsg.find('#alertTxt').html('Si tiene problemas con Tren Urbano App en iOS 9, ' +
+            'favor de visitar <a href="http://trenurbanoapp.com">Tren Urbano App Web</a> y ' +
+            'seleccionar la opci&oacute;n "Add to Home Screen"');
+        $alertMsg.css('display', 'block');
+    }
+
     TU.SCHED.stopTimesByLocation('#stopTimes', function(params) {
         var resultsStation = $('input#resultsStation').val();
         var stationSelect = $(".station-select:visible");

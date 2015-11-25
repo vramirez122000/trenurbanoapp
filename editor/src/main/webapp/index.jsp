@@ -10,10 +10,12 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/>
+    <%--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/>--%>
+    <link rel="stylesheet" href="jspkg/Leaflet.draw/examples/libs/leaflet.css"/>
     <link rel="stylesheet" href="jspkg/Leaflet.draw/dist/leaflet.draw.css"/>
     <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
+    <%--<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>--%>
+    <script type="text/javascript" src="jspkg/Leaflet.draw/examples/libs/leaflet-src.js"></script>
     <script type="text/javascript" src="jspkg/Leaflet.draw/dist/leaflet.draw-src.js"></script>
     <script type="text/javascript" src="jspkg/Leaflet.TextPath/leaflet.textpath.js"></script>
     <script type="text/javascript" src="editor.js"></script>

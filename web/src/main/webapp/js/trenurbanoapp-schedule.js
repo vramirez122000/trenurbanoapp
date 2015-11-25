@@ -121,6 +121,15 @@ TU.SCHED = (function(my, $) {
         });
     };
 
+    my.isIOS9WebView = function() {
+        var standalone = 'standalone' in window.navigator && window.navigator.standalone;
+        var userAgent = window.navigator.userAgent.toLowerCase();
+        var safari = /safari/.test(userAgent);
+        var ios = /iphone|ipod|ipad/.test(userAgent);
+
+        return ios && !standalone && !safari;
+    };
+
     return my;
 
 })(TU.SCHED || {}, jQuery);

@@ -1,18 +1,17 @@
 package com.trenurbanoapp.editor;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.model.Subroute;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LineString;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,6 +48,16 @@ public class Controller {
         FeatureCollection fcol = new FeatureCollection();
         fcol.setFeatures(features);
         return fcol;
+    }
+
+    @RequestMapping(value = "/updateGeoms", method = RequestMethod.POST)
+    public void update(@RequestBody List<Feature> features) throws IOException {
+        for (Feature feature : features) {
+            if(!(feature.getGeometry() instanceof LineString)) {
+                continue;
+            }
+            subrouteDao.updateSubroute(feature.getId(), (LineString) feature.getGeometry());
+        }
     }
 
 }
