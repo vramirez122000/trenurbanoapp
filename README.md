@@ -31,7 +31,7 @@ Crear base de datos con extension PostGIS
     
 Poblar base de datos con scripts ubicados en directorio 'db'    
 
-    $ cat db/ref_data.sql db/log_schema.sql | psql -U postgres -d tuapp
+    $ cat db/backups/ref_data.sql db/common/log_schema.sql | psql -U postgres -d tuapp
 
 ### Cómo correr el sistema
 
