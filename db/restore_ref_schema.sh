@@ -11,4 +11,4 @@ read -p "Deleting schema ref, this cannot be undone..."
 echo "drop schema ref cascade" | psql -U ${DBUSER} -d ${DBNAME} -h ${DBHOST}
 read -p "Press [Enter] key to start..."
 
-cat ref_data.sql | psql -U ${DBUSER} -d ${DBNAME} -h ${DBHOST}
+cat backups/ref_data.sql | psql -U ${DBUSER} -d ${DBNAME} -h ${DBHOST}

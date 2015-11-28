@@ -11,7 +11,8 @@ module.exports = function(grunt) {
             files: [
                 'Gruntfile.js',
                 '<%= srcDir %>/trenurbanoapp-schedule.js',
-                '<%= srcDir %>/trenurbanoapp-map.js'
+                '<%= srcDir %>/trenurbanoapp-map.js',
+                '<%= srcDir %>/trenurbanoapp-util.js'
             ],
             options: {
                 multistr: true

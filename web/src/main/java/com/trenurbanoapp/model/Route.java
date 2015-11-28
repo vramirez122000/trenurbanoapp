@@ -5,17 +5,17 @@ package com.trenurbanoapp.model;
  */
 public class Route {
 
-    private Integer id;
+    private String id;
     private String geometryAsGeoJson;
     private String color;
     private String name;
     private String fullName;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

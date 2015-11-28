@@ -49,14 +49,14 @@ TU.MAP = (function(my, $, Leaf) {
     var snapshotIntervalId;
     var gpsEnabled = false;
     var debug = true;
-    var route = getParam('route');
-    var locationMarker = L.marker(my.DEFAULTS.CENTER, {
+    var route = TU.UTIL.getParam('route');
+    var locationMarker = Leaf.marker(my.DEFAULTS.CENTER, {
         icon: markerIcon('dude')
     });
-    var originMarker = L.marker(my.DEFAULTS.CENTER, {
+    var originMarker = Leaf.marker(my.DEFAULTS.CENTER, {
         icon: markerIcon('A')
     });
-    var destMarker = L.marker(my.DEFAULTS.CENTER, {
+    var destMarker = Leaf.marker(my.DEFAULTS.CENTER, {
         icon: markerIcon('B')
     });
 
@@ -98,7 +98,7 @@ TU.MAP = (function(my, $, Leaf) {
         }
     };
 
-    my.doMagic = function(mapObj, options) {
+    my.main = function(mapObj, options) {
 
         if(typeof mapObj === 'undefined') {
             throw 'Map is undefined';
@@ -141,7 +141,7 @@ TU.MAP = (function(my, $, Leaf) {
                 locationMarker.setLatLng(e.latlng)
                     .bindPopup("Usted est&aacute; aqu&iacute;")
                     .addTo(map);
-                L.circle(e.latlng, radius, {
+                Leaf.circle(e.latlng, radius, {
                     fill: false,
                     opacity: 0.5
                 }).addTo(map);
@@ -612,16 +612,6 @@ TU.MAP = (function(my, $, Leaf) {
         return popupContent;
     }
 
-    function getParam(name) {
-        var paramKeyValPair = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search);
-        if (paramKeyValPair) {
-            var decoded = decodeURIComponent(paramKeyValPair[1]);
-            if (decoded.indexOf('/') == (decoded.length - 1)) {
-                decoded = decoded.substring(0, decoded.length - 1);
-            }
-            return decoded;
-        }
-    }
 
     return my;
 

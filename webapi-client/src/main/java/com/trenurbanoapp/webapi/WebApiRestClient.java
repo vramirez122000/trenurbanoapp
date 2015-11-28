@@ -14,10 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by victor on 6/15/14.
@@ -65,9 +62,9 @@ public class WebApiRestClient {
 
     public LoginResponse login() {
         HttpHeaders headers = new HttpHeaders();
-        headers.put("username", Arrays.asList(username));
-        headers.put("password", Arrays.asList(hash(password)));
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.put("username", Collections.singletonList(username));
+        headers.put("password", Collections.singletonList(hash(password)));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = getRestTemplate().exchange(urlbase + "/login", HttpMethod.GET, entity, String.class);
         if(!responseEntity.getStatusCode().is2xxSuccessful()) {
@@ -138,8 +135,8 @@ public class WebApiRestClient {
 
     private static HttpEntity<String> createRequestEntity(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.put("token", Arrays.asList(token));
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.put("token", Collections.singletonList(token));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         return new HttpEntity<>(headers);
     }
 

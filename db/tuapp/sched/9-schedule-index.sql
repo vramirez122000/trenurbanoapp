@@ -1,6 +1,6 @@
 drop index IF EXISTS ScheduleIndex;
 
-create index ScheduleIndex on Schedule (
+create index ScheduleIndex on Schedule using btree (
   stop_area,
   route,
   direction,

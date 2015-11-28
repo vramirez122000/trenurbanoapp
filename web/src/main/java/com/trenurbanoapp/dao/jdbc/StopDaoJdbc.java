@@ -32,20 +32,18 @@ public class StopDaoJdbc implements StopDao {
     @Cacheable(value = "stopsByRouteCache")
     public List<Stop> getStopsByRouteName(String routeName) {
         String sql = "select stop.* from ref.stop as stop" +
-                " join ref.stop_route as stop_route on stop.gid = stop_route.stop_gid " +
-                " join ref.route as route on stop_route.route_gid = route.gid " +
-                " where route.name = ? ";
+                " join stop_route_new as stop_route on stop.gid = stop_route.stop_gid " +
+                " where stop_route.route = ? ";
         return jdbcTemplate.query(sql, MAPPER, routeName);
     }
 
     @Override
     public List<Stop> getStopsByRouteNames(GetStopsRequest request) {
         String selectAndFromClause = "select stop.* from ref.stop as stop " +
-                " join ref.stop_route as stop_route on stop.gid = stop_route.stop_gid " +
-                " join ref.route as route on stop_route.route_gid = route.gid ";
+                " join stop_route_new as stop_route on stop.gid = stop_route.stop_gid ";
         CriteriaQueryBuilder builder = new CriteriaQueryBuilder(selectAndFromClause);
         Set<String> routeNames = request.getRouteNames();
-        builder.whereIn("route.name", (Object[]) routeNames.toArray(new String[routeNames.size()]));
+        builder.whereIn("stop_route.route", (Object[]) routeNames.toArray(new Object[routeNames.size()]));
         builder.whereClause("stop.geom && st_makeenvelope(?, ?, ?, ?)",
                 request.getBounds().getSouthwest().getLng(),
                 request.getBounds().getSouthwest().getLat(),
@@ -70,18 +68,14 @@ public class StopDaoJdbc implements StopDao {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    private static final RowMapper<Stop> MAPPER = new RowMapper<Stop>() {
-
-        @Override
-        public Stop mapRow(ResultSet rs, int i) throws SQLException {
-            Stop stop = new Stop();
-            stop.setId(rs.getInt("gid"));
-            PGgeometry geom = (PGgeometry) rs.getObject("geom");
-            Point point = (Point) geom.getGeometry();
-            stop.setLocation(new LatLng(point.getY(), point.getX()));
-            String amaId = rs.getString("ama_id");
-            stop.setAmaId(amaId != null ? amaId : "");
-            return stop;
-        }
+    private static final RowMapper<Stop> MAPPER = (rs, i) -> {
+        Stop stop = new Stop();
+        stop.setId(rs.getInt("gid"));
+        PGgeometry geom = (PGgeometry) rs.getObject("geom");
+        Point point = (Point) geom.getGeometry();
+        stop.setLocation(new LatLng(point.getY(), point.getX()));
+        String amaId = rs.getString("ama_id");
+        stop.setAmaId(amaId != null ? amaId : "");
+        return stop;
     };
 }

@@ -1,0 +1,1 @@
+CREATE INDEX subroute_new_gix ON ref.subroute_new USING GIST (geom);

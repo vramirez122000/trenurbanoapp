@@ -66,14 +66,11 @@ public class VehicleState {
 
     public ImmutableSet<Integer> getPossibleSubroutesAsSet() {
         return ImmutableSet.copyOf(
-                Maps.filterEntries(possibleSubrouteIds, new Predicate<Map.Entry<Integer, Boolean>>() {
-                    @Override
-                    public boolean apply(Map.Entry<Integer, Boolean> input) {
-                        if(input == null) {
-                            return false;
-                        }
-                        return input.getValue();
+                Maps.filterEntries(possibleSubrouteIds, input -> {
+                    if(input == null) {
+                        return false;
                     }
+                    return input.getValue();
                 }).keySet());
     }
 
@@ -93,14 +90,11 @@ public class VehicleState {
 
     public ImmutableSet<Integer> getPossibleGeofenceRoutesAsSet() {
         return ImmutableSet.copyOf(
-                Maps.filterEntries(possibleGeofenceRouteIds, new Predicate<Map.Entry<Integer, Boolean>>() {
-                    @Override
-                    public boolean apply(Map.Entry<Integer, Boolean> input) {
-                        if(input == null) {
-                            return false;
-                        }
-                        return input.getValue();
+                Maps.filterEntries(possibleGeofenceRouteIds, input -> {
+                    if(input == null) {
+                        return false;
                     }
+                    return input.getValue();
                 }).keySet());
     }
 

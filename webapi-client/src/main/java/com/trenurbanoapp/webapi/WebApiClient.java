@@ -67,13 +67,10 @@ public class WebApiClient {
             }
         }
 
-        getSocketClient().listenSynchronously(login.getToken(), listenTimeoutInSeconds, new AssetPositionCallback() {
-            @Override
-            public void execute(AssetPosition assetPos) {
-                log.debug(assetPos.toString());
-                if (assetPositionCallback != null) {
-                    assetPositionCallback.execute(assetPos);
-                }
+        getSocketClient().listenSynchronously(login.getToken(), listenTimeoutInSeconds, assetPos -> {
+            log.debug(assetPos.toString());
+            if (assetPositionCallback != null) {
+                assetPositionCallback.execute(assetPos);
             }
         });
     }

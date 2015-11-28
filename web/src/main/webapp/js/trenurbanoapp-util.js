@@ -24,6 +24,17 @@ TU.UTIL = (function(my, $) {
         return ((safeCurrTimestamp - olderTimestamp) / 60000).toFixed(0);
     };
 
+    my.getParam = function(name) {
+        var paramKeyValPair = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search);
+        if (paramKeyValPair) {
+            var decoded = decodeURIComponent(paramKeyValPair[1]);
+            if (decoded.indexOf('/') == (decoded.length - 1)) {
+                decoded = decoded.substring(0, decoded.length - 1);
+            }
+            return decoded;
+        }
+    };
+
     return my;
 
 })(TU.UTIL || {}, jQuery);

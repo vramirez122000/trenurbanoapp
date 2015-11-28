@@ -27,11 +27,11 @@
                         <span class="routeLabel" style="
                                 background-color: ${route.color};
                                 text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                border-color: ${darkColor}">${route.fullName}</span>
+                                border-color: ${darkColor}">${route.name}</span>
                     </div>
                     <div class="col-xs-2 text-right">
                         <div>
-                            <a href="<c:url value="/app/map?route=${route.name}"/>" title="Ver en mapa">
+                            <a href="<c:url value="/app/map?route=${route.id}"/>" title="Ver en mapa">
                                 <i class="fa fa-map-o"></i>
                             </a>
                         </div>

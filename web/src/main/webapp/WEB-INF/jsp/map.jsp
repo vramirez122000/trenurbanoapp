@@ -40,7 +40,7 @@
                 '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
             }).addTo(map);
 
-            TU.MAP.doMagic(map, {
+            TU.MAP.main(map, {
                 gpsEnabled: ${applicationScope['gps.enabled']},
                 contextPath: '${pageContext.request.contextPath}',
                 debug: ${applicationScope['javascript.useSource']}

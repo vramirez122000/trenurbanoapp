@@ -16,6 +16,8 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '17.0'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
 
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4j2Version
+    compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
+    runtime "org.apache.logging.log4j:log4j-jcl:$log4j2Version"
+    runtime "org.apache.logging.log4j:log4j-core:$log4j2Version"
 
 }

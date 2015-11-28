@@ -5,10 +5,9 @@ create table ref.stop_area (
   "desc" varchar(100) not null,
   sort_order smallint not null default 99,
   lng float4,
-  lat float4
+  lat float4,
+  geom geometry(Point, 4326)
 );
-
-select AddGeometryColumn('ref','stop_area', 'geom', 4326, 'Point', 2);
 
 with stop_area_tmp(id, "desc", sort_order, lng, lat) as (
   select 'SAGRADO_CORAZON',    'Sagrado Corazón',         1,  -66.05968,	18.43764 union
