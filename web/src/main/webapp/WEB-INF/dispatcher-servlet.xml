@@ -9,8 +9,7 @@
     <context:annotation-config/>
     <mvc:annotation-driven/>
 
-    <bean class="com.trenurbanoapp.controller.ScheduleController"/>
-    <bean class="com.trenurbanoapp.controller.MapperController"/>
+    <context:component-scan base-package="com.trenurbanoapp.controller"/>
 
     <mvc:view-controller path="/map" view-name="map"/>
 

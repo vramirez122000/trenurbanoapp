@@ -2,6 +2,7 @@ package com.trenurbanoapp.dao;
 
 import com.trenurbanoapp.model.Route;
 import com.trenurbanoapp.scraper.model.LatLng;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,9 @@ public interface RouteDao {
     List<Route> getNearbyRoutesWithoutSchedule(double lat, double lng);
 
     List<Route> getAllRoutes();
+
+    @Cacheable("routeById")
+    Route findById(String route);
 
     List<String> getRoutesNamesWithinDistance(LatLng point, int distanceInMeters);
 

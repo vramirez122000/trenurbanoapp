@@ -11,6 +11,7 @@ public class Funcs {
 
     /**
      * Darken color in html hexadecimal Rgb format
+     *
      * @param hexRgb example '#34F56A' or '34F56A'
      * @return HexRgb formatted string
      */
@@ -22,4 +23,20 @@ public class Funcs {
                 StringUtils.leftPad(Integer.toHexString(c.getBlue()), 2, '0')
         );
     }
+
+    /**
+     * Darken color in html hexadecimal Rgb format
+     *
+     * @param hexRgb example '#34F56A' or '34F56A'
+     * @return HexRgb formatted string
+     */
+    public static String shade(String hexRgb, double factor) {
+        Color old = Color.decode(hexRgb);
+        return String.format("#%s%s%s",
+                StringUtils.leftPad(Integer.toHexString(Math.max((int) (old.getRed() * factor), 0)), 2, '0'),
+                StringUtils.leftPad(Integer.toHexString(Math.max((int) (old.getGreen() * factor), 0)), 2, '0'),
+                StringUtils.leftPad(Integer.toHexString(Math.max((int) (old.getBlue() * factor), 0)), 2, '0')
+        );
+    }
 }
+

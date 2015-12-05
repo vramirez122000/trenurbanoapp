@@ -51,13 +51,13 @@ TU.MAP = (function(my, $, Leaf) {
     var debug = true;
     var route = TU.UTIL.getParam('route');
     var locationMarker = Leaf.marker(my.DEFAULTS.CENTER, {
-        icon: markerIcon('dude')
+        icon: markerIcon('/images/dude')
     });
     var originMarker = Leaf.marker(my.DEFAULTS.CENTER, {
-        icon: markerIcon('A')
+        icon: markerIcon('/images/A')
     });
     var destMarker = Leaf.marker(my.DEFAULTS.CENTER, {
-        icon: markerIcon('B')
+        icon: markerIcon('/images/B')
     });
 
     var contextMenuLatLng;
@@ -226,12 +226,11 @@ TU.MAP = (function(my, $, Leaf) {
         updateStops();
     }
 
-    function markerIcon(name) {
-        var imagePath = contextPath + '/images/';
+    function markerIcon(path) {
         return new VehicleIcon({
-            iconUrl: imagePath + name + ".png",
-            iconRetinaUrl: imagePath + name + "@2x.png",
-            shadowUrl: imagePath + "marker-shadow.png"
+            iconUrl: contextPath + path + ".png",
+            iconRetinaUrl: contextPath + path + ".png",
+            shadowUrl: contextPath + "/images/marker-shadow.png"
         });
     }
 
@@ -253,7 +252,7 @@ TU.MAP = (function(my, $, Leaf) {
                 for (var i = 0; i < geojsonRoutes.features.length; i++) {
                     var data = geojsonRoutes.features[i];
                     colors[data.id] = data.properties.color;
-                    routeMarkerIcons[data.id] = markerIcon(data.id);
+                    routeMarkerIcons[data.id] = markerIcon('/app/icon/' + data.id);
                     var geoJsonLayer = Leaf.geoJson(data, {
                         style: routeStyle,
                         onEachFeature: routeBindPopup

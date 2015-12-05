@@ -7,11 +7,11 @@ set -o verbose
 INSTANCE=$([ -z "$1" ] && echo "tuapp" || echo "tuapp_$1")
 
 _SET_SEARCH_PATH="SET search_path = ref, public, pg_catalog;"
-_DROP="${_PREFIX} drop schema if exists ref cascade; drop schema if exists logs cascade;"
+_DROP="${_PREFIX} drop schema if exists ref cascade;"
 
 echo "${_DROP} ${_SET_SEARCH_PATH}" \
 | cat -\
- common/schema/* \
+ common/schema/ref.sql \
 | psql -U postgres -d ${INSTANCE} \
 &> load_ref.log
 

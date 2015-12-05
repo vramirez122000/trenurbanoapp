@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.*;
 import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,6 +54,23 @@ public class RouteDaoJdbc implements RouteDao {
                         " ORDER BY route.sort_order ",
                 rowMapper,
                 SIMPLIFY_TOLERANCE);
+    }
+
+
+    @Override
+    @Cacheable("routeById")
+    public Route findById(String route) {
+        List<Route> results = jdbcTemplate.query("SELECT route.id, route.color, route.desc, " +
+                        " ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union(ST_Simplify(subroute.geom, ?))), 4326)) geojson " +
+                        " FROM route_new as route " +
+                        " JOIN subroute_new as subroute ON route.id = subroute.route " +
+                        " WHERE route.id = ? " +
+
+                        " GROUP BY route.id, route.color, route.sort_order " +
+                        " ORDER BY route.sort_order ",
+                rowMapper,
+                SIMPLIFY_TOLERANCE, route);
+        return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
