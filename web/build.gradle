@@ -57,6 +57,10 @@ dependencies {
     compile "org.apache.commons:commons-lang3:3.4"
     compile "commons-beanutils:commons-beanutils:1.9.2"
 
+    def batikVersion = '1.8'
+    compile "org.apache.xmlgraphics:batik-xml:$batikVersion"
+    compile "org.apache.xmlgraphics:batik-transcoder:$batikVersion"
+
 
     compile "de.grundid.opendatalab:geojson-jackson:1.2"
 

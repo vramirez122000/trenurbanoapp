@@ -1,14 +1,3 @@
-drop table if exists ref.route_new;
-
-create table ref.route_new (
-  id varchar(100) PRIMARY KEY,
-  "desc" varchar(255),
-  color varchar(50),
-  gpsenabled boolean,
-  sort_order int,
-  priority int
-);
-
 INSERT INTO ref.route_new (id,"desc",color,gpsenabled, sort_order, priority) VALUES
  ('TU','Tren Urbano','#4d8327',false,1,1),
  ('T3','T3','#bf6a4b',false,2,2),

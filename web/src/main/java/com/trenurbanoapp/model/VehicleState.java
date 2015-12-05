@@ -1,12 +1,13 @@
 package com.trenurbanoapp.model;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.trenurbanoapp.scraper.model.LatLng;
 
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,10 +19,10 @@ import java.util.*;
 public class VehicleState {
 
     private Integer assetId;
-    private Integer lastKnownRouteGeofenceId;
-    private Integer lastKnownSubrouteId;
-    private Map<Integer, Boolean> possibleGeofenceRouteIds = new HashMap<>();
-    private Map<Integer, Boolean> possibleSubrouteIds = new HashMap<>();
+    private String lastKnownRoute;
+    private String lastKnownDirection;
+    private Map<String, Boolean> possibleRoutes = new HashMap<>();
+    private Map<SubrouteKey, Boolean> possibleSubroutes = new HashMap<>();
     private boolean withinServiceArea;
     private List<LatLng> trail;
     private Date lastTrailChange;
@@ -32,7 +33,6 @@ public class VehicleState {
     private Long tripId;
     private Integer stopId;
     private String locationDescription;
-    private String cardinalDirection;
 
     public Integer getAssetId() {
         return assetId;
@@ -42,60 +42,65 @@ public class VehicleState {
         this.assetId = assetId;
     }
 
-    public Integer getLastKnownRouteGeofenceId() {
-        return lastKnownRouteGeofenceId;
+
+    public String getLastKnownRoute() {
+        return lastKnownRoute;
     }
 
-    public void setLastKnownRouteGeofenceId(Integer lastKnownRouteGeofenceId) {
-        this.lastKnownRouteGeofenceId = lastKnownRouteGeofenceId;
+    public void setLastKnownRoute(String lastKnownRoute) {
+        this.lastKnownRoute = lastKnownRoute;
     }
 
-    public Map<Integer, Boolean> getPossibleSubrouteIds() {
-        return possibleSubrouteIds;
+    public String getLastKnownDirection() {
+        return lastKnownDirection;
     }
 
-    public void setPossibleSubrouteIds(Map<Integer, Boolean> possibleSubrouteIds) {
-        this.possibleSubrouteIds = possibleSubrouteIds;
+    public void setLastKnownDirection(String lastKnownDirection) {
+        this.lastKnownDirection = lastKnownDirection;
+    }
+
+
+
+    public void clearPossibleRoutes() {
+        for (String route : possibleRoutes.keySet()) {
+            possibleRoutes.put(route, false);
+        }
+    }
+
+    public Map<SubrouteKey, Boolean> getPossibleSubroutes() {
+        return possibleSubroutes;
+    }
+
+    public void setPossibleSubroutes(Map<SubrouteKey, Boolean> possibleSubroutes) {
+        this.possibleSubroutes = possibleSubroutes;
+    }
+
+    public Set<SubrouteKey> getPossibleSubroutesAsSet() {
+        return possibleSubroutes.entrySet().stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     public void clearPossibleSubroutes() {
-        for (Integer routeId : possibleSubrouteIds.keySet()) {
-            possibleSubrouteIds.put(routeId, false);
+        for (SubrouteKey subroute : possibleSubroutes.keySet()) {
+            possibleSubroutes.put(subroute, false);
         }
     }
 
-    public ImmutableSet<Integer> getPossibleSubroutesAsSet() {
-        return ImmutableSet.copyOf(
-                Maps.filterEntries(possibleSubrouteIds, input -> {
-                    if(input == null) {
-                        return false;
-                    }
-                    return input.getValue();
-                }).keySet());
+    public Map<String, Boolean> getPossibleRoutes() {
+        return possibleRoutes;
     }
 
-    public Map<Integer, Boolean> getPossibleGeofenceRouteIds() {
-        return possibleGeofenceRouteIds;
+    public void setPossibleRoutes(Map<String, Boolean> possibleRoutes) {
+        this.possibleRoutes = possibleRoutes;
     }
 
-    public void setPossibleGeofenceRouteIds(Map<Integer, Boolean> possibleGeofenceRouteIds) {
-        this.possibleGeofenceRouteIds = possibleGeofenceRouteIds;
-    }
-
-    public void clearPossibleGeofenceRoutes() {
-        for (Integer routeId : possibleGeofenceRouteIds.keySet()) {
-            possibleGeofenceRouteIds.put(routeId, false);
-        }
-    }
-
-    public ImmutableSet<Integer> getPossibleGeofenceRoutesAsSet() {
-        return ImmutableSet.copyOf(
-                Maps.filterEntries(possibleGeofenceRouteIds, input -> {
-                    if(input == null) {
-                        return false;
-                    }
-                    return input.getValue();
-                }).keySet());
+    public Set<String> getPossibleRoutesAsSet() {
+        return possibleRoutes.entrySet().stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     public List<LatLng> getTrail() {
@@ -114,12 +119,17 @@ public class VehicleState {
         this.lastTrailChange = lastTrailChange;
     }
 
-    public Integer getLastKnownSubrouteId() {
-        return lastKnownSubrouteId;
+    public boolean hasLastKnownRoute() {
+        return lastKnownRoute != null;
     }
 
-    public void setLastKnownSubrouteId(Integer lastKnownSubrouteId) {
-        this.lastKnownSubrouteId = lastKnownSubrouteId;
+    public SubrouteKey getLastKnownSubroute() {
+        return new SubrouteKey(lastKnownRoute, lastKnownDirection);
+    }
+
+    public void setLastKnownSubroute(SubrouteKey subroute) {
+        this.lastKnownRoute = subroute.getRoute();
+        this.lastKnownDirection = subroute.getDirection();
     }
 
     public Deque<Float> getRecentSpeeds() {
@@ -198,25 +208,17 @@ public class VehicleState {
         this.stopId = stopId;
     }
 
-    public String getCardinalDirection() {
-        return cardinalDirection;
-    }
-
-    public void setCardinalDirection(String cardinalDirection) {
-        this.cardinalDirection = cardinalDirection;
-    }
-
-    public void updatePossibleSubrouteIds(Iterable<Integer> newPossibleSubrouteIds) {
+    public void updatePossibleSubroutes(Iterable<SubrouteKey> newPossibleSubroutes) {
         clearPossibleSubroutes();
-        for (Integer id : newPossibleSubrouteIds) {
-            this.possibleSubrouteIds.put(id, true);
+        for (SubrouteKey subroute : newPossibleSubroutes) {
+            this.possibleSubroutes.put(subroute, true);
         }
     }
 
-    public void updatePossibleGeofenceIds(Iterable<Integer> newPossibleGeofenceIds) {
-        clearPossibleGeofenceRoutes();
-        for (Integer id : newPossibleGeofenceIds) {
-            this.possibleGeofenceRouteIds.put(id, true);
+    public void updatePossibleRoutes(Iterable<String> newPossibleRoutes) {
+        clearPossibleRoutes();
+        for (String route : newPossibleRoutes) {
+            this.possibleRoutes.put(route, true);
         }
     }
 }

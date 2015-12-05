@@ -6,7 +6,6 @@ import com.trenurbanoapp.model.VehicleState;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.time.LocalDateTime;
 import org.postgis.PGgeometry;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -67,11 +66,12 @@ public class StatsLogDaoJdbc implements StatsLogDao {
     public void insertTripLog(VehicleState v, Integer stopId, List<LatLng> trail) {
         Map<String, Object> params = new HashMap<>();
         params.put("trip_id", v.getTripId());
-        params.put("subroute_gid", v.getLastKnownSubrouteId());
+        params.put("route", v.getLastKnownRoute());
+        params.put("direction", v.getLastKnownDirection());
         params.put("asset_id", v.getAssetId());
         params.put("stop_gid", stopId);
         params.put("stamp", new Timestamp(System.currentTimeMillis()));
-        params.put("trail", safeLineString(trail));
+        //params.put("trail", safeLineString(trail));
         log.debug("inserting into trip log {}", params);
         tripLogInsert.execute(params);
     }

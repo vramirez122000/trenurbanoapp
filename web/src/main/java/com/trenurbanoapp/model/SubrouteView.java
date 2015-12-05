@@ -7,7 +7,7 @@ import com.trenurbanoapp.scraper.model.LatLng;
  */
 public class SubrouteView {
 
-    private Subroute subroute = new Subroute();
+    private SubrouteKey subroute = new SubrouteKey();
     private double vehicleTrailAzimuth;
     private double subrouteSegmentAzimuth;
     private double vehicleTrailLength;
@@ -15,11 +15,11 @@ public class SubrouteView {
     private LatLng subroutePosition;
     private double subrouteM;
 
-    public Subroute getSubroute() {
+    public SubrouteKey getSubroute() {
         return subroute;
     }
 
-    public void setSubroute(Subroute subroute) {
+    public void setSubroute(SubrouteKey subroute) {
         this.subroute = subroute;
     }
 

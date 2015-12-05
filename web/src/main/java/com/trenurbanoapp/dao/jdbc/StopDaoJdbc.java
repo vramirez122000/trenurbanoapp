@@ -31,19 +31,19 @@ public class StopDaoJdbc implements StopDao {
     @Override
     @Cacheable(value = "stopsByRouteCache")
     public List<Stop> getStopsByRouteName(String routeName) {
-        String sql = "select stop.* from ref.stop as stop" +
-                " join stop_route_new as stop_route on stop.gid = stop_route.stop_gid " +
-                " where stop_route.route = ? ";
+        String sql = "select stop.* from stop " +
+                " join subroute_stop on stop.gid = subroute_stop.stop " +
+                " where subroute_stop.route = ? ";
         return jdbcTemplate.query(sql, MAPPER, routeName);
     }
 
     @Override
     public List<Stop> getStopsByRouteNames(GetStopsRequest request) {
-        String selectAndFromClause = "select stop.* from ref.stop as stop " +
-                " join stop_route_new as stop_route on stop.gid = stop_route.stop_gid ";
+        String selectAndFromClause = "select stop.* from stop " +
+                " join subroute_stop on stop.gid = subroute_stop.stop ";
         CriteriaQueryBuilder builder = new CriteriaQueryBuilder(selectAndFromClause);
         Set<String> routeNames = request.getRouteNames();
-        builder.whereIn("stop_route.route", (Object[]) routeNames.toArray(new Object[routeNames.size()]));
+        builder.whereIn("subroute_stop.route", (Object[]) routeNames.toArray(new Object[routeNames.size()]));
         builder.whereClause("stop.geom && st_makeenvelope(?, ?, ?, ?)",
                 request.getBounds().getSouthwest().getLng(),
                 request.getBounds().getSouthwest().getLat(),
@@ -54,7 +54,7 @@ public class StopDaoJdbc implements StopDao {
 
     @Override
     public Stop getClosestStopWithin10Meters(List<LatLng> trail) {
-        String sql = "select * from ref.stop where ST_DWithin(?, stop.geom, 10) order by ST_distance(?, stop.geom) asc limit 1 ";
+        String sql = "select * from stop where ST_DWithin(ST_transform(?, 32161), ST_Transform(stop.geom, 32161), 10) order by ST_distance(?, stop.geom) asc limit 1 ";
         List<Stop> result = jdbcTemplate.query(sql, MAPPER, Mappers.toPGGeometry(trail), Mappers.toPGGeometry(trail));
         return result.isEmpty() ? null : result.get(0);
     }
@@ -64,7 +64,7 @@ public class StopDaoJdbc implements StopDao {
     @Override
     @Cacheable("stopById")
     public Stop getStopById(int stopId) {
-        List<Stop> result = jdbcTemplate.query("select * from ref.stop where gid = ?", MAPPER, stopId);
+        List<Stop> result = jdbcTemplate.query("select * from stop where gid = ?", MAPPER, stopId);
         return result.isEmpty() ? null : result.get(0);
     }
 

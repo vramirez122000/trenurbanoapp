@@ -25,7 +25,7 @@ public class VehiclePositionView {
     private String route;
     private boolean inRoute;
     private String possibleRoutes;
-    private String destination;
+    private String direction;
     private boolean withinServiceArea;
     private Map<String,String> props = new HashMap<>();
 
@@ -101,12 +101,12 @@ public class VehiclePositionView {
         this.positionChange = positionChange;
     }
 
-    public String getDestination() {
-        return destination;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public boolean isWithinServiceArea() {

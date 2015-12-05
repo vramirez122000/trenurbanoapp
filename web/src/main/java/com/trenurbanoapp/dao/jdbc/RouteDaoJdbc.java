@@ -33,10 +33,10 @@ public class RouteDaoJdbc implements RouteDao {
                 "  route.desc fullName, " +
                 "  route.priority, " +
                 "  route.color " +
-                "FROM subroute_new subroute " +
-                "JOIN route_new route ON subroute.route = route.id " +
+                "FROM ref.subroute_new as subroute " +
+                "JOIN route_new as route ON subroute.route = route.id " +
                 "LEFT JOIN schedule ON subroute.route = schedule.route " +
-                "where st_dwithin(st_transform(subroute.geom, 32161), st_transform(st_setSrid(st_point(?, ?), 4326), 32161), 300) " +
+                "where st_dwithin(subroute.geom, st_transform(st_setSrid(st_point(?, ?), 4326), 32161), 300) " +
                 "and schedule.route is null " +
                 "order by route.priority ";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Route.class), lng, lat);
@@ -68,9 +68,9 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     public Set<String> getOriginDestinationRouteNamesWithinDistance(LatLng origin, LatLng destination, int distanceInMeters) {
         final Set<String> results = new HashSet<>();
-        jdbcTemplate.query("SELECT DISTINCT orig.name route_orig, dest.name route_dest " +
-                        " FROM ref.subroute AS orig " +
-                        " JOIN ref.subroute AS dest ON st_intersects(orig.geom, dest.geom) " +
+        jdbcTemplate.query("SELECT DISTINCT orig.route route_orig, dest.route route_dest " +
+                        " FROM subroute_new AS orig " +
+                        " JOIN subroute_new AS dest ON st_intersects(orig.geom, dest.geom) " +
                         " WHERE st_dwithin(orig.geom, st_transform(?, 32161), ?) " +
                         " AND st_dwithin(dest.geom, st_transform(?, 32161), ?) ",
                 rs -> {
@@ -90,9 +90,9 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     @Cacheable("routesByStopCache")
     public List<String> getRouteNamesByStop(int stopGid) {
-        String sql = "SELECT stop_route.route " +
+        String sql = "SELECT subroute_stop.route " +
                 " FROM stop " +
-                " JOIN stop_route_new AS stop_route ON stop.gid = stop_route.stop_gid " +
+                " JOIN subroute_stop ON stop.gid = subroute_stop.stop " +
                 " WHERE stop.gid = ? ";
         return jdbcTemplate.query(sql, new SingleColumnRowMapper<>(), stopGid);
     }

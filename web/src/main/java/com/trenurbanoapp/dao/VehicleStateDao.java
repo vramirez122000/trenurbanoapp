@@ -1,5 +1,6 @@
 package com.trenurbanoapp.dao;
 
+import com.trenurbanoapp.model.SubrouteKey;
 import com.trenurbanoapp.model.VehicleState;
 
 import java.util.List;
@@ -28,24 +29,20 @@ public interface VehicleStateDao {
 
     void updateVehicleState(VehicleState vehicleState);
 
-    Map<Integer, Boolean> getPossibleSubroutes(int assetId);
+    Map<SubrouteKey, Boolean> getPossibleSubroutes(int assetId);
 
-    List<String> getPossibleSubroutesNames(int assetId);
+    boolean existsPossibleSubroute(int assetId, SubrouteKey subroute);
 
-    boolean existsPossibleSubroute(int assetId, int subrouteId);
+    void insertPossibleSubroute(int assetId, SubrouteKey subroute, boolean active);
 
-    void insertPossibleSubroute(int assetId, int subrouteId, boolean active);
+    void updatePossibleSubroute(int assetId, SubrouteKey subroute, boolean active);
 
-    void updatePossibleSubroute(int assetId, int subrouteId, boolean active);
+    boolean existsPossibleRoute(int assetId, String route);
 
-    List<String> getPossibleGeofenceRoutesNames(int assetId);
+    void insertPossibleRoute(int assetId, String route, boolean active);
 
-    boolean existsPossibleGeofenceRoute(int assetId, int routeId);
+    void updatePossibleRoute(int assetId, String direction, boolean active);
 
-    void insertPossibleGeofenceRoute(int assetId, int routeId, boolean active);
-
-    void updatePossibleGeofenceRoute(int assetId, int routeId, boolean active);
-
-    Map<Integer, Boolean> getPossibleGeofenceRoutes(int assetId);
+    Map<String, Boolean> getPossibleRoutes(int assetId);
 
 }

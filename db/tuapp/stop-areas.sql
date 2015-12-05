@@ -1,14 +1,3 @@
-drop table if exists ref.stop_area;
-
-create table ref.stop_area (
-  id varchar(50) not null primary KEY,
-  "desc" varchar(100) not null,
-  sort_order smallint not null default 99,
-  lng float4,
-  lat float4,
-  geom geometry(Point, 4326)
-);
-
 with stop_area_tmp(id, "desc", sort_order, lng, lat) as (
   select 'SAGRADO_CORAZON',    'Sagrado Corazón',         1,  -66.05968,	18.43764 union
   select 'HATO_REY',           'Hato Rey',                2,  -66.05998,	18.43028 union
@@ -37,4 +26,3 @@ with stop_area_tmp(id, "desc", sort_order, lng, lat) as (
 insert into ref.stop_area (id, "desc", lng, lat, geom, sort_order)
   select id, "desc", lng, lat, ST_SetSRID(ST_Point(lng, lat), 4326), sort_order from stop_area_tmp;
 
-CREATE INDEX stop_area_gidx ON stop_area USING GIST (geom);

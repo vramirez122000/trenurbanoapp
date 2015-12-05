@@ -1,3 +1,5 @@
+-- THIS INDEX IS NOT USED AS OF 2015-12-05
+
 
 SET search_path = logs, pg_catalog;
 

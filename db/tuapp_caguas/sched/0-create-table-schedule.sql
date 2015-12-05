@@ -1,6 +1,5 @@
-drop table if exists ref.schedule;
 
-CREATE TABLE ref.schedule
+CREATE TABLE if not exists ref.schedule
 (
   route varchar(20) NOT NULL,
   stop_area varchar(20) NOT NULL,

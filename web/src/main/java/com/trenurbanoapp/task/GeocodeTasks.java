@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Created by victor on 5/26/14.
  */
-@Component
+//@Component
 public class GeocodeTasks {
     private static final Logger log = LogManager.getLogger(GeocodeTasks.class);
 

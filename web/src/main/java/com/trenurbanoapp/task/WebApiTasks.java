@@ -10,6 +10,7 @@ import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.webapi.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextStoppedEvent;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * Created by victor on 6/17/14.
  */
 @Component
-public class WebApiTasks implements ApplicationListener<ContextStoppedEvent> {
+public class WebApiTasks {
 
     private static final Logger log = LogManager.getLogger(WebApiTasks.class);
 
@@ -30,21 +31,19 @@ public class WebApiTasks implements ApplicationListener<ContextStoppedEvent> {
     private VehicleSnapshotAlgService vehicleSnapshotAlgService;
 
     @Inject
-    private VehicleDao vehicleDao;
-
     private WebApiRestClient2 webApiClient;
+
+    @Value("${gps.enabled:false}")
+    private boolean gpsEnabled;
 
     @Scheduled(fixedDelay = 3000L)
     public void updateVehiclePositions() {
+        if(!gpsEnabled) {
+            return;
+        }
         log.debug("begin webapi client");
-        webApiClient = new WebApiRestClient2();
-        webApiClient.setAssetPositionCallback(position -> vehicleSnapshotAlgService.updateVehicleState(position));
+        webApiClient.setAssetPositionCallback(vehicleSnapshotAlgService::updateVehicleState);
+        webApiClient.assetsPosition();
     }
 
-
-
-
-    @Override
-    public void onApplicationEvent(ContextStoppedEvent event) {
-    }
 }

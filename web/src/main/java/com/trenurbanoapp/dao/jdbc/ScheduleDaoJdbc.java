@@ -33,8 +33,8 @@ public class ScheduleDaoJdbc implements ScheduleDao {
     }
 
     private static final String STOP_TIME_QUERY = "SELECT " +
-            "  route.name          route, " +
-            "  route.full_name     route_full_name, " +
+            "  route.id          route, " +
+            "  route.desc     route_full_name, " +
             "  route.route_group   route_group, " +
             "  route.color, " +
             "  stop_area.id station, " +
@@ -43,8 +43,8 @@ public class ScheduleDaoJdbc implements ScheduleDao {
             "  schedule.schedule_type       schedule_type, " +
             "  schedule.stop_time             stop_time_as_sql_time, " +
             "  schedule.error_minutes              " +
-            "FROM route " +
-            "  JOIN schedule ON route.name = schedule.route " +
+            "FROM route_new as route " +
+            "  JOIN schedule ON route.id = schedule.route " +
             "  JOIN stop_area ON stop_area.id = schedule.stop_area " +
             "  JOIN stop_area dest ON dest.id = schedule.direction " +
             "WHERE " +

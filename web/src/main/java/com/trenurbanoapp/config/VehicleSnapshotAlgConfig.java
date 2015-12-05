@@ -2,7 +2,8 @@ package com.trenurbanoapp.config;
 
 import com.trenurbanoapp.dao.*;
 import com.trenurbanoapp.service.VehicleSnapshotAlgService;
-import com.trenurbanoapp.service.impl.VehicleSnapshotAlgServiceGeofence;
+import com.trenurbanoapp.service.impl.VehicleSnapshotAlgServiceBase;
+import com.trenurbanoapp.service.impl.VehicleSnapshotAlgServiceRoute;
 import com.trenurbanoapp.service.impl.VehicleSnapshotAlgServiceSubroute;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -41,19 +42,21 @@ public class VehicleSnapshotAlgConfig {
     public VehicleSnapshotAlgService vehicleSnapshotAlgService() {
         if(useRoutes) {
             VehicleSnapshotAlgServiceSubroute alg = new VehicleSnapshotAlgServiceSubroute();
-            alg.setGeofenceDao(geofenceDao);
-            alg.setSubrouteDao(subrouteDao);
-            alg.setStatsLogDao(statsLogDao);
-            alg.setVehicleDao(vehicleDao);
-            alg.setVehicleStateDao(vehicleStateDao);
+            injectCommonDaos(alg);
             alg.setStopDao(stopDao);
+            alg.setStatsLogDao(statsLogDao);
             return alg;
         } else {
-            VehicleSnapshotAlgServiceGeofence alg = new VehicleSnapshotAlgServiceGeofence();
-            alg.setVehicleStateDao(vehicleStateDao);
-            alg.setVehicleDao(vehicleDao);
-            alg.setGeofenceDao(geofenceDao);
+            VehicleSnapshotAlgServiceRoute alg = new VehicleSnapshotAlgServiceRoute();
+            injectCommonDaos(alg);
             return alg;
         }
+    }
+
+    private void injectCommonDaos(VehicleSnapshotAlgServiceBase alg) {
+        alg.setSubrouteDao(subrouteDao);
+        alg.setGeofenceDao(geofenceDao);
+        alg.setVehicleDao(vehicleDao);
+        alg.setVehicleStateDao(vehicleStateDao);
     }
 }

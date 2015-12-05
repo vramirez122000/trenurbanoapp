@@ -1,6 +1,7 @@
 package com.trenurbanoapp.service.impl;
 
 import com.trenurbanoapp.dao.GeofenceDao;
+import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.dao.VehicleDao;
 import com.trenurbanoapp.dao.VehicleStateDao;
 import com.trenurbanoapp.model.VehicleState;
@@ -23,6 +24,8 @@ public abstract class VehicleSnapshotAlgServiceBase {
     protected VehicleStateDao vehicleStateDao;
     protected GeofenceDao geofenceDao;
     protected VehicleDao vehicleDao;
+    protected SubrouteDao subrouteDao;
+
 
     public void setVehicleStateDao(VehicleStateDao vehicleStateDao) {
         this.vehicleStateDao = vehicleStateDao;
@@ -34,6 +37,10 @@ public abstract class VehicleSnapshotAlgServiceBase {
 
     public void setVehicleDao(VehicleDao vehicleDao) {
         this.vehicleDao = vehicleDao;
+    }
+
+    public void setSubrouteDao(SubrouteDao subrouteDao) {
+        this.subrouteDao = subrouteDao;
     }
 
     protected boolean passesPreliminaryChecks(AssetPosition assetSnapshot, VehicleState v) {
@@ -63,7 +70,7 @@ public abstract class VehicleSnapshotAlgServiceBase {
         return true;
     }
 
-    protected static double bearing(LatLng first, LatLng second){
+    protected static double calcBearing(LatLng first, LatLng second){
         double latitude1 = Math.toRadians(first.getLat());
         double latitude2 = Math.toRadians(second.getLat());
         double longDiff= Math.toRadians(second.getLng() - first.getLng());

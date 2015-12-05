@@ -1,6 +1,5 @@
 package com.trenurbanoapp.service.impl;
 
-import com.google.common.collect.ImmutableSet;
 import com.trenurbanoapp.model.*;
 import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
@@ -8,8 +7,6 @@ import com.trenurbanoapp.service.VehicleSnapshotAlgService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -18,9 +15,9 @@ import java.util.Set;
 /**
  * Created by victor on 4/23/14.
  */
-public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgServiceBase implements VehicleSnapshotAlgService {
+public class VehicleSnapshotAlgServiceRoute extends VehicleSnapshotAlgServiceBase implements VehicleSnapshotAlgService {
 
-    private static final Logger log = LogManager.getLogger(VehicleSnapshotAlgServiceGeofence.class);
+    private static final Logger log = LogManager.getLogger(VehicleSnapshotAlgServiceRoute.class);
 
     @Override
     public VehiclePositionView getVehicleSnapshotView(AssetPosition assetSnapshot) {
@@ -34,19 +31,17 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
             if(vehicleState.getLastTrailChange() != null) {
                 view.setPositionChange(vehicleState.getLastTrailChange().getTime());
             }
-            ImmutableSet<Integer> possibleGeofenceRoutes = vehicleState.getPossibleGeofenceRoutesAsSet();
-            view.setInRoute(possibleGeofenceRoutes.contains(vehicleState.getLastKnownRouteGeofenceId()));
-            if(vehicleState.getLastKnownRouteGeofenceId() != null) {
-                Geofence route = geofenceDao.getGeofenceById(vehicleState.getLastKnownRouteGeofenceId());
-                view.setRoute(route.getDescription());
+            Set<String> possibleRoutes = vehicleState.getPossibleRoutesAsSet();
+            view.setInRoute(possibleRoutes.contains(vehicleState.getLastKnownRoute()));
+            if(vehicleState.getLastKnownRoute() != null) {
+                view.setRoute(vehicleState.getLastKnownRoute());
             }
 
-            List<String> possibleGeofenceRouteNames = vehicleStateDao.getPossibleGeofenceRoutesNames(assetSnapshot.getAssetId());
+            Set<String> possibleGeofenceRouteNames = vehicleStateDao.getPossibleRoutes(assetSnapshot.getAssetId()).keySet();
             view.setPossibleRoutes(Constants.COMMA_JOINER.join(possibleGeofenceRouteNames));
 
             view.getProps().put("withinOrigin", String.valueOf(vehicleState.isWithinOrigin()));
             view.getProps().put("avgSpeed", String.valueOf(vehicleState.getAvgSpeed()));
-            view.getProps().put("cardinal", String.valueOf(vehicleState.getCardinalDirection()));
         }
 
         Vehicle vehicle = vehicleDao.getVehicle(assetSnapshot.getAssetId());
@@ -76,36 +71,31 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
             return;
         }
 
-        List<Geofence> containingRouteGeofences = geofenceDao.getContainingGeofencesByType(trail, Geofence.Type.ROUTE);
-        if(containingRouteGeofences.isEmpty()
-                && (v.isWithinServiceArea() || !v.getPossibleGeofenceRouteIds().isEmpty())) {
-            v.clearPossibleGeofenceRoutes();
+        List<String> nearbyRoutes = subrouteDao.getGpsEnabledRoutesWithinDistance(trail, 100);
+        if(nearbyRoutes.isEmpty()
+                && (v.isWithinServiceArea() || !v.getPossibleRoutes().isEmpty())) {
+            v.clearPossibleRoutes();
             v.setWithinServiceArea(false);
             vehicleStateDao.updateVehicleState(v);
             return;
         }
 
-        Set<Integer> containingRouteGeofenceIds = new HashSet<>();
-        for (Geofence containingRouteGeofence : containingRouteGeofences) {
-            containingRouteGeofenceIds.add(containingRouteGeofence.getId());
-        }
+        Set<String> oldPossibleRoutes = v.getPossibleRoutesAsSet();
+        Set<String> newPossibleRoutes = new HashSet<>(nearbyRoutes);
+        newPossibleRoutes.retainAll(oldPossibleRoutes);
 
-        ImmutableSet<Integer> oldPossibleGeofences = v.getPossibleGeofenceRoutesAsSet();
-        Set<Integer> newPossibleGeofences = new HashSet<>(containingRouteGeofenceIds);
-        newPossibleGeofences.retainAll(oldPossibleGeofences);
-
-        if(newPossibleGeofences.size() == 1) {
-            v.setLastKnownRouteGeofenceId(newPossibleGeofences.iterator().next());
-            v.updatePossibleGeofenceIds(newPossibleGeofences);
-        } else if(containingRouteGeofenceIds.size() == 1) {
-            v.setLastKnownRouteGeofenceId(containingRouteGeofenceIds.iterator().next());
-            v.updatePossibleGeofenceIds(containingRouteGeofenceIds);
-        } else if(v.getLastKnownRouteGeofenceId() == null
-                || !newPossibleGeofences.contains(v.getLastKnownRouteGeofenceId())
-                || newPossibleGeofences.isEmpty()) {
-            v.updatePossibleGeofenceIds(containingRouteGeofenceIds);
+        if(newPossibleRoutes.size() == 1) {
+            v.setLastKnownDirection(newPossibleRoutes.iterator().next());
+            v.updatePossibleRoutes(newPossibleRoutes);
+        } else if(nearbyRoutes.size() == 1) {
+            v.setLastKnownDirection(nearbyRoutes.iterator().next());
+            v.updatePossibleRoutes(nearbyRoutes);
+        } else if(v.getLastKnownDirection() == null
+                || !newPossibleRoutes.contains(v.getLastKnownDirection())
+                || newPossibleRoutes.isEmpty()) {
+            v.updatePossibleRoutes(nearbyRoutes);
         } else {
-            v.updatePossibleGeofenceIds(newPossibleGeofences);
+            v.updatePossibleRoutes(newPossibleRoutes);
         }
 
         if(!v.getTrail().isEmpty() && !assetSnapshot.getTrail().isEmpty()) {
@@ -113,12 +103,9 @@ public class VehicleSnapshotAlgServiceGeofence extends VehicleSnapshotAlgService
             v.addSpeed(speedInMetersPerSecond);
         }
 
-        v.setWithinServiceArea(!containingRouteGeofences.isEmpty());
+        v.setWithinServiceArea(!nearbyRoutes.isEmpty());
         v.setTrail(assetSnapshot.getTrail());
         v.setLastTrailChange(new Date());
-        if(assetSnapshot.getTrail().size() > 1) {
-            v.setCardinalDirection(bearingToCardinal(bearing(assetSnapshot.getTrail().get(assetSnapshot.getTrail().size() - 1), assetSnapshot.getTrail().get(0))));
-        }
         vehicleStateDao.updateVehicleState(v);
     }
 }
