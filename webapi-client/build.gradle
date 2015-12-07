@@ -1,7 +1,7 @@
 description = ''
 
-String springVersion = '4.2.1.RELEASE'
-String jacksonVersion = '2.6.1'
+String springVersion = '4.2.3.RELEASE'
+String jacksonVersion = '2.6.3'
 String log4j2Version = '2.3'
 
 dependencies {

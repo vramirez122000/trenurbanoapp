@@ -7,7 +7,6 @@ import com.trenurbanoapp.util.Funcs;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.JPEGTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;

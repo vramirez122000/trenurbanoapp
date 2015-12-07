@@ -14,16 +14,5 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-
-        maven {
-            name 'Java.Net Repository'
-//            url 'https://maven.java.net/content/groups/public/'
-            url 'http://download.java.net/maven/2'
-
-        }
-        maven {
-            name 'Open Source Geospatial Foundation Repository'
-            url 'http://download.osgeo.org/webdav/geotools/'
-        }
     }
 }
