@@ -268,7 +268,7 @@ TU.MAP = (function(my, $, Leaf) {
                         map.addLayer(geoJsonLayer);
                     }
                 }
-                routeMarkerIcons.unknown = markerIcon('unknown');
+                routeMarkerIcons.unknown = markerIcon('/images/unknown');
                 map.locate({setView: true, maxZoom: 14, enableHighAccuracy: true});
             }
         });
