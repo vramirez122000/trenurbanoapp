@@ -581,8 +581,8 @@ TU.MAP = (function(my, $, Leaf) {
         var popupContent = 'Veh&iacute;culo: ' + (vehicleSnapshot.vehicle || '') +
             '<br/>' + (!vehicleSnapshot.inRoute && '&Uacute;ltima ' || '') + 'Ruta: ' + (vehicleSnapshot.route || 'Desconocida');
 
-        if (vehicleSnapshot.inRoute && vehicleSnapshot.destination) {
-            popupContent += "<br/>Hacia: " + vehicleSnapshot.destination;
+        if (vehicleSnapshot.inRoute && vehicleSnapshot.direction) {
+            popupContent += "<br/>Hacia: " + vehicleSnapshot.direction;
         }
 
         if (vehicleSnapshot.positionChange) {
@@ -602,10 +602,9 @@ TU.MAP = (function(my, $, Leaf) {
 
         if(debug) {
             popupContent += '<br/>Asset ID: ' + vehicleSnapshot.assetId;
-            popupContent += '<br/>Velocidad: ' + Math.round(vehicleSnapshot.props.avgSpeed * 1000) / 1000 + 'm/s';
+            popupContent += '<br/>Velocidad: ' + Math.round(vehicleSnapshot.props.avgSpeed * 1000) / 1000 + ' m/s';
             popupContent += '<br/>En origen: ' + vehicleSnapshot.props.withinOrigin;
             popupContent += '<br/>En ruta: ' + vehicleSnapshot.inRoute;
-            popupContent += '<br/>Dir. cardenal: ' + vehicleSnapshot.props.cardinal;
             popupContent += '<br/>En servicio: ' + vehicleSnapshot.withinServiceArea;
         }
         return popupContent;

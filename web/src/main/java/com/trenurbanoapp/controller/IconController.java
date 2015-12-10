@@ -9,17 +9,17 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.velocity.app.VelocityEngine;
+import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashMap;
 
 /**
@@ -34,11 +34,24 @@ public class IconController {
     @Autowired
     VelocityEngine velocityEngine;
 
+    @Autowired
+    CacheManager cacheManager;
+
     @RequestMapping(value = "/icon/{route}.png", produces = "image/png")
     public void getIcon(@PathVariable String route, HttpServletResponse response) throws IOException, TranscoderException {
 
+
+        Cache cache = cacheManager.getCache("icons");
+        Cache.ValueWrapper valueWrapper = cache.get(route);
+        if (valueWrapper != null) {
+            byte[] img = (byte[]) valueWrapper.get();
+            response.getOutputStream().write(img);
+            return;
+        }
+
         Route r= routeDao.findById(route);
         if(r == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -64,10 +77,15 @@ public class IconController {
 
 
         // Create the transcoder output.
-        OutputStream ostream = response.getOutputStream();
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
         TranscoderOutput output = new TranscoderOutput(ostream);
 
         // Save the image.
         t.transcode(input, output);
+
+        byte[] img = ostream.toByteArray();
+        cache.put(route, img);
+
+        response.getOutputStream().write(img);
     }
 }
