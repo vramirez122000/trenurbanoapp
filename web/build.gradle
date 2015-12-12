@@ -5,13 +5,15 @@ buildscript {
 }
 plugins {
     id "com.moowork.node" version '0.11'
-    id "com.moowork.grunt" version '0.11'
+    id "com.moowork.gulp" version '0.11'
 }
 
 description = 'Tren Urbano App Web'
 
 apply plugin: 'spring-boot'
 apply plugin: 'war'
+apply plugin: "com.moowork.node"
+apply plugin: "com.moowork.gulp"
 
 task bowerInstall(type: NodeTask) {
     script = file('node_modules/bower/bin/bower')
@@ -20,14 +22,14 @@ task bowerInstall(type: NodeTask) {
     outputs.files file('src/main/webapp/jspkg')
 }
 
-// processes your package.json before running grunt build
+// processes your package.json before running gulp build
 bowerInstall.dependsOn 'npmInstall'
 
 // runs "bower install"
-grunt_default.dependsOn 'bowerInstall'
+gulp_default.dependsOn 'bowerInstall'
 
-// runs "grunt build" as part of your gradle build
-build.dependsOn grunt_default
+// runs "gulp build" as part of your gradle build
+build.dependsOn gulp_default
 
 configurations {
     all {

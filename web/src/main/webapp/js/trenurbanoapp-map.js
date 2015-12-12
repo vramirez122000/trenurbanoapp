@@ -1,4 +1,4 @@
-/*requires jQuery, LeafletJS */
+/*requires jQuery, LeafletJS, Leaflet.TextPath */
 var TU = TU || {};
 TU.MAP = (function(my, $, Leaf) {
     "use strict";
@@ -159,10 +159,25 @@ TU.MAP = (function(my, $, Leaf) {
 
         map.on('zoomend', function() {
             sessionIdleTimeInSeconds = 0;
+            var activeRouteId;
             if(map.getZoom() < 14) {
+                /*for (var i = 0; i < activeRoutes.length; i++) {
+                    activeRouteId = activeRoutes[i];
+                    routeLayers[activeRouteId].setText(null);
+                }*/
                 map.removeLayer(stopsLayer);
-            } else if (!map.hasLayer(stopsLayer)) {
-                map.addLayer(stopsLayer);
+            } else {
+                /*for (var j = 0; j < activeRoutes.length; j++) {
+                    activeRouteId = activeRoutes[j];
+                    routeLayers[activeRouteId].setText('   \u27a4   ',  {
+                        repeat: true,
+                        attributes: {fill: colors[activeRouteId]}
+                    });
+                }*/
+
+                if (!map.hasLayer(stopsLayer)) {
+                    map.addLayer(stopsLayer);
+                }
             }
         });
 
@@ -262,7 +277,7 @@ TU.MAP = (function(my, $, Leaf) {
                     var routeLabel = '<span class="routeLabel" style="' +
                         'background-color: ' + data.properties.color +
                         '; text-shadow: -1px 0 ' + darkColor + ', 0 1px ' + darkColor + ', 1px 0 ' + darkColor + ', 0 -1px ' + darkColor +
-                        '; border-color: ' + darkColor + '">' + data.id + '</span>';
+                        '; border-color: ' + darkColor + '">' + data.properties.fullName + '</span>';
                     layerControl.addOverlay(geoJsonLayer, routeLabel);
                     if(route == data.id) {
                         map.addLayer(geoJsonLayer);
@@ -283,10 +298,7 @@ TU.MAP = (function(my, $, Leaf) {
     }
 
     function routeBindPopup(feature, layer) {
-        var popupHtml = 'Ruta ' + feature.id;
-        if(debug) {
-            popupHtml += '<br/>ID: ' + feature.properties.dbId;
-        }
+        var popupHtml = 'Ruta ' + feature.properties.fullName;
         layer.bindPopup(popupHtml);
         layer.on("click", function() {
             layer.bringToFront();

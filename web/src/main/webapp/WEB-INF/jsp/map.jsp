@@ -14,7 +14,9 @@
 
     <c:if test="${applicationScope['javascript.useSource']}">
         <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
-        <script src="<c:url value="/js/trenurbanoapp-map.concat.js"/>"></script>
+        <script src="<c:url value="/jspkg/Leaflet.TextPath/leaflet.textpath.js"/>"></script>
+        <script src="<c:url value="/js/trenurbanoapp-util.js"/>"></script>
+        <script src="<c:url value="/js/trenurbanoapp-map.js"/>"></script>
     </c:if>
     <c:if test="${!applicationScope['javascript.useSource']}">
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>

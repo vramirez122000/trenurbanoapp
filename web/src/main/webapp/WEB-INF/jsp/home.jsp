@@ -127,7 +127,9 @@
 </div>
 
 <c:if test="${applicationScope['javascript.useSource']}">
-    <script type="text/javascript" src="<c:url value="/js/trenurbanoapp-schedule.concat.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/jspkg/fastclick/lib/fastclick.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/jspkg/momentjs/moment.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/trenurbanoapp-schedule.js"/>"></script>
 </c:if>
 <c:if test="${!applicationScope['javascript.useSource']}">
     <script type="text/javascript" src="<c:url value="/js/tusched.min.js"/>"></script>

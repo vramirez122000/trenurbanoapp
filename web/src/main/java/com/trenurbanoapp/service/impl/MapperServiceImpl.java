@@ -158,7 +158,7 @@ public class MapperServiceImpl implements MapperService {
             Feature f = new Feature();
             f.setId(route.getName());
             f.setProperty("color", route.getColor());
-            f.setProperty("dbId", route.getId());
+            f.setProperty("fullName", route.getFullName());
             f.setGeometry(objectMapper.readValue(route.getGeometryAsGeoJson(), MultiLineString.class));
             return f;
         } catch (IOException e) {
