@@ -5,17 +5,21 @@ import com.trenurbanoapp.model.Configuration;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.util.List;
 
 /**
  * Created by victor on 7/2/14.
  */
+@Repository
 public class ConfigurationDaoJdbc implements ConfigurationDao {
 
     private JdbcOperations jdbcTemplate;
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }

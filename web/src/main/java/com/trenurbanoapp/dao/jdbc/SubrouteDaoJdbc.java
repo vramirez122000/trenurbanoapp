@@ -8,12 +8,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Created by victor on 4/23/14.
  */
+@Repository
 public class SubrouteDaoJdbc implements SubrouteDao {
 
     private static final Logger log = LogManager.getLogger(SubrouteDaoJdbc.class);
@@ -35,6 +37,7 @@ public class SubrouteDaoJdbc implements SubrouteDao {
         return s;
     };
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

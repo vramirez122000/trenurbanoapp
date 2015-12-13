@@ -10,7 +10,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsertOperations;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,11 +26,13 @@ import java.util.Map;
  * Time: 8:54 PM
  * To change this template use File | Settings | File Templates.
  */
+@Repository
 public class VehicleDaoJdbc implements VehicleDao {
 
     private SimpleJdbcInsertOperations vehicleInsert;
     private JdbcOperations jdbcTemplate;
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.vehicleInsert = new SimpleJdbcInsert(dataSource).withTableName("vehicle");
@@ -37,15 +41,12 @@ public class VehicleDaoJdbc implements VehicleDao {
     @Override
     @Cacheable(value = "vehicleCache", key = "#assetId")
     public Vehicle getVehicle(int assetId) {
-        List<Vehicle> vehicles = jdbcTemplate.query("select * from ref.vehicle where asset_id = ?", new RowMapper<Vehicle>() {
-            @Override
-            public Vehicle mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Vehicle v = new Vehicle();
-                v.setAssetId(rs.getInt("asset_id"));
-                v.setName(rs.getString("name"));
-                v.setGroupId(rs.getInt("group_id"));
-                return v;
-            }
+        List<Vehicle> vehicles = jdbcTemplate.query("select * from ref.vehicle where asset_id = ?", (rs, rowNum) -> {
+            Vehicle v = new Vehicle();
+            v.setAssetId(rs.getInt("asset_id"));
+            v.setName(rs.getString("name"));
+            v.setGroupId(rs.getInt("group_id"));
+            return v;
         }, assetId);
         return !vehicles.isEmpty() ? vehicles.get(0) : null;
     }

@@ -45,7 +45,7 @@ public abstract class VehicleSnapshotAlgServiceBase {
 
     protected boolean passesPreliminaryChecks(AssetPosition assetSnapshot, VehicleState v) {
         List<LatLng> trail = assetSnapshot.getTrail();
-        if(trail.isEmpty()) {
+        if (trail.isEmpty()) {
             log.warn("assetSnapshot trail was empty at {}", LocalDateTime.now());
             return false;
         }
@@ -59,8 +59,8 @@ public abstract class VehicleSnapshotAlgServiceBase {
             return false;
         }
 
-        if(Constants.trailsAreDifferent(trail, v.getTrail())) {
-            if(v.getAvgSpeed() != null && v.getAvgSpeed() > 0) {
+        if (Constants.trailsAreDifferent(trail, v.getTrail())) {
+            if (v.getAvgSpeed() != null && v.getAvgSpeed() > 0) {
                 v.addSpeed(0);
                 vehicleStateDao.updateVehicleState(v);
             }
@@ -70,12 +70,12 @@ public abstract class VehicleSnapshotAlgServiceBase {
         return true;
     }
 
-    protected static double calcBearing(LatLng first, LatLng second){
+    protected static double calcBearing(LatLng first, LatLng second) {
         double latitude1 = Math.toRadians(first.getLat());
         double latitude2 = Math.toRadians(second.getLat());
-        double longDiff= Math.toRadians(second.getLng() - first.getLng());
-        double y=Math.sin(longDiff)*Math.cos(latitude2);
-        double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
+        double longDiff = Math.toRadians(second.getLng() - first.getLng());
+        double y = Math.sin(longDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
         return Math.atan2(y, x);
     }
 
@@ -92,8 +92,8 @@ public abstract class VehicleSnapshotAlgServiceBase {
     }
 
     protected static String bearingToCardinal(double x) {
-        double twoPi = 2 * Math.PI ;
-        if(x < 0) {
+        double twoPi = 2 * Math.PI;
+        if (x < 0) {
             x = x + twoPi;
         } else if (x >= twoPi) {
             x = x % twoPi;

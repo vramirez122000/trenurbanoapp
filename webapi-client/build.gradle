@@ -1,20 +1,13 @@
 description = ''
 
-String springVersion = '4.2.3.RELEASE'
 String jacksonVersion = '2.6.3'
 String log4j2Version = '2.3'
 
 dependencies {
     compile project(':scraper-model')
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
-
-    compile(group: 'org.springframework', name: 'spring-web', version: springVersion) {
-        exclude(module: 'commons-logging')
-    }
-
-    compile group: 'com.github.nkzawa', name: 'socket.io-client', version: '0.1.2'
-    compile group: 'com.google.guava', name: 'guava', version: '17.0'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+
+    compile 'org.apache.httpcomponents:httpclient:4.+'
 
     compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
     runtime "org.apache.logging.log4j:log4j-jcl:$log4j2Version"

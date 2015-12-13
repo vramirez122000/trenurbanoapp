@@ -18,16 +18,6 @@
 
     <bean id="httpClient" factory-bean="httpClientBuilder" factory-method="build" />
 
-    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-        <property name="requestFactory">
-            <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
-                <constructor-arg ref="httpClient"/>
-                <property name="readTimeout" value="5000"/>
-                <property name="connectTimeout" value="5000"/>
-            </bean>
-        </property>
-    </bean>
-
     <bean id="asyncRestTemplate" class="org.springframework.web.client.AsyncRestTemplate">
         <constructor-arg>
             <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"/>

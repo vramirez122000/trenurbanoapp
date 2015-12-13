@@ -9,16 +9,7 @@
         <constructor-arg value="${gps.user}"/>
         <constructor-arg value="${gps.password"/>
         <property name="objectMapper" ref="objectMapper"/>
-        <property name="restTemplate" ref="restTemplate"/>
-    </bean>
-
-    <bean class="com.trenurbanoapp.webapi.WebApiSocketClient" id="webApiSocketClient">
-        <constructor-arg value="${gps.url}"/>
-    </bean>
-
-    <bean class="com.trenurbanoapp.webapi.WebApiClient">
-        <property name="restClient" ref="webApiRestClient"/>
-        <property name="socketClient" ref="webApiSocketClient"/>
+        <property name="httpClient" ref="httpClient"/>
     </bean>
 
 </beans>

@@ -1,35 +1,38 @@
 package com.trenurbanoapp.webapi;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import com.trenurbanoapp.scraper.model.Asset;
 import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
-import org.apache.commons.codec.binary.Hex;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by victor on 6/15/14.
  */
 public class WebApiRestClient {
 
-    public static final Splitter TRAIL_SPLITTER = Splitter.on("*");
 
     private String urlbase;
     private String username;
     private String password;
     private ObjectMapper objectMapper;
-    private RestTemplate restTemplate;
+    private HttpClient httpClient;
+    private RequestCallback requestCallback;
+    private AssetPositionCallback assetPositionCallback;
 
     public WebApiRestClient() {
+        requestCallback = request -> {
+        };
     }
 
     public WebApiRestClient(String urlbase, String username, String password) {
@@ -42,118 +45,142 @@ public class WebApiRestClient {
         this.objectMapper = objectMapper;
     }
 
-    public void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
-    private RestTemplate getRestTemplate() {
-        if(restTemplate == null) {
-            restTemplate = new RestTemplate();
+    public void setAssetPositionCallback(AssetPositionCallback assetPositionCallback) {
+        this.assetPositionCallback = assetPositionCallback;
+    }
+
+    private HttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = HttpClientBuilder.create().build();
         }
-        return restTemplate;
+        return httpClient;
     }
 
     private ObjectMapper getObjectMapper() {
-        if(objectMapper == null) {
+        if (objectMapper == null) {
             objectMapper = new ObjectMapper();
         }
         return objectMapper;
     }
 
-    public LoginResponse login() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("username", Collections.singletonList(username));
-        headers.put("password", Collections.singletonList(hash(password)));
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> responseEntity = getRestTemplate().exchange(urlbase + "/login", HttpMethod.GET, entity, String.class);
-        if(!responseEntity.getStatusCode().is2xxSuccessful()) {
-            return new LoginResponse(responseEntity.getStatusCode().value(), responseEntity.getBody());
+    private RequestCallback getRequestCallback() {
+        if (requestCallback == null) {
+            requestCallback = request -> {
+                request.addHeader("username", username);
+                request.addHeader("password", password);
+            };
         }
-        JsonNode root = getJsonNode(responseEntity.getBody());
-        String token = root.path("token").textValue();
-        JsonNode assetsHashJson = root.path("assetsHash");
-        byte[] bytes = new byte[assetsHashJson.size()];
-        int i = 0;
-        for (Iterator<JsonNode> iterator = assetsHashJson.iterator(); iterator.hasNext(); i++) {
-            JsonNode elem = iterator.next();
-            bytes[i] = (byte) elem.intValue();
-        }
-        return new LoginResponse(token, byteToHex(bytes));
+        return requestCallback;
     }
 
-    public AssetsResponse assets(String token) {
-        ResponseEntity<String> responseEntity = getRestTemplate().exchange(urlbase + "/assets", HttpMethod.GET, createRequestEntity(token), String.class);
-        if(!responseEntity.getStatusCode().is2xxSuccessful()) {
-            return new AssetsResponse(responseEntity.getStatusCode().value(), responseEntity.getBody());
-        }
-        JsonNode root = getJsonNode(responseEntity.getBody());
-        List<Asset> assets = Lists.newArrayList();
-        for (JsonNode node : root) {
-            Asset asset = new Asset();
-            asset.setId(node.path("IDASSET").numberValue().intValue());
-            asset.setGroupId(node.path("IDGROUP").textValue());
-            asset.setDescription(node.path("DESCRIPTION").textValue());
-            asset.setLicensePlate(node.path("LICENSEPLATE").textValue());
-            assets.add(asset);
-        }
-        return new AssetsResponse(assets);
-    }
-
-    public AssetsPositionResponse assetsPosition(String token) {
-        ResponseEntity<String> responseEntity = getRestTemplate().exchange(urlbase + "/assetsPosition", HttpMethod.GET, createRequestEntity(token), String.class);
-        if(!responseEntity.getStatusCode().is2xxSuccessful()) {
-            return new AssetsPositionResponse(responseEntity.getStatusCode().value(), responseEntity.getBody());
-        }
-        JsonNode root = getJsonNode(responseEntity.getBody()).path(0);
-        List<AssetPosition> assets = Lists.newArrayList();
-        for (JsonNode node : root) {
-            AssetPosition assetPos = new AssetPosition();
-            assetPos.setAssetId(node.path("IDASSET").numberValue().intValue());
-            assetPos.setStatus(node.path("STATUS").numberValue().intValue());
-            assetPos.setStatusMessage(node.path("MSG").textValue());
-            assetPos.setWhen(node.path("WHEN").textValue());
-            List<LatLng> trail = new ArrayList<>(3);
-            for (String coordsStr : TRAIL_SPLITTER.split(node.path("TRAIL").textValue())) {
-                String[] coordsArray = coordsStr.split(",");
-                LatLng latLng = new LatLng(Double.valueOf(coordsArray[0]), Double.valueOf(coordsArray[1]));
-                trail.add(latLng);
-            }
-            assetPos.setTrail(trail);
-            assets.add(assetPos);
-        }
-        return new AssetsPositionResponse(assets);
-    }
-
-    private JsonNode getJsonNode(String body) {
+    public AssetsResponse assets() {
+        HttpClient httpClient = getHttpClient();
+        HttpGet httpGet = new HttpGet(urlbase + "/asset");
+        getRequestCallback().doWithRequest(httpGet);
         try {
-            return getObjectMapper().readValue(body, JsonNode.class);
+            return httpClient.execute(httpGet, response -> {
+                int status = response.getStatusLine().getStatusCode();
+                if (!(status >= 200 && status < 300)) {
+                    return new AssetsResponse(status, response.getStatusLine().getReasonPhrase());
+                }
+
+                List<Asset> assets = new ArrayList<>();
+                final JsonFactory jsonFactory = getObjectMapper().getFactory();
+                final JsonParser parser = jsonFactory.createParser(response.getEntity().getContent());
+                JsonToken token;
+                while ((token = parser.nextToken()) != null) {
+                    switch (token) {
+                        case START_OBJECT:
+                            JsonNode node = parser.readValueAsTree();
+                            Asset asset = createAsset(node);
+                            assets.add(asset);
+                            break;
+                    }
+                }
+                return new AssetsResponse(assets);
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static HttpEntity<String> createRequestEntity(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("token", Collections.singletonList(token));
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        return new HttpEntity<>(headers);
-    }
+    public AssetsPositionResponse assetsPosition() {
 
-    private static String hash(String input) {
-
-        MessageDigest messageDigest;
+        HttpClient httpClient = getHttpClient();
+        HttpGet httpGet = new HttpGet(urlbase + "/asset/position");
+        getRequestCallback().doWithRequest(httpGet);
         try {
-            messageDigest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException("No instance of MD5 digest available");
+            return httpClient.execute(httpGet, response -> {
+                int status = response.getStatusLine().getStatusCode();
+                if (!(status >= 200 && status < 300)) {
+                    return new AssetsPositionResponse(status, response.getStatusLine().getReasonPhrase());
+                }
+
+                List<AssetPosition> assets = new ArrayList<>();
+                final JsonFactory jsonFactory = getObjectMapper().getFactory();
+                final JsonParser parser = jsonFactory.createParser(response.getEntity().getContent());
+                JsonToken token;
+                while ((token = parser.nextToken()) != null) {
+                    switch (token) {
+                        case START_OBJECT:
+                            JsonNode node = parser.readValueAsTree();
+                            AssetPosition position = createAssetPosition(node);
+                            assets.add(position);
+                            if (assetPositionCallback != null) {
+                                assetPositionCallback.execute(position);
+                            }
+                            break;
+                    }
+                }
+                return new AssetsPositionResponse(assets);
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        messageDigest.update(input.getBytes(), 0, input.length());
-        return byteToHex(messageDigest.digest());
     }
 
-    private static String byteToHex(byte[] bytes) {
-        return new String(Hex.encodeHex(bytes));
+    private AssetPosition createAssetPosition(JsonNode node) {
+        AssetPosition assetPos = new AssetPosition();
+        assetPos.setAssetId(node.path("IDASSET").numberValue().intValue());
+        assetPos.setStatus(node.path("STATUS").numberValue().intValue());
+        assetPos.setStatusMessage(node.path("MSG").textValue());
+        assetPos.setWhen(node.path("WHEN").textValue());
+        List<LatLng> trail = new ArrayList<>(3);
+        String trailStr = node.path("TRAIL").textValue();
+
+        for (String coordsStr : trailStr.split("\\*")) {
+            String[] coordsArray = coordsStr.split(",");
+            LatLng latLng = new LatLng(Double.valueOf(coordsArray[0]), Double.valueOf(coordsArray[1]));
+            trail.add(latLng);
+        }
+        assetPos.setTrail(trail);
+        return assetPos;
     }
 
+    private Asset createAsset(JsonNode node) {
+        Asset asset = new Asset();
+        asset.setId(node.path("IDASSET").numberValue().intValue());
+        asset.setDescription(node.path("DESCRIPTION").textValue());
+        asset.setGroupId(String.valueOf(node.path("IDGROUP").numberValue()));
+        asset.setLicensePlate(node.path("LICENSEPLATE").textValue());
+        return asset;
+    }
+
+    public static void main(String[] args) {
+        WebApiRestClient client = new WebApiRestClient(args[0], args[1], args[2]);
+
+        AssetsResponse assets = client.assets();
+        for (Asset asset : assets.getAssets()) {
+            System.out.println(asset.getDescription());
+        }
+
+        AssetsPositionResponse posResponse = client.assetsPosition();
+        for (AssetPosition a : posResponse.getPositions()) {
+            System.out.println(a.getTrail());
+        }
+    }
 }

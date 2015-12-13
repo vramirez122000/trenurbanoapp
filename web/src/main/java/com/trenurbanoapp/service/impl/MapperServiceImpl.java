@@ -16,7 +16,9 @@ import org.apache.logging.log4j.Logger;
 import org.geojson.*;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -30,40 +32,33 @@ import java.util.Set;
  * Time: 9:44 PM
  * To change this template use File | Settings | File Templates.
  */
+@Service
 public class MapperServiceImpl implements MapperService {
 
     private static final Logger log = LogManager.getLogger(MapperServiceImpl.class);
 
+    @Inject
     private StatsLogDao statsLogDao;
-    private Cache miscCache;
+
+    @Inject
     private ObjectMapper objectMapper;
+
+    @Inject
     private RouteDao routeDao;
+
+    @Inject
     private StopDao stopDao;
+
+    @Inject
     private SubrouteDao subrouteDao;
 
-    public void setStatsLogDao(StatsLogDao statsLogDao) {
-        this.statsLogDao = statsLogDao;
-    }
+    private Cache miscCache;
 
+    @Inject
     public void setCacheManager(CacheManager cacheManager) {
         miscCache = cacheManager.getCache("miscCache");
     }
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    public void setRouteDao(RouteDao routeDao) {
-        this.routeDao = routeDao;
-    }
-
-    public void setStopDao(StopDao stopDao) {
-        this.stopDao = stopDao;
-    }
-
-    public void setSubrouteDao(SubrouteDao subrouteDao) {
-        this.subrouteDao = subrouteDao;
-    }
 
     @Override
     public String getVehicleSnapshots() {

@@ -12,7 +12,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.Map;
  * Date: 2/19/14
  * Time: 2:21 AM
  */
+@Repository
 public class StatsLogDaoJdbc implements StatsLogDao {
 
     private static final Logger log = LogManager.getLogger(StatsLogDaoJdbc.class);
@@ -33,6 +36,7 @@ public class StatsLogDaoJdbc implements StatsLogDao {
     private JdbcOperations jdbcTemplate;
     private SimpleJdbcInsert tripLogInsert;
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.tripLogInsert = new SimpleJdbcInsert(dataSource)

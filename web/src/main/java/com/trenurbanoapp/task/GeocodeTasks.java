@@ -37,6 +37,7 @@ public class GeocodeTasks {
 
     @Value("Fmjtd|luur2d0zl1,82=o5-9a825r")
     private String mapquestApiKey;
+
     @Inject
     private AsyncRestOperations restTemplate;
 

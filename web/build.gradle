@@ -58,12 +58,13 @@ dependencies {
         exclude module: 'postgresql'
     }
     compile "org.postgresql:postgresql:9.4-1202-jdbc42"
-    compile "com.google.guava:guava:17.0"
+    compile "com.google.guava:guava:19.0"
     compile "de.grundid.opendatalab:geojson-jackson:1.5.1"
     compile "javax.inject:javax.inject:1"
 
     compile "org.apache.commons:commons-lang3:3.4"
     compile 'org.apache.httpcomponents:httpclient'
+    compile 'org.apache.httpcomponents:httpcore:4.4.3'
 
     //Icon generation
     def batikVersion = '1.8'
@@ -72,6 +73,9 @@ dependencies {
     compile "org.apache.xmlgraphics:xmlgraphics-commons:2.0.1"
 
     compile 'org.apache.velocity:velocity'
-    compile 'org.apache.velocity:velocity-tools'
+    compile('org.apache.velocity:velocity-tools') {
+        exclude group: 'org.apache.struts'
+        exclude group: 'oro'
+    }
 
 }

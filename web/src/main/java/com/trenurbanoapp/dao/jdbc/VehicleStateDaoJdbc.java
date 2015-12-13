@@ -12,7 +12,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +25,7 @@ import java.util.*;
  * Date: 5/11/13
  * Time: 8:59 AM
  */
+@Repository
 public class VehicleStateDaoJdbc implements VehicleStateDao {
 
     public static final Splitter COMMA_SPLITTER = Splitter.on(",").omitEmptyStrings();
@@ -35,6 +38,7 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
     private SimpleJdbcInsert possibleGeofenceRoutesInsert;
     private Set<String> possibleRouteExistsCache = Collections.synchronizedSet(new HashSet<>(1346));
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);

@@ -15,7 +15,7 @@
     <import resource="classpath:com/trenurbanoapp/datasource-context.xml"/>
     <import resource="classpath:com/trenurbanoapp/dao-context.xml"/>
     <import resource="classpath:com/trenurbanoapp/service-context.xml"/>
-    <import resource="classpath:com/trenurbanoapp/rest-client-context.xml"/>
+    <import resource="classpath:com/trenurbanoapp/http-client-context.xml"/>
     <import resource="classpath:com/trenurbanoapp/webapi-context.xml"/>
     <import resource="classpath:com/trenurbanoapp/task-context.xml"/>
     <import resource="classpath:com/trenurbanoapp/velocity-context.xml"/>

@@ -13,12 +13,5 @@
 
     <bean class="com.trenurbanoapp.task.UpdateVehiclePositionsCacheTasks"/>
     <bean class="com.trenurbanoapp.task.WebApiTasks"/>
-    <bean class="com.trenurbanoapp.webapi.WebApiRestClient2">
-        <constructor-arg value="${gps.url}"/>
-        <constructor-arg value="${gps.user}"/>
-        <constructor-arg value="${gps.password}"/>
-        <property name="restTemplate" ref="restTemplate"/>
-        <property name="objectMapper" ref="objectMapper"/>
-    </bean>
 
 </beans>

@@ -6,7 +6,9 @@ import com.trenurbanoapp.scraper.model.LatLng;
 import org.postgis.PGgeometry;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.*;
+import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.List;
@@ -16,12 +18,14 @@ import java.util.Set;
 /**
  * Created by victor on 3/2/14.
  */
+@Repository
 public class RouteDaoJdbc implements RouteDao {
 
     private static final int SIMPLIFY_TOLERANCE = 10;
 
     private JdbcOperations jdbcTemplate;
 
+    @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
