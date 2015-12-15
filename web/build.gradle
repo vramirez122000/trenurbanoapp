@@ -78,4 +78,8 @@ dependencies {
         exclude group: 'oro'
     }
 
+    testCompile 'org.codehaus.groovy:groovy:2.4.+:indy'
+    testCompile 'org.springframework:spring-test'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+
 }

@@ -7,7 +7,7 @@
     <bean id="webApiRestClient" class="com.trenurbanoapp.webapi.WebApiRestClient">
         <constructor-arg value="${gps.url}"/>
         <constructor-arg value="${gps.user}"/>
-        <constructor-arg value="${gps.password"/>
+        <constructor-arg value="${gps.password}"/>
         <property name="objectMapper" ref="objectMapper"/>
         <property name="httpClient" ref="httpClient"/>
     </bean>

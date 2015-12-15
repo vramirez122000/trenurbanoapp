@@ -244,7 +244,7 @@ TU.MAP = (function(my, $, Leaf) {
     function markerIcon(path) {
         return new VehicleIcon({
             iconUrl: contextPath + path + ".png",
-            iconRetinaUrl: contextPath + path + ".png",
+            iconRetinaUrl: contextPath + path + "@2x.png",
             shadowUrl: contextPath + "/images/marker-shadow.png"
         });
     }

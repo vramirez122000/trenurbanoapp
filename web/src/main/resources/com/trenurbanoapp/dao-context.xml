@@ -25,6 +25,7 @@
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopById"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="allStopAreas"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="icons"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="svgIcons"/>
             </set>
         </property>
     </bean>

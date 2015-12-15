@@ -165,17 +165,23 @@ public class SubrouteDaoJdbc implements SubrouteDao {
 
     @Override
     public Map<String, Object> isWithinOriginOrDestination(List<LatLng> line, SubrouteKey subroute) {
-        String sql = "SELECT " +
-                " (CASE WHEN orig.geom IS NULL THEN false ELSE ST_Within(?, orig.geom) END) withinOrig, " +
-                " (CASE WHEN dest.geom IS NULL THEN false ELSE ST_Within(?, dest.geom) END) withinDest," +
-                " subroute.origin_id originId, subroute.dest_id destId, subroute.next_id nextId " +
-                " FROM subroute_new as subroute " +
-                " JOIN route_new as route ON subroute.name = route.name" +
-                " LEFT JOIN ref.geofence orig ON subroute.origin_id = orig.gid" +
-                " LEFT JOIN ref.geofence dest ON subroute.dest_id = dest.gid " +
-                " WHERE route.gpsenabled = true AND subroute.route = ? and subroute.direction = ?";
-        PGgeometry pgGeometry = Mappers.toPGGeometry(line, Mappers.NAD83_SRID);
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, pgGeometry, pgGeometry, subroute.getRoute(), subroute.getDirection());
+        String sql = "WITH trail as ( " +
+                "  SELECT ST_Transform(?, 32161) as geom " +
+                ") " +
+                "SELECT " +
+                "  ST_DWithin(trail.geom, ST_PointN(subroute.geom, 1), 100) withinOrig, " +
+                "  ST_DWithin(trail.geom, ST_EndPoint(subroute.geom), 100) withinDest, " +
+                "  subroute.direction curr_direction, " +
+                "  next_subroute.direction as next_direction " +
+                " FROM trail, subroute_new as subroute " +
+                "  JOIN subroute_new AS next_subroute ON subroute.route = next_subroute.route " +
+                "    AND subroute.direction <> next_subroute.direction " +
+                "  JOIN route_new as route ON subroute.route = route.id " +
+                " WHERE route.gpsenabled = true  " +
+                "  AND subroute.route = ? " +
+                "  AND subroute.direction = ? ";
+        PGgeometry pgGeometry = Mappers.toPGGeometry(line, Mappers.WGS84_SRID);
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, pgGeometry, subroute.getRoute(), subroute.getDirection());
         return results.isEmpty() ? null : results.get(0);
     }
 }

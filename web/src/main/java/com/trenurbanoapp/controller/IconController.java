@@ -37,12 +37,20 @@ public class IconController {
     @Autowired
     CacheManager cacheManager;
 
-    @RequestMapping(value = "/icon/{route}.png", produces = "image/png")
-    public void getIcon(@PathVariable String route, HttpServletResponse response) throws IOException, TranscoderException {
+    @RequestMapping(value = "/icon/{imgPath}.png", produces = "image/png")
+    public void getIcon(@PathVariable String imgPath, HttpServletResponse response) throws IOException, TranscoderException {
+
+        int retinaStrIdx = imgPath.indexOf("@2x");
+        String route;
+        if(retinaStrIdx > 0) {
+            route = imgPath.substring(0, retinaStrIdx);
+        }  else {
+            route = imgPath;
+        }
 
 
         Cache cache = cacheManager.getCache("icons");
-        Cache.ValueWrapper valueWrapper = cache.get(route);
+        Cache.ValueWrapper valueWrapper = cache.get(imgPath);
         if (valueWrapper != null) {
             byte[] img = (byte[]) valueWrapper.get();
             response.getOutputStream().write(img);
@@ -65,11 +73,15 @@ public class IconController {
         );
         VelocityEngineUtils.mergeTemplate(velocityEngine, "iconTemplate.svg.vm", "UTF-8", params, strWriter);
 
-        // Create a JPEG transcoder
+        // Create a transcoder and set the transcoding hints.
         PNGTranscoder t = new PNGTranscoder();
-
-        // Set the transcoding hints.
-        //t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, 72);
+        if(retinaStrIdx > 0) {
+            t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, 41F);
+            t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, 66F);
+        } else {
+            t.addTranscodingHint(PNGTranscoder.KEY_WIDTH, 21F);
+            t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, 33F);
+        }
 
         // Create the transcoder input.
         TranscoderInput input = new TranscoderInput(new StringReader(strWriter.toString()));
@@ -84,8 +96,39 @@ public class IconController {
         t.transcode(input, output);
 
         byte[] img = ostream.toByteArray();
-        cache.put(route, img);
+        cache.put(imgPath, img);
 
         response.getOutputStream().write(img);
+    }
+
+    @RequestMapping(value = "/icon/{route}.svg", produces = "image/svg+xml")
+    public void getSvgIcon(@PathVariable String route, HttpServletResponse response) throws IOException, TranscoderException {
+
+        Cache cache = cacheManager.getCache("svgIcons");
+        Cache.ValueWrapper valueWrapper = cache.get(route);
+        if (valueWrapper != null) {
+            String svg = (String) valueWrapper.get();
+            response.getOutputStream().print(svg);
+            return;
+        }
+
+        Route r= routeDao.findById(route);
+        if(r == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        StringWriter strWriter = new StringWriter();
+        ImmutableMap<String, Object> params = ImmutableMap.of(
+                "borderLight", Funcs.shade(r.getColor(), 0.8F),
+                "borderDark", Funcs.shade(r.getColor(), 0.5F),
+                "fillLight", Funcs.shade(r.getColor(), 1.0F),
+                "fillDark", Funcs.shade(r.getColor(), 0.7F),
+                "route", route
+        );
+        VelocityEngineUtils.mergeTemplate(velocityEngine, "iconTemplate.svg.vm", "UTF-8", params, strWriter);
+
+        cache.put(route, strWriter.toString());
+        response.getOutputStream().print(strWriter.toString());
     }
 }

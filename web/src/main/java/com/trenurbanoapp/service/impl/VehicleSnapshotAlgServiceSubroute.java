@@ -97,22 +97,18 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     @Override
     public void updateVehicleState(AssetPosition assetSnapshot) {
 
-        if(assetSnapshot.getAssetId() == 834) {
-            log.debug("here");
-        }
-
         VehicleState v = vehicleStateDao.getVehicleState(assetSnapshot.getAssetId());
         if(!passesPreliminaryChecks(assetSnapshot, v)) {
             return;
         }
 
         List<LatLng> currTrail = assetSnapshot.getTrail();
-        /*if(v.hasLastKnownRoute()) {
+        if(v.hasLastKnownRoute()) {
             Map<String, Object> withinOrigOrDest = subrouteDao.isWithinOriginOrDestination(currTrail, v.getLastKnownSubroute());
             if(withinOrigOrDest != null) {
 
                 Boolean withinDest = (Boolean) withinOrigOrDest.get("withindest");
-                Integer nextId = (Integer) withinOrigOrDest.get("nextid");
+                String nextDirection = (String) withinOrigOrDest.get("next_direction");
 
                 Boolean withinOrig = (Boolean) withinOrigOrDest.get("withinorig");
                 if (withinDest || withinOrig && !v.isWithinOrigin()) {
@@ -121,8 +117,8 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                         statsLogDao.insertTripLog(v, null, currTrail);
                     }
                     v.setWithinOrigin(true);
-                    if(withinDest && nextId != null) {
-                        v.setLastKnownSubroute(nextId);
+                    if(withinDest && nextDirection != null) {
+                        v.setLastKnownDirection(nextDirection);
                     }
                 }
 
@@ -145,7 +141,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             } else {
                 log.warn("no joins for subroute gid {}", v.getLastKnownSubroute());
             }
-        }*/
+        }
 
         if(currTrail.size() == 1) {
             currTrail = new ArrayList<>(currTrail);
