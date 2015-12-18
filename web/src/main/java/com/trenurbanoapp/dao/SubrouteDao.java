@@ -19,4 +19,6 @@ public interface SubrouteDao {
     List<String> getGpsEnabledRoutesWithinDistance(List<LatLng> line, int distanceInMeters);
 
     Map<String, Object> isWithinOriginOrDestination(List<LatLng> line, SubrouteKey subroute);
+
+    List<Map<String, Object>> getNearbySubroutesWithoutSchedule(double lat, double lng);
 }

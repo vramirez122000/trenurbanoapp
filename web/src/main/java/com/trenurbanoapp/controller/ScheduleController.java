@@ -74,7 +74,7 @@ public class ScheduleController {
                                                @RequestParam double lng,
                                                @RequestParam(required = false) Float accuracy,
                                                ModelMap model) {
-        model.put("routes", scheduleService.nearbyRoutesWithoutSchedules(lat, lng, accuracy));
+        model.put("routes", scheduleService.nearbySubroutesWithoutSchedules(lat, lng, accuracy));
         return "nearby_routes";
     }
 }

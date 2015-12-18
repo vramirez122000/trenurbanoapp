@@ -184,4 +184,23 @@ public class SubrouteDaoJdbc implements SubrouteDao {
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, pgGeometry, subroute.getRoute(), subroute.getDirection());
         return results.isEmpty() ? null : results.get(0);
     }
+
+
+    @Override
+    public List<Map<String, Object>> getNearbySubroutesWithoutSchedule(double lat, double lng) {
+        String sql = "select distinct " +
+                "  subroute.route, " +
+                "  coalesce(stop_area.desc, lower(subroute.direction)) direction, " +
+                "  route.desc fullName, " +
+                "  route.priority, " +
+                "  route.color " +
+                "FROM ref.subroute_new as subroute " +
+                " LEFT JOIN stop_area ON subroute.direction = stop_area.id " +
+                " JOIN route_new as route ON subroute.route = route.id " +
+                " LEFT JOIN schedule ON subroute.route = schedule.route " +
+                "where st_dwithin(subroute.geom, st_transform(st_setSrid(st_point(?, ?), 4326), 32161), 300) " +
+                " and schedule.route is null " +
+                " order by route.priority, subroute.route ";
+        return jdbcTemplate.queryForList(sql, lng, lat);
+    }
 }

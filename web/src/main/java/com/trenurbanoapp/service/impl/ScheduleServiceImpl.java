@@ -3,6 +3,7 @@ package com.trenurbanoapp.service.impl;
 import com.trenurbanoapp.dao.RouteDao;
 import com.trenurbanoapp.dao.ScheduleDao;
 import com.trenurbanoapp.dao.StatsLogDao;
+import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.model.*;
 import com.trenurbanoapp.scraper.model.LatLng;
 import com.trenurbanoapp.service.ScheduleService;
@@ -34,6 +35,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Inject
     private RouteDao routeDao;
+
+    @Inject
+    private SubrouteDao subrouteDao;
 
     @Override
     public List<StopTime> stopTimes(String station, Double lat, Double lng, Float accuracy, String timeString, String dateString) {
@@ -68,6 +72,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<Route> nearbyRoutesWithoutSchedules(double lat, double lng, Float accuracy) {
         statsLogDao.insertClientLog(lat, lng, accuracy);
         return routeDao.getNearbyRoutesWithoutSchedule(lat, lng);
+    }
+
+    @Override
+    public List<Map<String, Object>> nearbySubroutesWithoutSchedules(double lat, double lng, Float accuracy) {
+        statsLogDao.insertClientLog(lat, lng, accuracy);
+        return subrouteDao.getNearbySubroutesWithoutSchedule(lat, lng);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.trenurbanoapp.service;
 import com.trenurbanoapp.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: victor
@@ -17,6 +18,8 @@ public interface ScheduleService {
     IdDesc nearestStation(double lat, double lng, Float accuracy);
 
     List<Route> nearbyRoutesWithoutSchedules(double lat, double lng, Float accuracy);
+
+    List<Map<String, Object>> nearbySubroutesWithoutSchedules(double lat, double lng, Float accuracy);
 
     ScheduleType scheduleType(RouteGroup routeGroup);
 

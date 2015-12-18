@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tu" uri="/WEB-INF/tld/tu" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   Created by IntelliJ IDEA.
   User: victor
@@ -17,7 +18,6 @@
 <table style="width:100%" class="table table-bordered table-striped">
     <tbody>
     <c:forEach items="${routes}" var="route">
-        <jsp:useBean id="route" scope="page" type="com.trenurbanoapp.model.Route"/>
         <c:set var="darkColor" value="${tu:darken(route.color)}"/>
         <tr>
             <td>
@@ -27,11 +27,12 @@
                         <span class="routeLabel" style="
                                 background-color: ${route.color};
                                 text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                border-color: ${darkColor}">${route.name}</span>
+                                border-color: ${darkColor}">${route.fullName}</span>
+                        <c:if test="${not empty route.direction}">hacia <span style="text-transform: capitalize">${fn:replace(route.direction, '_', ' ')}</span></c:if>
                     </div>
                     <div class="col-xs-2 text-right">
                         <div>
-                            <a href="<c:url value="/app/map?route=${route.id}"/>" title="Ver en mapa">
+                            <a href="<c:url value="/app/map?route=${route.route}"/>" title="Ver en mapa">
                                 <i class="fa fa-map-o"></i>
                             </a>
                         </div>
