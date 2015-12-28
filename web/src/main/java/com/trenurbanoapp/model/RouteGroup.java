@@ -9,20 +9,10 @@ package com.trenurbanoapp.model;
  */
 public enum RouteGroup {
 
-    ATI("Autoridad de Transporte Integrado"),
-    TREN_URBANO("Autoridad de Transporte Integrado"),
-    ACUAEXPRESO("Acuaexpreso"),
-    E40("E40"),
+    ATI_LV,
+    ATI_LS,
+    ATI_LD,
+    TREN_URBANO,
+    ACUAEXPRESO,
     ;
-
-    private String name;
-
-    private RouteGroup(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
 }

@@ -12,13 +12,13 @@ import java.util.Map;
  */
 public interface SubrouteDao {
 
-    List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng position);
+    Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithin100Meters(LatLng currPos, LatLng prevPos);
 
-    Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithinDistance(List<LatLng> line, int distanceInMeters, SubrouteKey... subset);
+    List<Map<String, Object>> getEtas(LatLng position);
 
     List<String> getGpsEnabledRoutesWithinDistance(List<LatLng> line, int distanceInMeters);
 
     Map<String, Object> isWithinOriginOrDestination(List<LatLng> line, SubrouteKey subroute);
 
-    List<Map<String, Object>> getNearbySubroutesWithoutSchedule(double lat, double lng);
+    List<Map<String, Object>> getNearbySubroutesWithoutScheduleOrEta(double lat, double lng);
 }

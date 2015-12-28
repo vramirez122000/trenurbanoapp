@@ -17,10 +17,8 @@ public interface ScheduleService {
 
     IdDesc nearestStation(double lat, double lng, Float accuracy);
 
-    List<Route> nearbyRoutesWithoutSchedules(double lat, double lng, Float accuracy);
-
     List<Map<String, Object>> nearbySubroutesWithoutSchedules(double lat, double lng, Float accuracy);
 
-    ScheduleType scheduleType(RouteGroup routeGroup);
+    List<Map<String, Object>> nearbyEtas(double lat, double lng, Float accuracy);
 
 }

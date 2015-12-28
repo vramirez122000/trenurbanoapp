@@ -29,39 +29,69 @@ class ScheduleTypeCalculator {
         }
 
         final DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if(routeGroup == RouteGroup.E40) {
-            if (DayOfWeek.SUNDAY == dayOfWeek) {
+        if(routeGroup == RouteGroup.ATI_LD) {
+            if (DayOfWeek.SUNDAY == dayOfWeek || DayOfWeek.SATURDAY == dayOfWeek) {
                 return ScheduleType.RESTDAY;
             }
-            HolidayManager atiHolidays = getHolidayManager(RouteGroup.ATI);
+            HolidayManager atiHolidays = getHolidayManager("ATI");
             if (atiHolidays.isHoliday(date)) {
                 return ScheduleType.RESTDAY;
             }
             return ScheduleType.WORKDAY;
         }
 
+        if(routeGroup == RouteGroup.ATI_LS) {
+            if (DayOfWeek.SUNDAY == dayOfWeek) {
+                return null;
+            }
 
-        if (dayOfWeek == DayOfWeek.SATURDAY
-                || dayOfWeek == DayOfWeek.SUNDAY) {
-            return ScheduleType.RESTDAY;
-        }
+            if (DayOfWeek.SATURDAY == dayOfWeek) {
+                return ScheduleType.RESTDAY;
+            }
 
+            HolidayManager atiHolidays = getHolidayManager("ATI");
+            if (atiHolidays.isHoliday(date)) {
+                return ScheduleType.RESTDAY;
+            }
 
-        final HolidayManager holidayManager = getHolidayManager(routeGroup);
-        if (holidayManager.isHoliday(date)) {
-            return ScheduleType.RESTDAY;
-        }
-
-        if(routeGroup != RouteGroup.ATI) {
             return ScheduleType.WORKDAY;
         }
 
-        return getTrenUrbanoWorkdayType(date, holidayManager);
+        if(routeGroup == RouteGroup.ATI_LV) {
+            if (DayOfWeek.SUNDAY == dayOfWeek || DayOfWeek.SATURDAY == dayOfWeek) {
+                return null;
+            }
+
+            HolidayManager atiHolidays = getHolidayManager("ATI");
+            if (atiHolidays.isHoliday(date)) {
+                return ScheduleType.RESTDAY;
+            }
+
+            return ScheduleType.WORKDAY;
+        }
+
+        if(routeGroup == RouteGroup.TREN_URBANO) {
+
+            if (dayOfWeek == DayOfWeek.SATURDAY
+                    || dayOfWeek == DayOfWeek.SUNDAY) {
+                return ScheduleType.RESTDAY;
+            }
+
+
+            final HolidayManager holidayManager = getHolidayManager("TREN_URBANO");
+            if (holidayManager.isHoliday(date)) {
+                return ScheduleType.RESTDAY;
+            }
+
+            return getTrenUrbanoWorkdayType(date, holidayManager);
+        }
+
+        return null;
 
     }
 
-    private static HolidayManager getHolidayManager(RouteGroup routeGroup) {
-        String path = "holidays/Holidays_" + routeGroup.name() + ".xml";
+    private static HolidayManager getHolidayManager(String suffix) {
+        String path = "holidays/Holidays_" + suffix + ".xml";
         URL resource = ScheduleTypeCalculator.class.getClassLoader().getResource(path);
         ManagerParameter params = ManagerParameters.create(resource);
         return HolidayManager.getInstance(params);

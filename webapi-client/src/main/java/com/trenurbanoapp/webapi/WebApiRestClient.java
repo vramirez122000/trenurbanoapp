@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,7 +149,7 @@ public class WebApiRestClient {
         assetPos.setAssetId(node.path("IDASSET").numberValue().intValue());
         assetPos.setStatus(node.path("STATUS").numberValue().intValue());
         assetPos.setStatusMessage(node.path("MSG").textValue());
-        assetPos.setWhen(node.path("WHEN").textValue());
+        assetPos.setWhen(LocalDateTime.parse(node.path("WHEN").textValue()));
         List<LatLng> trail = new ArrayList<>(3);
         String trailStr = node.path("TRAIL").textValue();
 

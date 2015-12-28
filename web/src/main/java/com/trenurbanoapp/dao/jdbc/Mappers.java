@@ -19,7 +19,6 @@ abstract class Mappers {
 
     static final int WGS84_SRID = 4326;
     static final int NAD83_SRID = 32161;
-    static final GeofenceMapper GEOFENCE_MAPPER = new GeofenceMapper();
 
     static LineString toLineString(List<LatLng> latLngs) {
         return toLineString(latLngs, WGS84_SRID);

@@ -38,8 +38,8 @@ public class RouteDaoJdbc implements RouteDao {
                 "  route.desc fullName, " +
                 "  route.priority, " +
                 "  route.color " +
-                "FROM ref.subroute_new as subroute " +
-                "JOIN route_new as route ON subroute.route = route.id " +
+                "FROM subroute " +
+                "JOIN route ON subroute.route = route.id " +
                 "LEFT JOIN schedule ON subroute.route = schedule.route " +
                 "where st_dwithin(subroute.geom, st_transform(st_setSrid(st_point(?, ?), 4326), 32161), 300) " +
                 "and schedule.route is null " +
@@ -52,8 +52,8 @@ public class RouteDaoJdbc implements RouteDao {
     public List<Route> getAllRoutes() {
         return jdbcTemplate.query("SELECT route.id, route.color, route.desc, " +
                         " ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union(ST_Simplify(subroute.geom, ?))), 4326)) geojson " +
-                        " FROM route_new as route " +
-                        " JOIN subroute_new as subroute ON route.id = subroute.route " +
+                        " FROM route " +
+                        " JOIN subroute ON route.id = subroute.route " +
                         " GROUP BY route.id, route.color, route.sort_order " +
                         " ORDER BY route.sort_order ",
                 rowMapper,
@@ -66,8 +66,8 @@ public class RouteDaoJdbc implements RouteDao {
     public Route findById(String route) {
         List<Route> results = jdbcTemplate.query("SELECT route.id, route.color, route.desc, " +
                         " ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union(ST_Simplify(subroute.geom, ?))), 4326)) geojson " +
-                        " FROM route_new as route " +
-                        " JOIN subroute_new as subroute ON route.id = subroute.route " +
+                        " FROM route " +
+                        " JOIN subroute ON route.id = subroute.route " +
                         " WHERE route.id = ? " +
 
                         " GROUP BY route.id, route.color, route.sort_order " +
@@ -80,8 +80,8 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     public List<String> getRoutesNamesWithinDistance(LatLng point, int distanceInMeters) {
         return jdbcTemplate.query("SELECT DISTINCT route.id, route.priority " +
-                " FROM route_new as route " +
-                " JOIN subroute_new AS subroute ON route.id = subroute.route " +
+                " FROM route " +
+                " JOIN subroute ON route.id = subroute.route " +
                 " WHERE st_dwithin(subroute.geom, st_transform(?, 32161), ?) ORDER BY route.priority ", (resultSet, i) -> {
                     return resultSet.getString("id");
                 }, new PGgeometry(Mappers.toPoint(point)), distanceInMeters);
@@ -91,8 +91,8 @@ public class RouteDaoJdbc implements RouteDao {
     public Set<String> getOriginDestinationRouteNamesWithinDistance(LatLng origin, LatLng destination, int distanceInMeters) {
         final Set<String> results = new HashSet<>();
         jdbcTemplate.query("SELECT DISTINCT orig.route route_orig, dest.route route_dest " +
-                        " FROM subroute_new AS orig " +
-                        " JOIN subroute_new AS dest ON st_intersects(orig.geom, dest.geom) " +
+                        " FROM subroute AS orig " +
+                        " JOIN subroute AS dest ON st_intersects(orig.geom, dest.geom) " +
                         " WHERE st_dwithin(orig.geom, st_transform(?, 32161), ?) " +
                         " AND st_dwithin(dest.geom, st_transform(?, 32161), ?) ",
                 rs -> {

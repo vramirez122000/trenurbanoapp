@@ -16,6 +16,10 @@ function main() {
         var stationSelect = $(".station-select:visible");
         stationSelect.val(resultsStation);
 
+        if(gpsEnabled) {
+            TU.SCHED.nearbyEtas('#nearbyEtas', params)
+        }
+
         TU.SCHED.nearbyRoutesWithoutSchedules('#nearbyRoutesWithoutSchedules', params)
 
     }, function() {
@@ -140,7 +144,7 @@ function updateClocks() {
     $('.etaDiv').each(function() {
         var $this = $(this);
         var stopTime = moment(parseInt($this.find('.stopTime').text()));
-        var duration = moment.duration(stopTime.valueOf() - now.valueOf(), 'milliseconds')
+        var duration = moment.duration(stopTime.valueOf() - now.valueOf(), 'milliseconds');
         $this.find('.etaString').text((Math.abs(duration.hours()) > 0 && (duration.hours() + ' hr   ')) + duration.minutes() + ' min ' + duration.seconds() + ' s')
     });
 }

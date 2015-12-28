@@ -1,6 +1,5 @@
 --Ruta expreso E20, antes conocida como Metro Urbano, Park and Ride de Toa Baja a Bayamón
 
-DELETE FROM SCHEDULE WHERE ROUTE = 'E20';
 
 --  Toa baja hacia Bayamon
 INSERT INTO SCHEDULE (ROUTE, STOP_AREA, DIRECTION, SCHEDULE_TYPE, STOP_TIME) VALUES

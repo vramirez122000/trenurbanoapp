@@ -17,22 +17,22 @@
 
 <table style="width:100%" class="table table-bordered table-striped">
     <tbody>
-    <c:forEach items="${routes}" var="route">
-        <c:set var="darkColor" value="${tu:darken(route.color)}"/>
+    <c:forEach items="${routes}" var="eta">
+        <c:set var="darkColor" value="${tu:darken(eta.color)}"/>
         <tr>
             <td>
                 <div class="row">
                     <div class="col-xs-10" style="font-weight:bold">
                         Ruta
                         <span class="routeLabel" style="
-                                background-color: ${route.color};
+                                background-color: ${eta.color};
                                 text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                border-color: ${darkColor}">${route.fullName}</span>
-                        <c:if test="${not empty route.direction}">hacia <span style="text-transform: capitalize">${fn:replace(route.direction, '_', ' ')}</span></c:if>
+                                border-color: ${darkColor}">${eta.fullName}</span>
+                        <c:if test="${not empty eta.direction}">hacia <span style="text-transform: capitalize">${fn:replace(eta.direction, '_', ' ')}</span></c:if>
                     </div>
                     <div class="col-xs-2 text-right">
                         <div>
-                            <a href="<c:url value="/app/map?route=${route.route}"/>" title="Ver en mapa">
+                            <a href="<c:url value="/app/map?route=${eta.route}"/>" title="Ver en mapa">
                                 <i class="fa fa-map-o"></i>
                             </a>
                         </div>

@@ -69,28 +69,25 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Route> nearbyRoutesWithoutSchedules(double lat, double lng, Float accuracy) {
-        statsLogDao.insertClientLog(lat, lng, accuracy);
-        return routeDao.getNearbyRoutesWithoutSchedule(lat, lng);
-    }
-
-    @Override
     public List<Map<String, Object>> nearbySubroutesWithoutSchedules(double lat, double lng, Float accuracy) {
         statsLogDao.insertClientLog(lat, lng, accuracy);
-        return subrouteDao.getNearbySubroutesWithoutSchedule(lat, lng);
+        return subrouteDao.getNearbySubroutesWithoutScheduleOrEta(lat, lng);
     }
 
     @Override
-    public ScheduleType scheduleType(RouteGroup routeGroup) {
-        return ScheduleTypeCalculator.dayType(routeGroup, LocalDate.now());
+    public List<Map<String, Object>> nearbyEtas(double lat, double lng, Float accuracy) {
+        return subrouteDao.getEtas(new LatLng(lat, lng));
     }
 
     private List<StopTime> filter(String dateString, List<StopTime> stopTimes) {
         Map<String, Integer> subrouteCounts = new HashMap<>();
         return stopTimes.stream().filter((StopTime stopTime) -> {
-            RouteGroup routeGroup = RouteGroup.valueOf(stopTime.getRouteGroup());
-            ScheduleType validSchedType = ScheduleTypeCalculator.dayType(routeGroup, getLocalDate(dateString));
-            if (ScheduleType.valueOf(stopTime.getScheduleType()) != validSchedType) {
+            ScheduleType validSchedType = ScheduleTypeCalculator.dayType(stopTime.getRouteGroup(), getLocalDate(dateString));
+            if(validSchedType == null) {
+                return false;
+            }
+
+            if (stopTime.getScheduleType() != validSchedType) {
                 return false;
             }
 

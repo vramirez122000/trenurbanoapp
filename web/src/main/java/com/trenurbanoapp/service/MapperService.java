@@ -22,8 +22,6 @@ public interface MapperService {
 
     String getVehicleSnapshots();
 
-    void logGeolocation(LatLng point, Float accuracy);
-
     GeometryCollection getLogEntriesAsGeoJson(LatLngBounds bounds);
 
     FeatureCollection getRoutesGeoJson();
@@ -36,5 +34,4 @@ public interface MapperService {
 
     FeatureCollection getStopsByRouteNames(GetStopsRequest request);
 
-    List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng latLng);
 }

@@ -2,10 +2,13 @@ package com.trenurbanoapp.dao.jdbc;
 
 import com.trenurbanoapp.dao.ScheduleDao;
 import com.trenurbanoapp.model.IdDesc;
+import com.trenurbanoapp.model.RouteGroup;
+import com.trenurbanoapp.model.ScheduleType;
 import com.trenurbanoapp.model.StopTime;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
@@ -23,7 +26,21 @@ import java.util.List;
 @Repository
 public class ScheduleDaoJdbc implements ScheduleDao {
 
-    private static final BeanPropertyRowMapper<StopTime> stopTimeMapper = new BeanPropertyRowMapper<>(StopTime.class);
+    private static final RowMapper<StopTime> stopTimeMapper = (rs, rowNum) -> {
+        StopTime s = new StopTime();
+        s.setRoute(rs.getString("route"));
+        s.setRouteFullName(rs.getString("route_full_name"));
+        String routeGroupStr = rs.getString("route_group");
+        s.setRouteGroup(RouteGroup.valueOf(routeGroupStr));
+        s.setColor(rs.getString("color"));
+        s.setStation(rs.getString("station"));
+        s.setStopArea(rs.getString("stop_area"));
+        s.setDest(rs.getString("dest"));
+        s.setScheduleType(ScheduleType.valueOf(rs.getString("schedule_type")));
+        s.setStopTime(rs.getTime("stop_time").toLocalTime());
+        s.setErrorMinutes(rs.getInt("error_minutes"));
+        return s;
+    };
 
     private JdbcTemplate jdbcTemplate;
 
@@ -35,15 +52,15 @@ public class ScheduleDaoJdbc implements ScheduleDao {
     private static final String STOP_TIME_QUERY = "SELECT " +
             "  route.id          route, " +
             "  route.desc     route_full_name, " +
-            "  route.route_group   route_group, " +
+            "  route.route_group, " +
             "  route.color, " +
             "  stop_area.id station, " +
             "  stop_area.desc stop_area, " +
             "  dest.desc      dest, " +
-            "  schedule.schedule_type       schedule_type, " +
-            "  schedule.stop_time             stop_time_as_sql_time, " +
+            "  schedule.schedule_type, " +
+            "  schedule.stop_time, " +
             "  schedule.error_minutes              " +
-            "FROM route_new as route " +
+            "FROM route as route " +
             "  JOIN schedule ON route.id = schedule.route " +
             "  JOIN stop_area ON stop_area.id = schedule.stop_area " +
             "  JOIN stop_area dest ON dest.id = schedule.direction " +

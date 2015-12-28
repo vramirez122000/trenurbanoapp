@@ -77,4 +77,13 @@ public class ScheduleController {
         model.put("routes", scheduleService.nearbySubroutesWithoutSchedules(lat, lng, accuracy));
         return "nearby_routes";
     }
+
+    @RequestMapping(value = "/nearbyEtas")
+    public String nearbyEtas(@RequestParam double lat,
+                                               @RequestParam double lng,
+                                               @RequestParam(required = false) Float accuracy,
+                                               ModelMap model) {
+        model.put("etas", scheduleService.nearbyEtas(lat, lng, accuracy));
+        return "nearby_etas";
+    }
 }

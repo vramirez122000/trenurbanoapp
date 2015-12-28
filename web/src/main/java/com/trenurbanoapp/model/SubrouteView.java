@@ -1,66 +1,28 @@
 package com.trenurbanoapp.model;
 
-import com.trenurbanoapp.scraper.model.LatLng;
-
 /**
  * Created by victor on 5/5/14.
  */
 public class SubrouteView {
 
-    private SubrouteKey subroute = new SubrouteKey();
-    private double vehicleTrailAzimuth;
-    private double subrouteSegmentAzimuth;
-    private double vehicleTrailLength;
-    private double subrouteSegmentLength;
-    private LatLng subroutePosition;
+    private SubrouteKey subrouteKey = new SubrouteKey();
+    private double azimuth;
     private double subrouteM;
 
-    public SubrouteKey getSubroute() {
-        return subroute;
+    public SubrouteKey getSubrouteKey() {
+        return subrouteKey;
     }
 
-    public void setSubroute(SubrouteKey subroute) {
-        this.subroute = subroute;
+    public void setSubrouteKey(SubrouteKey subrouteKey) {
+        this.subrouteKey = subrouteKey;
     }
 
-    public double getVehicleTrailAzimuth() {
-        return vehicleTrailAzimuth;
+    public double getAzimuth() {
+        return azimuth;
     }
 
-    public void setVehicleTrailAzimuth(double vehicleTrailAzimuth) {
-        this.vehicleTrailAzimuth = vehicleTrailAzimuth;
-    }
-
-    public double getSubrouteSegmentAzimuth() {
-        return subrouteSegmentAzimuth;
-    }
-
-    public void setSubrouteSegmentAzimuth(double subrouteSegmentAzimuth) {
-        this.subrouteSegmentAzimuth = subrouteSegmentAzimuth;
-    }
-
-    public double getVehicleTrailLength() {
-        return vehicleTrailLength;
-    }
-
-    public void setVehicleTrailLength(double vehicleTrailLength) {
-        this.vehicleTrailLength = vehicleTrailLength;
-    }
-
-    public double getSubrouteSegmentLength() {
-        return subrouteSegmentLength;
-    }
-
-    public void setSubrouteSegmentLength(double subrouteSegmentLength) {
-        this.subrouteSegmentLength = subrouteSegmentLength;
-    }
-
-    public LatLng getSubroutePosition() {
-        return subroutePosition;
-    }
-
-    public void setSubroutePosition(LatLng subroutePosition) {
-        this.subroutePosition = subroutePosition;
+    public void setAzimuth(double azimuth) {
+        this.azimuth = azimuth;
     }
 
     public double getSubrouteM() {
@@ -69,16 +31,5 @@ public class SubrouteView {
 
     public void setSubrouteM(double subrouteM) {
         this.subrouteM = subrouteM;
-    }
-
-    @Override
-    public String toString() {
-        return "SubrouteView{" +
-                "subroute=" + subroute +
-                ", vehicleTrailAzimuth=" + vehicleTrailAzimuth +
-                ", subrouteSegmentAzimuth=" + subrouteSegmentAzimuth +
-                ", vehicleTrailLength=" + vehicleTrailLength +
-                ", subrouteSegmentLength=" + subrouteSegmentLength +
-                '}';
     }
 }

@@ -1,4 +1,3 @@
-DELETE FROM SCHEDULE where route = 'AX1';
 
 -- San Juan a Cataño
 
@@ -52,7 +51,7 @@ INSERT INTO schedule(route, stop_area, direction, schedule_type, stop_time)
      n stop_time
    FROM t);
 
--- mañana
+-- tarde
 WITH RECURSIVE t(n) AS (
   VALUES (time'12:15:00')
   UNION ALL

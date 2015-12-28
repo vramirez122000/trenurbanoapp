@@ -19,3 +19,11 @@ CREATE TABLE logs.trip_log (
 );
 
 create sequence logs.trip_id_seq;
+
+
+create table logs.veh_pos (
+  asset int4,
+  lat float4,
+  lng float4,
+  tstamp timestamp without time zone
+)

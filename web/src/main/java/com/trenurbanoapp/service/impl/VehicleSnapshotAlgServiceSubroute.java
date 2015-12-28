@@ -1,9 +1,7 @@
 package com.trenurbanoapp.service.impl;
 
-import com.google.common.collect.ImmutableSet;
 import com.trenurbanoapp.dao.StatsLogDao;
 import com.trenurbanoapp.dao.StopDao;
-import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.model.*;
 import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
@@ -11,6 +9,7 @@ import com.trenurbanoapp.service.VehicleSnapshotAlgService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,24 +22,6 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
 
     private StatsLogDao statsLogDao;
     private StopDao stopDao;
-    public static final String[] DIRECTIONS = new String[]{
-            "norte",
-            "noreste",
-            "noreste",
-            "este",
-            "este",
-            "sureste",
-            "sureste",
-            "sur",
-            "sur",
-            "suroeste",
-            "suroeste",
-            "oeste",
-            "oeste",
-            "noroeste",
-            "noroeste",
-            "norte"
-    };
 
     public void setStatsLogDao(StatsLogDao statsLogDao) {
         this.statsLogDao = statsLogDao;
@@ -51,15 +32,15 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     }
 
     @Override
-    public VehiclePositionView getVehicleSnapshotView(AssetPosition assetSnapshot) {
+    public VehiclePositionView getVehicleSnapshotView(AssetPosition assetPosition) {
         VehiclePositionView view = new VehiclePositionView();
-        view.setAssetId(assetSnapshot.getAssetId());
-        view.setTrail(assetSnapshot.getTrail());
-        view.setStatus(RunningStatus.forStatusCode(assetSnapshot.getStatus()));
+        view.setAssetId(assetPosition.getAssetId());
+        view.setTrail(assetPosition.getTrail());
+        view.setStatus(RunningStatus.forStatusCode(assetPosition.getStatus()));
 
-        VehicleState vehicleState = vehicleStateDao.getVehicleState(assetSnapshot.getAssetId());
+        VehicleState vehicleState = vehicleStateDao.getVehicleState(assetPosition.getAssetId());
         if(vehicleState != null) {
-            List<LatLng> currTrail = assetSnapshot.getTrail();
+            List<LatLng> currTrail = assetPosition.getTrail();
             if(currTrail.size() == 1) {
                 currTrail = new ArrayList<>(currTrail);
                 for (LatLng latLng : vehicleState.getTrail()) {
@@ -69,7 +50,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                     }
                 }
             }
-            view.setTrail(assetSnapshot.getTrail());
+            view.setTrail(assetPosition.getTrail());
             view.setWithinServiceArea(vehicleState.isWithinServiceArea());
             if(vehicleState.getLastTrailChange() != null) {
                 view.setPositionChange(vehicleState.getLastTrailChange().getTime());
@@ -87,7 +68,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             view.getProps().put("withinOrigin", String.valueOf(vehicleState.isWithinOrigin()));
             view.getProps().put("avgSpeed", String.valueOf(vehicleState.getAvgSpeed()));
         }
-        Vehicle vehicle = vehicleDao.getVehicle(assetSnapshot.getAssetId());
+        Vehicle vehicle = vehicleDao.getVehicle(assetPosition.getAssetId());
         if(vehicle != null) {
             view.setVehicle(vehicle.getName());
         }
@@ -95,14 +76,16 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     }
 
     @Override
-    public void updateVehicleState(AssetPosition assetSnapshot) {
+    public void updateVehicleState(AssetPosition assetPosition) {
 
-        VehicleState v = vehicleStateDao.getVehicleState(assetSnapshot.getAssetId());
-        if(!passesPreliminaryChecks(assetSnapshot, v)) {
+        VehicleState v = vehicleStateDao.getVehicleState(assetPosition.getAssetId());
+        if(!passesPreliminaryChecks(assetPosition, v)) {
             return;
         }
 
-        List<LatLng> currTrail = assetSnapshot.getTrail();
+        List<LatLng> currTrail = assetPosition.getTrail();
+        statsLogDao.insertAssetPosition(assetPosition);
+
         if(v.hasLastKnownRoute()) {
             Map<String, Object> withinOrigOrDest = subrouteDao.isWithinOriginOrDestination(currTrail, v.getLastKnownSubroute());
             if(withinOrigOrDest != null) {
@@ -143,65 +126,43 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             }
         }
 
-        if(currTrail.size() == 1) {
-            currTrail = new ArrayList<>(currTrail);
-            for (LatLng latLng : v.getTrail()) {
-                if(!latLng.equals(currTrail.get(0))) {
-                    currTrail.add(latLng);
-                    break;
-                }
-            }
-        }
-        if(currTrail.size() == 1) {
-            return;
-        }
-
-        long secondsSinceMove = (System.currentTimeMillis() - v.getLastTrailChange().getTime()) / 1000;
+        long secondsSinceMove = (assetPosition.getWhen().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - v.getLastTrailChange().getTime()) / 1000;
         if(v.getTripId() != null && secondsSinceMove < 120) {
-            Stop closestStop = stopDao.getClosestStopWithin10Meters(assetSnapshot.getTrail());
+            Stop closestStop = stopDao.getClosestStopWithin10Meters(assetPosition.getTrail());
             if(closestStop != null && (v.getStopId() == null || closestStop.getId() != v.getStopId())) {
                 v.setStopId(closestStop.getId());
-                statsLogDao.insertTripLog(v, closestStop.getId(), assetSnapshot.getTrail());
+                statsLogDao.insertTripLog(v, closestStop.getId(), assetPosition.getTrail());
             }
         }
 
-        if(assetSnapshot.getTrail().size() > 1
-                && v.getTrail().size() > 1) {
-            //compare bearings, don't change route if bearing has changed too much
-            double currBearing = calcBearing(assetSnapshot.getTrail().get(assetSnapshot.getTrail().size() - 1), assetSnapshot.getTrail().get(0));
-            double prevBearing = calcBearing(v.getTrail().get(v.getTrail().size() - 1), v.getTrail().get(0));
-            if(currBearing - prevBearing > .4 * Math.PI) {
-                float speedInMetersPerSecond = calcSpeed(currTrail, v.getTrail(), v.getLastTrailChange());
-                v.addSpeed(speedInMetersPerSecond);
-                v.setTrail(assetSnapshot.getTrail());
+        //compare bearings, don't change route if bearing has changed too much
+        double currBearing = calcBearing(v.getTrail().get(0), assetPosition.getTrail().get(0));
+        if(v.getAzimuth() != null) {
+            if (currBearing - v.getAzimuth() > .4 * Math.PI) {
+                float distance = (float) calcDistance(currTrail.get(0), v.getTrail().get(0));
+                v.addSpeed(distance / secondsSinceMove);
+                v.setTrail(assetPosition.getTrail());
                 v.setLastTrailChange(new Date());
                 v.setWithinOrigin(false);
+                v.setAzimuth((float) currBearing);
                 vehicleStateDao.updateVehicleState(v);
                 return;
             }
         }
 
-        Map<SubrouteKey, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithinDistance(currTrail, 30);
+
+        Map<SubrouteKey, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithin100Meters(currTrail.get(0), v.getTrail().get(0));
         Set<SubrouteKey> nearbySubroutes = subrouteViews.keySet();
         Set<SubrouteKey> oldPossibleSubroutes = v.getPossibleSubroutesAsSet();
         Set<SubrouteKey> newPossibleSubroutes = new HashSet<>(nearbySubroutes);
         newPossibleSubroutes.retainAll(oldPossibleSubroutes);
-
-        SubrouteKey lastKnownSubroute = v.getLastKnownSubroute();
 
         if (newPossibleSubroutes.size() == 1) {
             setSubroute(v, newPossibleSubroutes, currTrail);
         } else if (nearbySubroutes.size() == 1) {
             setSubroute(v, nearbySubroutes, currTrail);
         }
-        //todo add logic to switch subroutes at the end of the trip
-        /*else if (v.hasLastKnownRoute()
-                && !nearbySubroutes.contains(v.getLastKnownSubroute())
-                && lastKnownSubroute != null
-                && lastKnownSubroute.getNextSubrouteId() != null
-                && nearbySubroutes.contains(lastKnownSubroute.getNextSubrouteId())) {
-            setSubroute(v, Collections.singletonList(lastKnownSubroute.getNextSubrouteId()), currTrail);
-        }*/
+
         else if (!v.hasLastKnownRoute()
                 || (v.hasLastKnownRoute() && !newPossibleSubroutes.contains(v.getLastKnownSubroute()))
                 || newPossibleSubroutes.isEmpty()) {
@@ -217,19 +178,25 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
                 Vehicle vehicle = vehicleDao.getVehicle(v.getAssetId());
                 log.warn("Decreasing m value for vehicle {} in subroute {} to {}",
                         vehicle.getName(),
-                        lastKnownSubrouteView.getSubroute().getRoute(),
-                        lastKnownSubrouteView.getSubroute().getDirection());
+                        lastKnownSubrouteView.getSubrouteKey().getRoute(),
+                        lastKnownSubrouteView.getSubrouteKey().getDirection());
             }
             v.setSubrouteMeasure(currMeasure);
         }
 
-        float speedInMetersPerSecond = calcSpeed(currTrail, v.getTrail(), v.getLastTrailChange());
-        v.addSpeed(speedInMetersPerSecond);
+        if (secondsSinceMove > 0) {
+            float distance = (float) calcDistance(currTrail.get(0), v.getTrail().get(0));
+            float speedInMetersPerSecond = distance / secondsSinceMove;
+            v.addSpeed(speedInMetersPerSecond);
+        } else {
+            v.addSpeed(0);
+        }
 
         v.setTrail(currTrail);
-        v.setLastTrailChange(new Date());
+        v.setLastTrailChange(Date.from(assetPosition.getWhen().atZone(ZoneId.systemDefault()).toInstant()));
         v.setWithinServiceArea(!nearbySubroutes.isEmpty());
         v.setWithinOrigin(false);
+        v.setAzimuth((float) currBearing);
         vehicleStateDao.updateVehicleState(v);
     }
 

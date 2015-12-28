@@ -122,6 +122,7 @@
     </div>
 
     <div id="stopTimes"></div>
+    <div id="nearbyEtas"></div>
     <div id="nearbyRoutesWithoutSchedules"></div>
 
 </div>

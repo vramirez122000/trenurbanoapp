@@ -8,7 +8,7 @@ import com.trenurbanoapp.scraper.model.AssetPosition;
  */
 public interface VehicleSnapshotAlgService {
 
-    VehiclePositionView getVehicleSnapshotView(AssetPosition assetSnapshot);
+    VehiclePositionView getVehicleSnapshotView(AssetPosition assetPosition);
 
     void updateVehicleState(AssetPosition assetSnapshot);
 

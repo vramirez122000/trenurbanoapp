@@ -1,4 +1,4 @@
-INSERT INTO ref.route_new (id, "desc", color, gpsenabled, sort_order, priority) VALUES
+INSERT INTO ref.route (id, "desc", color, gpsenabled, sort_order, priority) VALUES
   ('BQ', 'Bo. Borinquen', '#CC4FC5', TRUE, 1, 1),
   ('BC', 'Bo. Cañaboncito', '#6EB245', TRUE, 2, 1),
   ('BM', 'Bo. La Mesa / La Barra', '#D45035', TRUE, 3, 1),

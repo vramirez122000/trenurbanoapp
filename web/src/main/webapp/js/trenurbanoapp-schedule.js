@@ -121,6 +121,32 @@ TU.SCHED = (function(my, $) {
         });
     };
 
+    my.nearbyEtas = function(targetDivId, params) {
+        var targetDiv = $(targetDivId);
+        $.ajax({
+            url: '../app/nearbyEtas',
+            cache: false,
+            data: params,
+            beforeSend: function() {
+                targetDiv.html(_progressImg);
+            },
+            success: function(data) {
+                targetDiv.html(data);
+            },
+            error: function(xhr) {
+                targetDiv.html(_errorTemplate);
+                var stackTrace = "";
+                $("pre", xhr.responseXML).each(function() {
+                    stackTrace += this;
+                });
+                targetDiv.find("#ajaxErrorStackTrace").html(stackTrace);
+            },
+            complete: function() {
+                $("#progressImg").hide();
+            }
+        });
+    };
+
     my.isIOS9WebView = function() {
         var standalone = 'standalone' in window.navigator && window.navigator.standalone;
         var userAgent = window.navigator.userAgent.toLowerCase();

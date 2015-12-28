@@ -10,9 +10,9 @@ public enum ScheduleType {
     WORKDAY("D\u00EDa laboral"),
 
     //Weekend or holiday
-    RESTDAY("Feriado o Fin de Semana"),
+    RESTDAY("Fin de semana o feriado"),
 
-    LOW_SEASON_WORKDAY("D\u00EDa de Trabajo en Temporada Baja");
+    LOW_SEASON_WORKDAY("D\u00EDa laboral en temporada baja");
 
     private String description;
 

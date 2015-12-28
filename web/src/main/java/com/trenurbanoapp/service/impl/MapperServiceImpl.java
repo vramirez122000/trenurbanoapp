@@ -67,11 +67,6 @@ public class MapperServiceImpl implements MapperService {
     }
 
     @Override
-    public void logGeolocation(final LatLng point, final Float accuracy) {
-        statsLogDao.insertClientLog(point.getLat(), point.getLng(), accuracy);
-    }
-
-    @Override
     public GeometryCollection getLogEntriesAsGeoJson(LatLngBounds bounds) {
 
         GeometryCollection collection = new GeometryCollection();
@@ -161,11 +156,5 @@ public class MapperServiceImpl implements MapperService {
         }
         return null;
     }
-
-    @Override
-    public List<Map<String, Object>> getDistanceAlongNearbySubroutes(LatLng latLng) {
-        return subrouteDao.getDistanceAlongNearbySubroutes(latLng);
-    }
-
 
 }

@@ -1,5 +1,6 @@
 package com.trenurbanoapp.scraper.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class AssetPosition {
 
     private Integer assetId;
     private String driverId;
-    private String when;
+    private LocalDateTime when;
     private List<LatLng> trail = new ArrayList<>(0);
     private Integer status;
     private String statusMessage;
@@ -32,11 +33,11 @@ public class AssetPosition {
         this.driverId = driverId;
     }
 
-    public String getWhen() {
+    public LocalDateTime getWhen() {
         return when;
     }
 
-    public void setWhen(String when) {
+    public void setWhen(LocalDateTime when) {
         this.when = when;
     }
 

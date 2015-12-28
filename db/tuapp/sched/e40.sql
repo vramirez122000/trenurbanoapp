@@ -6,7 +6,7 @@ DELETE FROM schedule where route = 'E40';
 WITH RECURSIVE t(n) AS (
   VALUES (time'05:00:00')
   UNION ALL
-  SELECT n + interval '30 min' FROM t WHERE n < time'20:00:00'
+  SELECT n + interval '30 min' FROM t WHERE n + interval '30 min' <= time'20:00:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
   (SELECT
@@ -21,7 +21,7 @@ insert into schedule(route, stop_area, direction, schedule_type, stop_time)
 WITH RECURSIVE t(n) AS (
   VALUES (time'05:00:00')
   UNION ALL
-  SELECT n + interval '1 hour' FROM t WHERE n < time'20:00:00'
+  SELECT n + interval '1 hour' FROM t WHERE n + interval '1 hour' <= time'20:00:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time)
   (SELECT
@@ -37,7 +37,7 @@ insert into schedule(route, stop_area, direction, schedule_type, stop_time)
 WITH RECURSIVE t(n) AS (
   VALUES (time'05:20:00')
   UNION ALL
-  SELECT n + interval '30 min' FROM t WHERE n < time'20:00:00'
+  SELECT n + interval '30 min' FROM t WHERE n + interval '30 min' <= time'20:00:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time, error_minutes)
 (SELECT
@@ -52,7 +52,7 @@ insert into schedule(route, stop_area, direction, schedule_type, stop_time, erro
 WITH RECURSIVE t(n) AS (
   VALUES (time'05:20:00')
   UNION ALL
-  SELECT n + interval '1 HOUR' FROM t WHERE n < time'20:00:00'
+  SELECT n + interval '1 hour' FROM t WHERE n + interval '1 hour' <= time'20:00:00'
 )
 insert into schedule(route, stop_area, direction, schedule_type, stop_time, error_minutes)
 (SELECT

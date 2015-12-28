@@ -1,7 +1,5 @@
 -- Ruta T3 San Juan a Sagrado vía Ponce de Leon
 
-DELETE FROM SCHEDULE where route = 'T3';
-
 -- San Juan a Sagrado, día laboral
 INSERT INTO SCHEDULE (ROUTE, STOP_AREA, DIRECTION, SCHEDULE_TYPE, STOP_TIME) VALUES
   ('T3', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '05:00:00'),

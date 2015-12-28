@@ -13,6 +13,7 @@ public class Vehicle {
     private String name;
     private Integer groupId;
 
+
     public Integer getAssetId() {
         return assetId;
     }

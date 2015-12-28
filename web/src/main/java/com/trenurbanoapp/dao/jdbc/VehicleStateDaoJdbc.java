@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.trenurbanoapp.dao.VehicleStateDao;
 import com.trenurbanoapp.model.SubrouteKey;
 import com.trenurbanoapp.model.VehicleState;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -38,6 +39,9 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
     private SimpleJdbcInsert possibleGeofenceRoutesInsert;
     private Set<String> possibleRouteExistsCache = Collections.synchronizedSet(new HashSet<>(1346));
 
+    @Value("${gps.routeAlgorithm.useRoutes}")
+    private Boolean useRoutes;
+
     @Inject
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -65,8 +69,12 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
         }
 
         VehicleState v = results.get(0);
-        v.setPossibleSubroutes(getPossibleSubroutes(assetId));
-        v.setPossibleRoutes(getPossibleRoutes(assetId));
+        if(useRoutes != null && useRoutes) {
+            v.setPossibleSubroutes(getPossibleSubroutes(assetId));
+        } else {
+            v.setPossibleRoutes(getPossibleRoutes(assetId));
+        }
+
         return v;
     }
 
@@ -76,6 +84,20 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
                 " where current_timestamp - last_trail_change < interval'00:10:00' " +
                 " and within_service_area = true ";
         return jdbcTemplate.query(sql, VEHICLE_STATE_MAPPER);
+    }
+
+    @Override
+    public Map<Integer, VehicleState> getAllAsMap() {
+        String sql = "SELECT * FROM ref.vehicle_state";
+        return jdbcTemplate.query(sql, rs -> {
+            Map<Integer, VehicleState> vstatesMap = new HashMap<>();
+            int i = 1;
+            while(rs.next()) {
+                VehicleState v = VEHICLE_STATE_MAPPER.mapRow(rs, i++);
+                vstatesMap.put(v.getAssetId(), v);
+            }
+            return vstatesMap;
+        });
     }
 
     @Override
@@ -252,6 +274,7 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
             params.put("within_origin", vehicleState.isWithinOrigin());
             params.put("trip_id", vehicleState.getTripId());
             params.put("stop_gid", vehicleState.getStopId());
+            params.put("azimuth", vehicleState.getAzimuth());
             params.put("location_desc", vehicleState.getLocationDescription());
             if(vehicleState.getTrail() != null) {
                 params.putAll(TRAIL_MAPPER.reverseMap(vehicleState.getTrail(), action));
@@ -278,6 +301,7 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
             v.setWithinOrigin(rs.getBoolean("within_origin"));
             v.setTripId((Long) rs.getObject("trip_id"));
             v.setStopId((Integer) rs.getObject("stop_gid"));
+            v.setAzimuth((Float) rs.getObject("azimuth"));
             v.setLocationDescription(rs.getString("location_desc"));
             String recentSpeedsString = rs.getString("recent_speeds");
             if(recentSpeedsString != null) {

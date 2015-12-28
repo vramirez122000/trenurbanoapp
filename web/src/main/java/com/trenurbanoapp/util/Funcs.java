@@ -1,5 +1,6 @@
 package com.trenurbanoapp.util;
 
+import com.trenurbanoapp.service.impl.VehicleSnapshotAlgServiceSubroute;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
@@ -37,6 +38,36 @@ public class Funcs {
                 StringUtils.leftPad(Integer.toHexString(Math.max((int) (old.getGreen() * factor), 0)), 2, '0'),
                 StringUtils.leftPad(Integer.toHexString(Math.max((int) (old.getBlue() * factor), 0)), 2, '0')
         );
+    }
+
+    public static final String[] DIRECTIONS = new String[]{
+            "norte",
+            "noreste",
+            "noreste",
+            "este",
+            "este",
+            "sureste",
+            "sureste",
+            "sur",
+            "sur",
+            "suroeste",
+            "suroeste",
+            "oeste",
+            "oeste",
+            "noroeste",
+            "noroeste",
+            "norte"
+    };
+
+    protected static String bearingToCardinal(double x) {
+        double twoPi = 2 * Math.PI;
+        if (x < 0) {
+            x = x + twoPi;
+        } else if (x >= twoPi) {
+            x = x % twoPi;
+        }
+        int index = (int) Math.round((x / twoPi) * (DIRECTIONS.length - 1));
+        return DIRECTIONS[index];
     }
 }
 

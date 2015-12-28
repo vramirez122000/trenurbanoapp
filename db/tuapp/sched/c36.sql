@@ -1,5 +1,4 @@
 -- Ruta expreso Sagrado -> Convenciones
-DELETE FROM schedule where route = 'C36';
 
 -- Sagrado
 

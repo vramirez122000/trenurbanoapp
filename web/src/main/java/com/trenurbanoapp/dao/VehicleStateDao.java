@@ -19,6 +19,8 @@ public interface VehicleStateDao {
 
     List<VehicleState> getMovingVehicleStatesWithinServiceArea();
 
+    Map<Integer, VehicleState> getAllAsMap();
+
     List<VehicleState> getAll();
 
     boolean existsVehicleState(int assetId);

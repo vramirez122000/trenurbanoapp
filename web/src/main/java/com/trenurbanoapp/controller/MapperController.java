@@ -83,11 +83,4 @@ public class MapperController {
         return nearbyRouteNames;
     }
 
-    @RequestMapping("getSubrouteDistances")
-    @ResponseBody
-    public List<Map<String, Object>> getSubrouteDistances(@RequestBody LatLng latLng) {
-        List<Map<String, Object>> distances = mapperService.getDistanceAlongNearbySubroutes(latLng);
-        return distances;
-    }
-
 }

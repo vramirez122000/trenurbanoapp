@@ -6,6 +6,8 @@ set -o verbose
 
 INSTANCE=$([ -z "$1" ] && echo "tuapp" || echo "tuapp_$1")
 
+read -p "Recreating schema ref on database ${INSTANCE}, this cannot be undone..."
+
 _SET_SEARCH_PATH="SET search_path = ref, public, pg_catalog;"
 _DROP="${_PREFIX} drop schema if exists ref cascade;"
 

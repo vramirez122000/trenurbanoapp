@@ -33,6 +33,7 @@ public class VehicleState {
     private Long tripId;
     private Integer stopId;
     private String locationDescription;
+    private Float azimuth;
 
     public Integer getAssetId() {
         return assetId;
@@ -206,6 +207,14 @@ public class VehicleState {
 
     public void setStopId(Integer stopId) {
         this.stopId = stopId;
+    }
+
+    public Float getAzimuth() {
+        return azimuth;
+    }
+
+    public void setAzimuth(Float azimuth) {
+        this.azimuth = azimuth;
     }
 
     public void updatePossibleSubroutes(Iterable<SubrouteKey> newPossibleSubroutes) {

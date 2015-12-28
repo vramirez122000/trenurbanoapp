@@ -1,9 +1,6 @@
 package com.trenurbanoapp.service.impl;
 
-import com.trenurbanoapp.dao.GeofenceDao;
-import com.trenurbanoapp.dao.SubrouteDao;
-import com.trenurbanoapp.dao.VehicleDao;
-import com.trenurbanoapp.dao.VehicleStateDao;
+import com.trenurbanoapp.dao.*;
 import com.trenurbanoapp.model.VehicleState;
 import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
@@ -22,17 +19,16 @@ public abstract class VehicleSnapshotAlgServiceBase {
 
     private static final Logger log = LogManager.getLogger(VehicleSnapshotAlgServiceBase.class);
     protected VehicleStateDao vehicleStateDao;
-    protected GeofenceDao geofenceDao;
     protected VehicleDao vehicleDao;
     protected SubrouteDao subrouteDao;
+    protected StatsLogDao statsLogDao;
 
+    public void setStatsLogDao(StatsLogDao statsLogDao) {
+        this.statsLogDao = statsLogDao;
+    }
 
     public void setVehicleStateDao(VehicleStateDao vehicleStateDao) {
         this.vehicleStateDao = vehicleStateDao;
-    }
-
-    public void setGeofenceDao(GeofenceDao geofenceDao) {
-        this.geofenceDao = geofenceDao;
     }
 
     public void setVehicleDao(VehicleDao vehicleDao) {
@@ -73,32 +69,21 @@ public abstract class VehicleSnapshotAlgServiceBase {
     protected static double calcBearing(LatLng first, LatLng second) {
         double latitude1 = Math.toRadians(first.getLat());
         double latitude2 = Math.toRadians(second.getLat());
-        double longDiff = Math.toRadians(second.getLng() - first.getLng());
-        double y = Math.sin(longDiff) * Math.cos(latitude2);
-        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+        double lonDiff = Math.toRadians(second.getLng() - first.getLng());
+        double y = Math.sin(lonDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(lonDiff);
         return Math.atan2(y, x);
     }
 
-    protected float calcSpeed(List<LatLng> currTrail, List<LatLng> prevTrail, Date lastTrailChange) {
-        if (prevTrail.isEmpty() || currTrail.isEmpty()) {
-            return 0;
-        }
-
-        LatLng prevPosition = CrsConversion.convertToNad83(prevTrail.get(0));
-        LatLng currPosition = CrsConversion.convertToNad83(currTrail.get(0));
-        float distance = (float) Math.sqrt(Math.pow(prevPosition.getLat() - currPosition.getLat(), 2) + Math.pow(prevPosition.getLng() - currPosition.getLng(), 2));
-        float timeInSeconds = System.currentTimeMillis() - lastTrailChange.getTime() / 1000;
-        return distance / timeInSeconds;
+    protected double calcDistance(LatLng first, LatLng second) {
+        int R = 6_378_137;
+        double lat1 = Math.toRadians(first.getLat());
+        double lat2 = Math.toRadians(second.getLat());
+        double lonDiff = Math.toRadians(second.getLng() - first.getLng());
+        double x = lonDiff * Math.cos((lat1 + lat2) / 2);
+        double y = (lat2 - lat1);
+        return Math.sqrt(x*x + y*y) * R;
     }
 
-    protected static String bearingToCardinal(double x) {
-        double twoPi = 2 * Math.PI;
-        if (x < 0) {
-            x = x + twoPi;
-        } else if (x >= twoPi) {
-            x = x % twoPi;
-        }
-        int index = (int) Math.round((x / twoPi) * (VehicleSnapshotAlgServiceSubroute.DIRECTIONS.length - 1));
-        return VehicleSnapshotAlgServiceSubroute.DIRECTIONS[index];
-    }
+
 }

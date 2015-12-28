@@ -55,9 +55,30 @@
                                     <strong>${stopTime.stopTimeString}${plusMinus}</strong>
                                 </div>
                             </div>
+                            <div class="row hidden-xs">
+                                <div class="col-xs-4">Tipo de itinerario</div>
+                                <div class="col-xs-8">
+                                    <strong>${stopTime.scheduleType.description}</strong>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xs-2 text-right">
                             <div>
+
+                                <%--<c:if test="${stopTime.errorMinutes == 0}">
+                                    <a class="visible-xs" href="tel:311" title="Reportalo">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                    </a>
+                                    <c:set var="infoUrl" value="mailto:info@ati.pr.gov"/>
+                                    <c:set var="infoUrl" value="${infoUrl}?subject=Informe de deficiencia de servicio en la ruta ${stopTime.routeFullName} hacia ${stopTime.dest}"/>
+                                    <c:set var="infoUrl" value="${infoUrl}&body=La ruta ${stopTime.routeFullName} hacia ${stopTime.dest} que se supone que saliera de ${stopTime.stopArea} en ${stopTime.stopTimeString} no sali&oacute; a tiempo."/>
+                                    <a class="hidden-xs"
+                                       href="${infoUrl}"
+                                       title="Reportalo">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                    </a>
+                                </c:if>--%>
+
                                 <a href="<c:url value="/app/map?route=${stopTime.route}"/>" title="Ver en mapa">
                                     <i class="fa fa-map-o"></i>
                                 </a>

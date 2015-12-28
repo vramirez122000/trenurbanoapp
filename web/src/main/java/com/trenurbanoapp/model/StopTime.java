@@ -18,11 +18,11 @@ public class StopTime {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.US);
     private String route;
     private String routeFullName;
-    private String routeGroup;
+    private RouteGroup routeGroup;
     private String stopArea;
     private String dest;
     private LocalTime stopTime;
-    private String scheduleType;
+    private ScheduleType scheduleType;
     private String color;
     private String station;
     private int errorMinutes;
@@ -43,13 +43,14 @@ public class StopTime {
         this.routeFullName = routeFullName;
     }
 
-    public String getRouteGroup() {
+    public RouteGroup getRouteGroup() {
         return routeGroup;
     }
 
-    public void setRouteGroup(String routeGroup) {
+    public void setRouteGroup(RouteGroup routeGroup) {
         this.routeGroup = routeGroup;
     }
+
     public LocalTime getStopTime() {
         return stopTime;
     }
@@ -74,16 +75,12 @@ public class StopTime {
         this.dest = dest;
     }
 
-    public String getScheduleType() {
+    public ScheduleType getScheduleType() {
         return scheduleType;
     }
 
-    public void setScheduleType(String scheduleType) {
+    public void setScheduleType(ScheduleType scheduleType) {
         this.scheduleType = scheduleType;
-    }
-
-    public void setStopTimeAsSqlTime(Time time) {
-        this.stopTime = time.toLocalTime();
     }
 
     public String getStopTimeString() {

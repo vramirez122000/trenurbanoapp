@@ -3,6 +3,7 @@ package com.trenurbanoapp.dao.jdbc;
 import com.trenurbanoapp.dao.StatsLogDao;
 import com.trenurbanoapp.model.LatLngBounds;
 import com.trenurbanoapp.model.VehicleState;
+import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,10 +18,8 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,6 +49,17 @@ public class StatsLogDaoJdbc implements StatsLogDao {
         jdbcTemplate.update("INSERT INTO logs.client_location_log (stamp, location, accuracy) " +
                         " values (current_timestamp, ST_SetSRID(st_point(?, ?), 4326), ?)",
                 lat, lng, accuracy);
+    }
+
+    @Override
+    @Async
+    public void insertAssetPosition(AssetPosition assetPosition) {
+        jdbcTemplate.update("INSERT INTO logs.veh_pos (asset, lat, lng, tstamp) " +
+                        " values (?, ?, ?, ?)",
+                assetPosition.getAssetId(),
+                assetPosition.getTrail().get(0).getLat(),
+                assetPosition.getTrail().get(0).getLng(),
+                Timestamp.valueOf(assetPosition.getWhen()));
     }
 
     @Override

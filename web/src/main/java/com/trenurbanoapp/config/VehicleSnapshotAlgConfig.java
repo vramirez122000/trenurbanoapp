@@ -18,9 +18,6 @@ import javax.inject.Inject;
 public class VehicleSnapshotAlgConfig {
 
     @Inject
-    private GeofenceDao geofenceDao;
-
-    @Inject
     private SubrouteDao subrouteDao;
 
     @Inject
@@ -44,7 +41,6 @@ public class VehicleSnapshotAlgConfig {
             VehicleSnapshotAlgServiceSubroute alg = new VehicleSnapshotAlgServiceSubroute();
             injectCommonDaos(alg);
             alg.setStopDao(stopDao);
-            alg.setStatsLogDao(statsLogDao);
             return alg;
         } else {
             VehicleSnapshotAlgServiceRoute alg = new VehicleSnapshotAlgServiceRoute();
@@ -55,8 +51,8 @@ public class VehicleSnapshotAlgConfig {
 
     private void injectCommonDaos(VehicleSnapshotAlgServiceBase alg) {
         alg.setSubrouteDao(subrouteDao);
-        alg.setGeofenceDao(geofenceDao);
         alg.setVehicleDao(vehicleDao);
         alg.setVehicleStateDao(vehicleStateDao);
+        alg.setStatsLogDao(statsLogDao);
     }
 }

@@ -1,6 +1,7 @@
 package com.trenurbanoapp.task;
 
 import com.trenurbanoapp.service.VehicleSnapshotAlgService;
+import com.trenurbanoapp.service.VehicleSnapshotService;
 import com.trenurbanoapp.webapi.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,9 @@ import javax.inject.Inject;
 public class WebApiTasks {
 
     private static final Logger log = LogManager.getLogger(WebApiTasks.class);
+
+    @Inject
+    private VehicleSnapshotService vehicleSnapshotService;
 
     @Inject
     private VehicleSnapshotAlgService vehicleSnapshotAlgService;

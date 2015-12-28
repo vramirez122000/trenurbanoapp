@@ -43,25 +43,10 @@ CREATE TABLE configuration (
 ALTER TABLE configuration OWNER TO postgres;
 
 --
--- Name: geofence; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: route; Type: TABLE; Schema: ref; Owner: postgres; Tablespace:
 --
 
-CREATE TABLE geofence (
-    gid integer,
-    type character varying(20),
-    name character varying(50),
-    avl_id integer,
-    geom public.geometry(MultiPolygon,4326)
-);
-
-
-ALTER TABLE geofence OWNER TO postgres;
-
---
--- Name: route_new; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE route_new (
+CREATE TABLE route (
     id character varying(100) NOT NULL,
     "desc" character varying(255),
     color character varying(50),
@@ -72,7 +57,7 @@ CREATE TABLE route_new (
 );
 
 
-ALTER TABLE route_new OWNER TO postgres;
+ALTER TABLE route OWNER TO postgres;
 
 --
 -- Name: schedule; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
@@ -122,17 +107,17 @@ CREATE TABLE stop_area (
 ALTER TABLE stop_area OWNER TO postgres;
 
 --
--- Name: subroute_new; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: subroute; Type: TABLE; Schema: ref; Owner: postgres; Tablespace:
 --
 
-CREATE TABLE subroute_new (
+CREATE TABLE subroute (
     route character varying(100) NOT NULL,
     direction character varying(100) NOT NULL,
     geom public.geometry(LineStringM,32161)
 );
 
 
-ALTER TABLE subroute_new OWNER TO postgres;
+ALTER TABLE subroute OWNER TO postgres;
 
 --
 -- Name: subroute_stop; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
@@ -176,6 +161,7 @@ CREATE TABLE vehicle_state (
     within_origin boolean,
     trip_id bigint,
     stop_gid integer,
+    azimuth float4,
     location_desc text,
     trail public.geometry(LineString,4326),
     last_known_direction character varying(50),
@@ -250,11 +236,11 @@ ALTER TABLE ONLY vehicle_state_possible_subroutes
 
 
 --
--- Name: route_new_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: route_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace:
 --
 
-ALTER TABLE ONLY route_new
-    ADD CONSTRAINT route_new_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY route
+    ADD CONSTRAINT route_pkey PRIMARY KEY (id);
 
 
 --
@@ -274,11 +260,11 @@ ALTER TABLE ONLY stop_area
 
 
 --
--- Name: subroute_new_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: subroute_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace:
 --
 
-ALTER TABLE ONLY subroute_new
-    ADD CONSTRAINT subroute_new_pkey PRIMARY KEY (route, direction);
+ALTER TABLE ONLY subroute
+    ADD CONSTRAINT subroute_pkey PRIMARY KEY (route, direction);
 
 
 --

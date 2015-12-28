@@ -1,6 +1,5 @@
 -- Ruta expreso E10 San Juan - Sagrado, antes conocida com Metrobus Expreso ME
 
-DELETE FROM SCHEDULE where route = 'E10';
 
 INSERT INTO SCHEDULE (ROUTE, STOP_AREA, DIRECTION, SCHEDULE_TYPE, STOP_TIME) VALUES
   ('E10', 'SAN_JUAN', 'SAGRADO_CORAZON', 'WORKDAY', TIME '05:00:00'),

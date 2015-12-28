@@ -2,8 +2,12 @@ package com.trenurbanoapp.dao;
 
 import com.trenurbanoapp.model.LatLngBounds;
 import com.trenurbanoapp.model.VehicleState;
+import com.trenurbanoapp.scraper.model.AssetPosition;
 import com.trenurbanoapp.scraper.model.LatLng;
+import org.springframework.scheduling.annotation.Async;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +19,8 @@ import java.util.List;
  */
 public interface StatsLogDao {
     void insertClientLog(double lat, double lng, Float accuracy);
+
+    void insertAssetPosition(AssetPosition assetPosition);
 
     List<String> getLogEntriesAsGeoJson(LatLngBounds bounds);
 
