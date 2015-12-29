@@ -19,7 +19,6 @@ task bowerInstall(type: NodeTask) {
     script = file('node_modules/bower/bin/bower')
     args = ['install']
     inputs.files file('bower.json')
-    outputs.files file('src/main/webapp/jspkg')
 }
 
 // processes your package.json before running gulp build

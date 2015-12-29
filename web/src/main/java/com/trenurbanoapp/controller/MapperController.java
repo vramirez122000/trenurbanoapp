@@ -58,6 +58,12 @@ public class MapperController {
     }
 
     @ResponseBody
+    @RequestMapping("routeDecorations")
+    public FeatureCollection getRouteDecorations() {
+        return mapperService.getRoutesDecorationGeoJson();
+    }
+
+    @ResponseBody
     @RequestMapping("stops/{routeName}")
     public MultiPoint getStopsByRoutName(@PathVariable String routeName) {
         return mapperService.getStopsByRouteName(routeName);

@@ -26,6 +26,8 @@ public interface MapperService {
 
     FeatureCollection getRoutesGeoJson();
 
+    FeatureCollection getRoutesDecorationGeoJson();
+
     List<String> getNearbyRouteNames(LatLng point);
 
     Set<String> getOriginDestinationRouteNames(LatLng origin, LatLng dest);

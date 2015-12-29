@@ -34,6 +34,7 @@ gulp.task('default', function () {
         .pipe(addsrc([
             depsDir + '/fastclick/lib/fastclick.js',
             depsDir + '/momentjs/moment.js',
+            depsDir + '/leaflet-geocoder-mapzen/dist/leaflet-geocoder-mapzen.js',
             depsDir + '/Leaflet.TextPath/leaflet.textpath.js'
         ]))
         .pipe(concat('tumap.min.js'))

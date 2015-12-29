@@ -60,6 +60,24 @@ public class RouteDaoJdbc implements RouteDao {
                 SIMPLIFY_TOLERANCE);
     }
 
+    @Override
+    @Cacheable("routeDecorations")
+    public List<Route> getRouteDecorations() {
+        String sql = "with tmp as ( " +
+                "select ida.route, ida.direction, ST_Dump(ST_Difference(ST_Simplify(ida.geom, ?), ST_Buffer(vuelta.geom, 50))) geom_dump " +
+                "from subroute ida " +
+                "join subroute vuelta on ida.route = vuelta.route and ida.direction <> vuelta.direction " +
+                ") select route.id, route.desc, route.color, ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union((tmp.geom_dump).geom)), 4326)) geojson " +
+                "from tmp " +
+                "join route on tmp.route = route.id " +
+                "where ST_Length((tmp.geom_dump).geom) > 100 " +
+                " GROUP BY route.id, route.color, route.sort_order " +
+                " ORDER BY route.sort_order ";
+        return jdbcTemplate.query(sql,
+                rowMapper,
+                SIMPLIFY_TOLERANCE);
+    }
+
 
     @Override
     @Cacheable("routeById")
@@ -112,7 +130,7 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     @Cacheable("routesByStopCache")
     public List<String> getRouteNamesByStop(int stopGid) {
-        String sql = "SELECT subroute_stop.route " +
+        String sql = "SELECT distinct subroute_stop.route " +
                 " FROM stop " +
                 " JOIN subroute_stop ON stop.gid = subroute_stop.stop " +
                 " WHERE stop.gid = ? ";

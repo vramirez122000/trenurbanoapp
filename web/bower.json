@@ -5,7 +5,8 @@
     "momentjs": "~2.5",
     "fastclick": "~1.0.6",
     "heatmap": "https://github.com/Leaflet/Leaflet.heat/archive/gh-pages.zip",
-    "Leaflet.TextPath": "https://github.com/makinacorpus/Leaflet.TextPath/archive/gh-pages.zip"
+    "Leaflet.TextPath": "https://github.com/makinacorpus/Leaflet.TextPath/archive/gh-pages.zip",
+    "leaflet-geocoder-mapzen": "https://github.com/mapzen/leaflet-geocoder/archive/v1.4.1.zip"
   },
   "devDependencies": {}
 }

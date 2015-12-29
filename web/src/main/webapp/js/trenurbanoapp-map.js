@@ -33,18 +33,21 @@ TU.MAP = (function(my, $, Leaf) {
     });
 
     var SNAPSHOTS_AGE_MAX = 120000;
+    var SESSION_TIMEOUT_IN_SECONDS = 300;
     var vehicleLayers = {};
     var routeMarkerIcons = {};
     var colors = {};
     var routeLayers = {};
+    var decorationLayers = {};
     var activeRoutes = [];
     var stopMarkers = {};
     var ageInMillis = 0;
     var layerControl = Leaf.control.layers(null, {});
     var stopsLayer = Leaf.featureGroup();
+    var decorationLayerGroup = Leaf.featureGroup();
+    var routeLayerGroup = Leaf.featureGroup();
     var contextPath = '';
     var map = null;
-    var SESSION_TIMEOUT_IN_SECONDS = 300;
     var sessionIdleTimeInSeconds = 0;
     var snapshotIntervalId;
     var gpsEnabled = false;
@@ -105,6 +108,8 @@ TU.MAP = (function(my, $, Leaf) {
         }
         map = mapObj;
         layerControl.addTo(map);
+        decorationLayerGroup.addTo(map);
+        routeLayerGroup.addTo(map);
         stopsLayer.addTo(map);
 
         contextPath = typeof options.contextPath !== 'undefined' && options.contextPath || contextPath;
@@ -129,6 +134,7 @@ TU.MAP = (function(my, $, Leaf) {
             snapshotIntervalId = setInterval(intervalFunction, 5000);
         }
 
+        getRouteDecorations();
         getAllRoutes();
 
         //load stops
@@ -154,26 +160,22 @@ TU.MAP = (function(my, $, Leaf) {
 
         map.on('locationerror', function () {
             safeLog("location error");
+            if(route) {
+                return;
+            }
             map.setView(my.DEFAULTS.CENTER, my.DEFAULTS.ZOOM);
         });
 
         map.on('zoomend', function() {
             sessionIdleTimeInSeconds = 0;
-            var activeRouteId;
             if(map.getZoom() < 14) {
-                /*for (var i = 0; i < activeRoutes.length; i++) {
-                    activeRouteId = activeRoutes[i];
-                    routeLayers[activeRouteId].setText(null);
-                }*/
+                map.removeLayer(decorationLayerGroup);
                 map.removeLayer(stopsLayer);
             } else {
-                /*for (var j = 0; j < activeRoutes.length; j++) {
-                    activeRouteId = activeRoutes[j];
-                    routeLayers[activeRouteId].setText('   \u27a4   ',  {
-                        repeat: true,
-                        attributes: {fill: colors[activeRouteId]}
-                    });
-                }*/
+                if (!map.hasLayer(decorationLayerGroup)) {
+                    map.addLayer(decorationLayerGroup);
+                    decorationLayerGroup.bringToBack();
+                }
 
                 if (!map.hasLayer(stopsLayer)) {
                     map.addLayer(stopsLayer);
@@ -181,8 +183,14 @@ TU.MAP = (function(my, $, Leaf) {
             }
         });
 
+        map.on('dragend', function() {
+            sessionIdleTimeInSeconds = 0;
+        });
+
         map.on('contextmenu', function(e) {
-            $('#contextMenu').css({
+            var $contextMenu = $('#contextMenu');
+            $contextMenu.find("#latlng").text(e.latlng.lat.toPrecision(6) + ',' + e.latlng.lng.toPrecision(6));
+            $contextMenu.css({
                 display: "block",
                 left: e.originalEvent.pageX,
                 top: e.originalEvent.pageY
@@ -222,13 +230,32 @@ TU.MAP = (function(my, $, Leaf) {
         }
         if(map.hasLayer(originMarker)) {
             getOriginDestinationRouteNames(originMarker.getLatLng(), contextMenuLatLng);
+        } else if (map.hasLayer(locationMarker)) {
+            getOriginDestinationRouteNames(locationMarker.getLatLng(), contextMenuLatLng);
         }
+        $('#contextMenu').hide();
+    };
+
+    my.clearOriginDestination = function() {
+        if(map.hasLayer(originMarker)) {
+            map.removeLayer(originMarker);
+        }
+
+        if(map.hasLayer(destMarker)) {
+            map.removeLayer(destMarker);
+        }
+        $('#contextMenu').hide();
+    };
+
+    my.clearRoutes = function() {
+        updateRoutes('');
         $('#contextMenu').hide();
     };
 
     function onOverlayAdd(event) {
         var routeName = $(event.name).text();
         activeRoutes.push(routeName);
+        updateDecorations();
         updateStops();
     }
 
@@ -238,6 +265,7 @@ TU.MAP = (function(my, $, Leaf) {
         if (index > -1) {
             activeRoutes.splice(index, 1);
         }
+        updateDecorations();
         updateStops();
     }
 
@@ -280,11 +308,44 @@ TU.MAP = (function(my, $, Leaf) {
                         '; border-color: ' + darkColor + '">' + data.properties.fullName + '</span>';
                     layerControl.addOverlay(geoJsonLayer, routeLabel);
                     if(route == data.id) {
-                        map.addLayer(geoJsonLayer);
+                        activeRoutes.push(route);
+                        routeLayerGroup.addLayer(geoJsonLayer);
+                        map.fitBounds(geoJsonLayer.getBounds());
                     }
                 }
                 routeMarkerIcons.unknown = markerIcon('/images/unknown');
-                map.locate({setView: true, maxZoom: 14, enableHighAccuracy: true});
+                map.locate({setView: (!route || false), maxZoom: 14, enableHighAccuracy: true});
+            }
+        });
+    }
+
+    function getRouteDecorations() {
+        $.ajax(contextPath + '/app/routeDecorations', {
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            success: function (geojsonDecorations) {
+                var styleFunc = function() {
+                    return {
+                        stroke: false,
+                        clickable: false
+                    };
+                };
+                for (var i = 0; i < geojsonDecorations.features.length; i++) {
+                    var data = geojsonDecorations.features[i];
+                    var geoJsonLayer = Leaf.geoJson(data, {
+                        style: styleFunc
+                        //onEachFeature: routeBindPopup
+                    });
+                    geoJsonLayer.setText('      \u27a4',  {
+                        repeat: true,
+                        offset: '0',
+                        attributes: {
+                            fill: TU.UTIL.shadeColor(data.properties.color, -10),
+                            dy: '4px'
+                        }
+                    });
+                    decorationLayers[data.id] = geoJsonLayer;
+                }
             }
         });
     }
@@ -302,7 +363,9 @@ TU.MAP = (function(my, $, Leaf) {
         layer.bindPopup(popupHtml);
         layer.on("click", function() {
             layer.bringToFront();
-            stopsLayer.bringToFront();
+            if(map.hasLayer(stopsLayer)) {
+                stopsLayer.bringToFront();
+            }
         });
     }
 
@@ -457,7 +520,7 @@ TU.MAP = (function(my, $, Leaf) {
                 removeFromActive.push(activeRoute);
                 routeLayer = routeLayers[activeRoute];
                 if(routeLayer) {
-                    map.removeLayer(routeLayer);
+                    routeLayerGroup.removeLayer(routeLayer);
                 }
             }
         }
@@ -473,13 +536,28 @@ TU.MAP = (function(my, $, Leaf) {
                 activeRoutes.push(nearbyRouteName);
                 routeLayer = routeLayers[nearbyRouteName];
                 if (routeLayer) {
-                    routeLayer.addTo(map).bringToBack();
+                    routeLayer.addTo(routeLayerGroup);
                 }
             }
         }
-        updateStops();
         //load stops
+        updateDecorations();
+        updateStops();
         map.on('overlayadd', onOverlayAdd);
+    }
+
+    function updateDecorations() {
+        decorationLayerGroup.clearLayers();
+        if(activeRoutes.length === 0) {
+            return;
+        }
+
+        for (var i = 0; i < activeRoutes.length; i++) {
+            var activeRouteId = activeRoutes[i];
+            if(decorationLayers[activeRouteId]) {
+                decorationLayerGroup.addLayer(decorationLayers[activeRouteId]);
+            }
+        }
     }
 
     function updateStops() {
@@ -551,7 +629,7 @@ TU.MAP = (function(my, $, Leaf) {
             if(!routeLayers[route]) {
                 return;
             }
-            routeLayers[route].addTo(map).bringToBack();
+            routeLayers[route].addTo(routeLayerGroup).bringToBack();
         });
         vehicleLayer.marker.on("popupclose", function () {
             if(!routeLayers[route]) {

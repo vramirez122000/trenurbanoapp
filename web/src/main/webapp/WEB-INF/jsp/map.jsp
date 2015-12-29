@@ -10,23 +10,31 @@
     <c:import url="header.jsp"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
     <link rel="stylesheet" href="<c:url value="/css/trenurbanoapp-map.css"/>">
+    <link rel="stylesheet" href="<c:url value="/jspkg/leaflet-geocoder-mapzen/dist/leaflet-geocoder-mapzen.css"/>"/>
+
+
+    <!-- Load geocoding plugin after Leaflet -->
 
 
     <c:if test="${applicationScope['javascript.useSource']}">
         <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
         <script src="<c:url value="/jspkg/Leaflet.TextPath/leaflet.textpath.js"/>"></script>
+        <script src="<c:url value="/jspkg/leaflet-geocoder-mapzen/dist/leaflet-geocoder-mapzen.js"/>"></script>
+
         <script src="<c:url value="/js/trenurbanoapp-util.js"/>"></script>
         <script src="<c:url value="/js/trenurbanoapp-map.js"/>"></script>
     </c:if>
     <c:if test="${!applicationScope['javascript.useSource']}">
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
         <script src="<c:url value="/js/tumap.min.js"/>"></script>
     </c:if>
     <script type="text/javascript">
         $(document).ready(function () {
 
             var mapDiv = $('#map');
-            mapDiv.css("height", $(window).innerHeight() * 0.86);
+            var navbarHeight = $('nav.navbar-static-top').height();
+            var innerHeight = $(window).innerHeight();
+            mapDiv.css("height", innerHeight - (navbarHeight + 1 || (innerHeight * 0.14) ));
 
             var map = L.map('map', {
                 center: TU.MAP.DEFAULTS.CENTER,
@@ -39,7 +47,13 @@
                 maxZoom: 18,
                 maxBounds: TU.MAP.DEFAULTS.BOUNDS,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-                '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+                '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+            }).addTo(map);
+
+            L.control.geocoder('search-uUAFZ_4', {
+                bounds: TU.MAP.DEFAULTS.BOUNDS,
+                latlng: TU.MAP.DEFAULTS.CENTER,
+                autocomplete: true
             }).addTo(map);
 
             TU.MAP.main(map, {
@@ -77,6 +91,9 @@
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
         <li><a tabindex="-1" onclick="TU.MAP.setOrigin()">Rutas desde aqu&iacute;</a></li>
         <li><a tabindex="-1" onclick="TU.MAP.setDestination()">Rutas hacia aqu&iacute;</a></li>
+        <li><a tabindex="-1" onclick="TU.MAP.clearOriginDestination()">Eliminar origen y destino</a></li>
+        <li><a tabindex="-1" onclick="TU.MAP.clearRoutes()">Esconder Todas las rutas</a></li>
+        <li style="display: ${applicationScope['javascript.useSource'] ? 'block' : 'none'}"><a id="latlng" tabindex="-1"></a></li>
     </ul>
 </div>
 

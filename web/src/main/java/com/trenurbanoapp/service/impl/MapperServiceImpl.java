@@ -102,6 +102,24 @@ public class MapperServiceImpl implements MapperService {
     }
 
     @Override
+    public FeatureCollection getRoutesDecorationGeoJson() {
+        Cache.ValueWrapper valueWrapper = miscCache.get(CacheKeys.DECORATIONS);
+        if (valueWrapper != null) {
+            return (FeatureCollection) valueWrapper.get();
+        }
+
+        List<Route> allRoutes = routeDao.getRouteDecorations();
+        FeatureCollection collection = new FeatureCollection();
+        for (Route route : allRoutes) {
+            Feature routeFeature = mapToFeature(route);
+            collection.add(routeFeature);
+        }
+
+        miscCache.put(CacheKeys.DECORATIONS, collection);
+        return collection;
+    }
+
+    @Override
     public List<String> getNearbyRouteNames(LatLng point) {
         return routeDao.getRoutesNamesWithinDistance(point, 300);
     }

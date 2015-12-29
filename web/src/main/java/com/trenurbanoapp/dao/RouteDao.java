@@ -15,6 +15,9 @@ public interface RouteDao {
 
     List<Route> getAllRoutes();
 
+    @Cacheable("routeDecorations")
+    List<Route> getRouteDecorations();
+
     @Cacheable("routeById")
     Route findById(String route);
 

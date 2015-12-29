@@ -21,6 +21,7 @@
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopsByRouteCache"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="routesByStopCache"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="allRoutes"/>
+                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="routeDecorations"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="routeById"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="stopById"/>
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="allStopAreas"/>
