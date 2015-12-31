@@ -17,17 +17,21 @@
 <input type="hidden" id="resultsStation" name="resultsStation" value="${station}"/>
 
 <c:if test="${not empty stopTimes}">
-    <h4 class="hidden-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h4>
-    <h5 class="visible-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h5>
 
-    <table id="results" class="table table-bordered table-striped">
+
+        <h4 class="hidden-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h4>
+        <h5 class="visible-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h5>
+
+    <div class="panel panel-default">
+
+    <table id="results" class="table table-striped">
         <tbody>
 
-        <c:forEach items="${stopTimes}" var="stopTime">
+        <c:forEach items="${stopTimes}" var="stopTime" varStatus="varStat">
             <jsp:useBean id="stopTime" scope="page" type="com.trenurbanoapp.model.StopTime"/>
             <c:set var="darkColor" value="${tu:darken(stopTime.color)}"/>
             <c:set var="plusMinus" value="${stopTime.errorMinutes > 0 ? ' &plusmn; '.concat(stopTime.errorMinutes).concat(' min') : ''}"/>
-            <tr>
+            <tr id="schedRow${varStat.index}">
                 <td>
                     <div class="row">
                         <div class="col-xs-9">
@@ -62,24 +66,37 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-3 visible-xs text-right">
+                        <div class="col-xs-3 text-right" style="vertical-align: middle">
                                <div class="btn-group-vertical btn-group-sm">
+                                   <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${stopTime.route}"/>" title="Ver en mapa">
+                                       <i class="fa fa-map-o"></i><span class="hidden-xs"> <spring:message code="menu.map"/></span>
+                                   </a>
                                    <c:if test="${stopTime.errorMinutes == 0}">
-                                       <a class="btn btn-sm btn-default" href="tel:311" title="Repórtalo">
-                                           <i class="fa fa-exclamation-circle"></i>
+                                       <a class="btn btn-sm btn-default"
+                                          onclick="$('#instructions').html($('#schedRow${varStat.index}').find('.report-instructions').html())"
+                                          title="Repórtalo" data-toggle="modal" data-target="#report">
+                                           <i class="fa fa-exclamation-circle"></i><span class="hidden-xs"> <spring:message code="schedule.delayed"/></span>
                                        </a>
                                    </c:if>
-                                   <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${stopTime.route}"/>" title="Ver en mapa">
-                                       <i class="fa fa-map-o"></i>
-                                   </a>
+
                                </div>
                         </div>
+                    </div>
+                    <div class="hidden report-instructions">
+                        <spring:message code="route"/> <span class="routeLabel" style="
+                            background-color: ${stopTime.color};
+                            text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
+                            border-color: ${darkColor}">${stopTime.routeFullName}</span>
+                        <spring:message code="to"/> ${stopTime.dest}, partiendo de ${stopTime.stopArea} a las
+                            ${stopTime.stopTimeString}, está retrasado.
                     </div>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
+    </div>
+
 </c:if>
 
 <c:if test="${empty stopTimes && not empty station}">
@@ -93,9 +110,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Repórtalo</h4>
+                <h4 class="modal-title" id="myModalLabel"><spring:message code="schedule.reportDialog.header"/> </h4>
             </div>
-            <div class="modal-body"></div>
+            <div class="modal-body">
+                <p>Llame a <a class="" href="tel:311"><i class="fa fa-phone"></i> Línea 311</a> e indique
+                    que <span id="instructions"></span></p>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>

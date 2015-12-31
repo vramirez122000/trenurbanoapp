@@ -49,11 +49,11 @@
                 </li>
                 <li>
                     <a href="http://itunes.apple.com/us/app/tren-urbano-app/id484781635" target="_blank"><i class="fa fa-apple"></i>
-                        Versi&oacute;n Apple iOS</a>
+                        <spring:message code="menu.apple"/></a>
                 </li>
                 <li>
                     <a href="https://market.android.com/details?id=com.trenurbanoapp" target="_blank"><i class="fa fa-android"></i>
-                        Versi&oacute;n Android</a>
+                        <spring:message code="menu.android"/></a>
                 </li>
                 <li>
                     <c:if test="${param['lang'] == 'en' || (empty param['lang'] && fn:startsWith(locale,'en'))}">
