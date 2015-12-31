@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -32,7 +34,8 @@ public class ScheduleController {
     }
 
     @RequestMapping("/home")
-    public void home() {
+    public void home(HttpServletRequest request, RequestContext ctx) {
+        System.out.printf("bogus");
     }
 
     @RequestMapping(value = "/stopTimes")

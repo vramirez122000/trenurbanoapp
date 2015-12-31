@@ -1,57 +1,81 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<nav class="navbar navbar-default navbar-static-top" role="navigation">
+<nav class="navbar navbar-default navbar-static-top">
     <div class="container">
-        <div class="navbar-header">
-            <div class="navbar-brand visible-xs">
+
+        <div class="navbar-header pull-left">
+            <span class="navbar-brand visible-xs">
                 <img src="<c:url value="/images/trenurbano_icon_banner231.png"/>"
                      class="img-responsive"
                      style="max-height: 1.2em; max-width: 184px"/>
+            </span>
+
+            <div class="pull-right">
+                <div class="btn-group visible-xs">
+                    <button class="btn btn-sm btn-default navbar-btn itinerario-link" onclick="location = '<c:url value="/"/>'" title="<spring:message code="menu.schedule"/>">
+                        <i class="glyphicon glyphicon-time"></i>
+                    </button>
+                    <button class="btn btn-sm btn-default navbar-btn mapa-link" onclick="location = '<c:url value="/app/map"/>'" title="<spring:message code="menu.map"/>">
+                        <i class="fa fa-map"></i>
+                    </button>
+                    <button class="btn btn-sm btn-default navbar-btn" data-toggle="modal" data-target="#aboutUs">
+                        <i class="glyphicon glyphicon-info-sign"></i>
+                    </button>
+                    <c:set var="locale" value="${cookie['org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE'].value}"/>
+                    <c:if test="${param['lang'] == 'en' || (empty param['lang'] && fn:startsWith(locale,'en'))}">
+                        <button class="btn btn-sm btn-default navbar-btn" onclick="location = '<c:url value="?lang=es"/>'">Es</button>
+                    </c:if>
+                    <c:if test="${param['lang'] == 'es' || (empty param['lang'] && !fn:startsWith(locale,'en'))}">
+                        <button class="btn btn-sm btn-default navbar-btn" onclick="location = '<c:url value="?lang=en"/>'">En</button>
+                    </c:if>
+                </div>
             </div>
-            <div class="btn-group visible-xs pull-right">
-                <button type="button" class="btn navbar-btn btn-default"
-                        onclick="location = '<c:url value="/"/>'" title="Itinerarios">
-                    <i class="glyphicon glyphicon-time"></i>
-                </button>
-                <button type="button" class="btn navbar-btn btn-default"
-                        onclick="location = '<c:url value="/app/map"/>'" title="Mapa">
-                    <i class="fa fa-map"></i>
-                </button>
-                <button type="button" class="btn navbar-btn btn-default"
-                        data-toggle="modal" data-target="#aboutUs" title="Acerca de Tren Urbano App">
-                    <i class="glyphicon glyphicon-info-sign"></i>
-                </button>
-            </div>
+
         </div>
 
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li id="itinerario-link">
+        <div>
+            <ul class="nav navbar-nav hidden-xs">
+                <li class="itinerario-link">
                     <a onclick="location = '<c:url value="/"/>'"><i class="glyphicon glyphicon-time"></i>
-                        Itinerario</a>
+                        <spring:message code="menu.schedule"/></a>
                 </li>
-                <li id="mapa-link">
+                <li class="mapa-link">
                     <a onclick="location = '<c:url value="/app/map"/>'"><i class="fa fa-map"></i>
-                        Mapa</a>
+                        <spring:message code="menu.map"/></a>
                 </li>
-                <li class="hidden-xs">
+                <li>
                     <a href="http://itunes.apple.com/us/app/tren-urbano-app/id484781635" target="_blank"><i class="fa fa-apple"></i>
                         Versi&oacute;n Apple iOS</a>
                 </li>
-                <li class="hidden-xs">
+                <li>
                     <a href="https://market.android.com/details?id=com.trenurbanoapp" target="_blank"><i class="fa fa-android"></i>
                         Versi&oacute;n Android</a>
                 </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a data-toggle="modal" data-target="#aboutUs"><i class="glyphicon glyphicon-info-sign"></i>
-                        Acerca de Tren Urbano App</a>
+                    <c:if test="${param['lang'] == 'en' || (empty param['lang'] && fn:startsWith(locale,'en'))}">
+                        <a onclick="location = '<c:url value="?lang=es"/>'">Español</a>
+                    </c:if>
+                    <c:if test="${param['lang'] == 'es' || (empty param['lang'] && !fn:startsWith(locale,'en'))}">
+                        <a onclick="location = '<c:url value="?lang=en"/>'">English</a>
+                    </c:if>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                <li>
+                    <a data-toggle="modal" data-target="#aboutUs">
+                        <i class="glyphicon glyphicon-info-sign"></i>
+                        <spring:message code="menu.about"/>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
+
 </nav>
 
 <div class="modal" id="aboutUs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

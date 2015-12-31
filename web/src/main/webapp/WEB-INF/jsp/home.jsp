@@ -29,23 +29,23 @@
 
     <div class="container">
         <div class="col-xs-12">
-            <h1>
+            <h1 style="text-align: center">
                 <img alt="TrenUrbanoApp.com banner"
                      src="<c:url value="/images/trenurbano_icon_banner468.png"/>"/>
             </h1>
-
-            <p>Escoja la parada y le mostramos los tiempos de los pr&oacute;ximos
-                viajes en transporte p&uacute;blico.</p>
+            <jsp:useBean id="stations" scope="request" type="java.util.List"/>
+            <c:if test="${not empty stations}">
+                <p><spring:message code="tagline"/></p>
+            </c:if>
         </div>
 
         <div class="col-xs-6">
             <div class="form-group">
-                <label for="station" class="control-label">Escoja la parada</label>
+                <label for="station" class="control-label"><spring:message code="schedule.choose"/></label>
 
                 <div class="input-group">
                     <select id="station" name="station" class="form-control station-select">
-                        <option value="">-- Escoja la parada --</option>
-                        <jsp:useBean id="stations" scope="request" type="java.util.List"/>
+                        <option value="">-- <spring:message code="schedule.choose"/> --</option>
                         <c:forEach items="${stations}" var="varStation">
                             <jsp:useBean id="varStation" scope="page" type="com.trenurbanoapp.model.IdDesc"/>
                             <option value="${varStation.id}"
@@ -86,10 +86,10 @@
 
     <div class="visible-xs">
         <div class="form-group">
-            <label for="station-mobile" class="control-label">Seleccione la parada</label>
+            <label for="station-mobile" class="control-label"><spring:message code="schedule.choose"/></label>
             <div class="input-group">
                 <select id="station-mobile" name="station" class="form-control station-select">
-                    <option value="">-- Seleccione la parada --</option>
+                    <option value="">-- <spring:message code="schedule.choose"/> --</option>
                     <c:forEach items="${stations}" var="varStation">
                         <option value="${varStation.id}"
                                 <c:if test="${sessionScope.station == varStation.id}">selected="selected"</c:if>>
@@ -108,7 +108,7 @@
             </div>
         </div>
         <div class="form-group clock">
-            <label for="time-xs-text" class="control-label">Hora Actual</label>
+            <label for="time-xs-text" class="control-label"><spring:message code="schedule.currentTime"/></label>
             <div class="input-group clock">
                 <input type="text" class="form-control" id="time-xs-text" readonly="readonly" />
                 <input type="time" class="form-control" id="time-xs-time" style="display: none"/>

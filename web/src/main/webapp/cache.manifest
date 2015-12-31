@@ -1,8 +1,9 @@
 CACHE MANIFEST
-# rev 161
+# rev 162
 
 CACHE:
 
+jspkg/leaflet-geocoder-mapzen/dist/leaflet-geocoder-mapzen.css
 css/trenurbanoapp.css
 css/trenurbanoapp-map.css
 js/tusched.min.js

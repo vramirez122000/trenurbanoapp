@@ -29,16 +29,22 @@
         <script src="<c:url value="/js/tumap.min.js"/>"></script>
     </c:if>
     <script type="text/javascript">
-        $(document).ready(function () {
-
+        function resizeMapDiv() {
             var mapDiv = $('#map');
             var navbarHeight = $('nav.navbar-static-top').height();
             var innerHeight = $(window).innerHeight();
             mapDiv.css("height", innerHeight - (navbarHeight + 1 || (innerHeight * 0.14) ));
+        }
+
+        $(document).ready(function () {
+
+            resizeMapDiv();
+
 
             var map = L.map('map', {
                 center: TU.MAP.DEFAULTS.CENTER,
-                zoom: TU.MAP.DEFAULTS.ZOOM
+                zoom: TU.MAP.DEFAULTS.ZOOM,
+                zoomControl: false
             });
 
             var url = ' http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png'; //cartodb
@@ -56,13 +62,18 @@
                 autocomplete: true
             }).addTo(map);
 
+            L.control.zoom().addTo(map);
+
             TU.MAP.main(map, {
                 gpsEnabled: ${applicationScope['gps.enabled']},
                 contextPath: '${pageContext.request.contextPath}',
                 debug: ${applicationScope['javascript.useSource']}
             });
 
-            $('#mapa-link').addClass('active');
+            $('.mapa-link').addClass('active');
+
+            window.addEventListener('resize', resizeMapDiv, false);
+            window.addEventListener('orientationchange', resizeMapDiv, false);
         });
     </script>
 </head>

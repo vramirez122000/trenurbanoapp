@@ -71,7 +71,7 @@ function main() {
         });
     });
 
-    $('#itinerario-link').addClass('active');
+    $('.itinerario-link').addClass('active');
     $(function() {
         FastClick.attach(document.body);
     });

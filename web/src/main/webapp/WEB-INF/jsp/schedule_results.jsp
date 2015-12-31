@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tu" uri="/WEB-INF/tld/tuapp" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--
   User: victor
   Date: 8/30/11
@@ -16,8 +17,8 @@
 <input type="hidden" id="resultsStation" name="resultsStation" value="${station}"/>
 
 <c:if test="${not empty stopTimes}">
-    <h4 class="hidden-xs">Rutas con itinerarios en ${stopTimes[0].stopArea}</h4>
-    <h5 class="visible-xs">Rutas con itinerarios en ${stopTimes[0].stopArea}</h5>
+    <h4 class="hidden-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h4>
+    <h5 class="visible-xs"><spring:message code="routes.with.timetables"/> ${stopTimes[0].stopArea}</h5>
 
     <table id="results" class="table table-bordered table-striped">
         <tbody>
@@ -29,60 +30,49 @@
             <tr>
                 <td>
                     <div class="row">
-                        <div class="col-xs-10">
+                        <div class="col-xs-9">
                             <div class="row">
                                 <div class="col-xs-12" style="font-weight:bold">
-                                    Ruta
-                                <span class="routeLabel" style="
-                                        background-color: ${stopTime.color};
-                                        text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                        border-color: ${darkColor}">${stopTime.routeFullName}</span>
-                                    hacia ${stopTime.dest}
+                                    <span class="routeLabel" style="
+                                            background-color: ${stopTime.color};
+                                            text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
+                                            border-color: ${darkColor}">${stopTime.routeFullName}</span>
+                                        <spring:message code="to"/> ${stopTime.dest}
                                 </div>
                             </div>
                             <div class="row etaDiv">
                                 <div class="stopTime" style="display: none">${stopTime.stopTimeEpochMillis}</div>
-                                <div class="col-xs-4">Espera</div>
-                                <div class="col-xs-8" style="font-weight: bold">
-                                    <span class="etaString">
-                                            ${stopTime.stopTimeEtaString}
-                                    </span>${plusMinus}
+                                <div class="col-xs-5"><spring:message code="waitTime"/></div>
+                                <div class="col-xs-7" style="font-weight: bold">
+                                <span class="etaString">
+                                        ${stopTime.stopTimeEtaString}
+                                </span>${plusMinus}
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4">${stopTime.errorMinutes > 0 ? 'Estimado' : 'Itinerario' }</div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><spring:message code="${stopTime.errorMinutes > 0 ? 'estimate' : 'stopTime' }"/></div>
+                                <div class="col-xs-7">
                                     <strong>${stopTime.stopTimeString}${plusMinus}</strong>
                                 </div>
                             </div>
                             <div class="row hidden-xs">
-                                <div class="col-xs-4">Tipo de itinerario</div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><spring:message code="scheduleType"/></div>
+                                <div class="col-xs-7">
                                     <strong>${stopTime.scheduleType.description}</strong>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-2 text-right">
-                            <div>
-
-                                <%--<c:if test="${stopTime.errorMinutes == 0}">
-                                    <a class="visible-xs" href="tel:311" title="Reportalo">
-                                        <i class="fa fa-exclamation-circle"></i>
-                                    </a>
-                                    <c:set var="infoUrl" value="mailto:info@ati.pr.gov"/>
-                                    <c:set var="infoUrl" value="${infoUrl}?subject=Informe de deficiencia de servicio en la ruta ${stopTime.routeFullName} hacia ${stopTime.dest}"/>
-                                    <c:set var="infoUrl" value="${infoUrl}&body=La ruta ${stopTime.routeFullName} hacia ${stopTime.dest} que se supone que saliera de ${stopTime.stopArea} en ${stopTime.stopTimeString} no sali&oacute; a tiempo."/>
-                                    <a class="hidden-xs"
-                                       href="${infoUrl}"
-                                       title="Reportalo">
-                                        <i class="fa fa-exclamation-circle"></i>
-                                    </a>
-                                </c:if>--%>
-
-                                <a href="<c:url value="/app/map?route=${stopTime.route}"/>" title="Ver en mapa">
-                                    <i class="fa fa-map-o"></i>
-                                </a>
-                            </div>
+                        <div class="col-xs-3 visible-xs text-right">
+                               <div class="btn-group-vertical btn-group-sm">
+                                   <c:if test="${stopTime.errorMinutes == 0}">
+                                       <a class="btn btn-sm btn-default" href="tel:311" title="Repórtalo">
+                                           <i class="fa fa-exclamation-circle"></i>
+                                       </a>
+                                   </c:if>
+                                   <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${stopTime.route}"/>" title="Ver en mapa">
+                                       <i class="fa fa-map-o"></i>
+                                   </a>
+                               </div>
                         </div>
                     </div>
                 </td>
@@ -97,6 +87,23 @@
         <span id="alertTxt">No se encontraron viajes en la parada seleccionada</span>
     </div>
 </c:if>
+
+<div class="modal" id="report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Repórtalo</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 </body>
 </html>
