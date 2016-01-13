@@ -31,4 +31,7 @@ INSERT INTO ref.route (id, "desc", color, gpsenabled, sort_order, priority, rout
   ('D53', 'D53', '#c84aa5', FALSE, 45, 9, 'ATI_LS'),
   ('D91', 'D91', '#8b2363', FALSE, 46, 9, 'ATI_LS'),
   ('D92', 'D92', '#783c18', FALSE, 47, 9, 'ATI_LS'),
-  ('L-62-26', 'L-62-26', '#af8edd', FALSE, 48, 2, 'PUBLICOS');
+  ('L-62-26', 'L-62-26', '#af8edd', FALSE, 48, 2, 'PUBLICOS'),
+  ('L-62-28', 'L-62-28', '#CC4FC5', FALSE, 49, 2, 'PUBLICOS'),
+  ('I-16-70', 'I-16-70', '#D45035', FALSE, 50, 2, 'PUBLICOS'),
+  ('DOMENECH', 'Dómenech', '#7797C7', FALSE, 51, 2, 'MSJ');

@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-xs-3 text-right">
                         <div class="btn-group-vertical btn-group-sm">
-                            <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${route.id}"/>" title="Ver en mapa">
+                            <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${route.route}"/>" title="Ver en mapa">
                                 <i class="fa fa-map-o"></i><span class="hidden-xs"> Mapa</span>
                             </a>
                         </div>
