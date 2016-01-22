@@ -21,7 +21,8 @@ with stop_area_tmp(id, "desc", sort_order, lng, lat) as (
   select 'AEROPUERTO',         'Aeropuerto',              20, -66.00427,	18.43801 union
   select 'PLAZA_LAS_AMERICAS', 'Plaza Las Américas',      21, -66.07427,	18.41838 union
   select 'PUNTA_LAS_MARIAS',   'Punta Las Marías',        22, -66.03676,	18.44713 union
-  select 'CONVENCIONES',       'Centro de Convenciones',	23, -66.09015,	18.45413
+  select 'CONVENCIONES',       'Centro de Convenciones',	23, -66.09015,	18.45413 union
+  select 'ITURREGUI',          'Terminal Iturregui',      24, -65.99220,  18.42170
 )
 insert into ref.stop_area (id, "desc", lng, lat, geom, sort_order)
   select id, "desc", lng, lat, ST_SetSRID(ST_Point(lng, lat), 4326), sort_order from stop_area_tmp;
