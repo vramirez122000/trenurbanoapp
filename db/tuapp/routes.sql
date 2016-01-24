@@ -1,6 +1,6 @@
 INSERT INTO ref.route (id, "desc", color, gpsenabled, sort_order, priority, route_group) VALUES
   ('TU', 'Tren Urbano', '#4d8327', FALSE, 1, 1, 'TREN_URBANO'),
-  ('T3', 'T3', '#bf6a4b', FALSE, 2, 2, 'ATI_LS'),
+  ('T3', 'T3', '#bf6a4b', FALSE, 2, 2, 'ATI_LD'),
   ('E10', 'E10', '#583c64', FALSE, 3, 2, 'ATI_LV'),
   ('C1', 'C1', '#8067a5', FALSE, 4, 2, 'ATI_LS'),
   ('E20', 'E20', '#ff0000', FALSE, 5, 10, 'ATI_LV'),

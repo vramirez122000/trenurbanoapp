@@ -10,6 +10,10 @@
     </context-param>
 
     <listener>
+        <listener-class>com.trenurbanoapp.listener.BeforeSpringListener</listener-class>
+    </listener>
+
+    <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 

@@ -341,7 +341,7 @@ TU.MAP = (function(my, $, Leaf) {
                         offset: '0',
                         attributes: {
                             fill: TU.UTIL.shadeColor(data.properties.color, -10),
-                            dy: '4px'
+                            dy: '4px',
                         }
                     });
                     decorationLayers[data.id] = geoJsonLayer;

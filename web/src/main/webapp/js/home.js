@@ -1,5 +1,4 @@
 var clockIntervalId;
-var currPosition;
 
 function main() {
 
@@ -11,22 +10,32 @@ function main() {
         $alertMsg.css('display', 'block');
     }
 
-    TU.SCHED.stopTimesByLocation('#stopTimes', function(params) {
-        var resultsStation = $('input#resultsStation').val();
-        var stationSelect = $(".station-select:visible");
-        stationSelect.val(resultsStation);
+    TU.SCHED.getGeolocation(function(location) {
+        TU.SCHED.getStopTimes('#stopTimes', location, function(params) {
+            var resultsStation = $('input#resultsStation').val();
+            var stationSelect = $(".station-select:visible");
+            stationSelect.val(resultsStation);
 
-        if(gpsEnabled) {
-            TU.SCHED.nearbyEtas('#nearbyEtas', params)
-        }
+            if(gpsEnabled) {
+                TU.SCHED.getNearbyEtas('#nearbyEtas', params)
+            }
 
-        TU.SCHED.nearbyRoutesWithoutSchedules('#nearbyRoutesWithoutSchedules', params)
-
+            TU.SCHED.getNearbyRoutesWithoutSchedules('#nearbyRoutesWithoutSchedules', params);
+            TU.SCHED.getStopAreasByDistance(params, function(stopAreas) {
+                if(!stopAreas || stopAreas.length == 0) {
+                    return
+                }
+                stationSelect.html(stopAreas.map(function(it) {
+                    return '<option value="' + it.id + '">'+ it.desc +'</option>'
+                }));
+                stationSelect.val(resultsStation);
+            });
+        })
     }, function() {
         var stationSelect = $('.station-select:visible');
         var station = stationSelect.val();
         if (station != null && jQuery.trim(station) != "") {
-            TU.SCHED.stopTimes('#stopTimes', {
+            TU.SCHED.getStopTimes('#stopTimes', {
                 station: station
             });
         }
@@ -43,7 +52,7 @@ function main() {
         }
 
         var selectedStation = $(this).val();
-        TU.SCHED.stopTimes('#stopTimes', {
+        TU.SCHED.getStopTimes('#stopTimes', {
             station: selectedStation,
             time: time
         });
@@ -65,7 +74,7 @@ function main() {
         }
 
         var time = getInputTime();
-        TU.SCHED.stopTimes('#nextArrivals', {
+        TU.SCHED.getStopTimes('#stopTimes', {
             station: station,
             time: time
         });
@@ -99,13 +108,14 @@ function getInputTime() {
 }
 
 function findNearestStation() {
-    TU.SCHED.nearestStation(function (data, position) {
-        currPosition = position;
-        var stationSelect = $(".station-select:visible");
-        stationSelect.val(data);
-        stationSelect.change();
-
+    TU.SCHED.getGeolocation(function(location) {
+        TU.SCHED.getNearestStopArea(location, function(data) {
+            var stationSelect = $(".station-select:visible");
+            stationSelect.val(data);
+            stationSelect.change();
+        })
     }, function(err) {
+        console.error(JSON.stringify(err));
         var $alertMsg = $('#alertMsg');
         $alertMsg.find('#alertTxt').text('Servicios de localización deshabilitados');
         $alertMsg.toggle();
@@ -124,10 +134,10 @@ function toggleClock() {
     if (!isClockActive) {
         $btn.addClass('active');
         $clockLabel.text('Hora Actual');
-        clockIntervalId = startClock();
+        //clockIntervalId = startClock();
     } else {
         $clockLabel.text('Escoja la hora (e.g. 10:45 AM)');
-        clearInterval(clockIntervalId);
+        //clearInterval(clockIntervalId);
         $btn.removeClass('active');
         $clockTimeInput.focus();
     }
@@ -140,7 +150,11 @@ function startClock() {
 
 function updateClocks() {
     var now = moment();
-    $(".clock:visible input[type=text]").val(now.format("h:mm:ss A"));
+
+    var $clock = $(".clock:visible input[type=text]");
+    if($clock.prop('disabled')) {
+        $clock.val(now.format("h:mm:ss A"));
+    }
     $('.etaDiv').each(function() {
         var $this = $(this);
         var stopTime = moment(parseInt($this.find('.stopTime').text()));

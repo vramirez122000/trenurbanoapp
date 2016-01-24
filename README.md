@@ -31,14 +31,11 @@ Crear base de datos con extension PostGIS
     
 Poblar base de datos con scripts ubicados en directorio 'db'    
 
-    $ cat db/backups/ref_data.sql db/common/log_schema.sql | psql -U postgres -d tuapp
+    $ cat db/common/ref.sql db/common/logs.sql | psql -U postgres -d tuapp
 
 ### Cómo correr el sistema
 
 Puedes correr Tren Urbano App en tu contenedor web favorito (e.g. Tomcat 7+). Los siguientes argumentos del JVM son requeridos:
-
-    # Marronazo que registra el Driver de POSTGIS con el mecanismo de escupir SQL a la consola 
-    -Dlog4jdbc.drivers=org.postgis.DriverWrapper 
 
     # Configuracion de BD. Archivo de ejemplo incluído en el directorio db/
     -Dconfig.property.file=/absolute/path/to/config.properties

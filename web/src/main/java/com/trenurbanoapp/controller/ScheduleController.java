@@ -5,6 +5,7 @@ import com.trenurbanoapp.model.StopTime;
 import com.trenurbanoapp.service.ScheduleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,15 @@ public class ScheduleController {
         model.put("station", station);
         return station.getId();
     }
+
+    @RequestMapping(value = "/stopAreasByDistance")
+    @ResponseBody
+    public ResponseEntity<List<IdDesc>> stopAreasByDistance(@RequestParam double lat,
+                                 @RequestParam double lng,
+                                 @RequestParam(required = false) Float accuracy) {
+        return ResponseEntity.ok(scheduleService.findStopAreasByDistance(lat, lng, accuracy));
+    }
+
 
     @RequestMapping(value = "/nearbyRoutesWithoutSchedules")
     public String nearbyRoutesWithoutSchedules(@RequestParam double lat,

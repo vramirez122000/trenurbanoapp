@@ -58,14 +58,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleDao.findAllStopAreas();
     }
 
-    public List<IdDesc> findStopAreasByDistance(double lat, double lng) {
-        return scheduleDao.findStopAreasByDistance(lat, lng);
-    }
-
     @Override
     public IdDesc nearestStation(double lat, double lng, Float accuracy) {
         statsLogDao.insertClientLog(lat, lng, accuracy);
         return scheduleDao.findNearestStopArea(lat, lng);
+    }
+
+    @Override
+    public List<IdDesc> findStopAreasByDistance(double lat, double lng, Float accuracy) {
+        return scheduleDao.findStopAreasByDistance(lat, lng);
     }
 
     @Override

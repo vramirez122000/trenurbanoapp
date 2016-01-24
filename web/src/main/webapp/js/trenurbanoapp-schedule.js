@@ -18,8 +18,8 @@ TU.SCHED = (function(my, $) {
             '<img id="progressImg" src="../images/progress.gif" alt="progress image"/>' +
             '</div>';
 
-    /**/
-    my.stopTimes = function(/*string*/ targetDivId, /*object*/ params, /*function*/ success) {
+    /* return HTML Table of stop times*/
+    my.getStopTimes = function(/*string*/ targetDivId, /*object*/ params, /*function*/ success) {
 
         var targetDiv = $(targetDivId);
 
@@ -51,51 +51,50 @@ TU.SCHED = (function(my, $) {
     };
 
     /* returns a JSON representation of the nearest station */
-    my.nearestStation = function(/*function*/ success, /*function*/ error) {
-        if (!!navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                    jQuery.get("../app/nearestStation", {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        accuracy: position.coords.accuracy
-                    }, function(data) {
-                        console.log(String(data));
-                        success(data, position);
-                    });
-                },
-                function(err) {
-                    console.error(err.code + ": " + err.message);
-                    if(error) {
-                        error(err);
-                    }
-                },
-                { enableHighAccuracy: true }
-            );
+    my.getGeolocation = function(/*function*/ success, /*function*/ error) {
+        if (!navigator.geolocation) {
+            console.warn('Geolocation not available');
+            return;
         }
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+                var location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    accuracy: position.coords.accuracy
+                };
+
+                console.log(JSON.stringify(position));
+                success(location);
+            },
+            function (err) {
+                console.error(err.code + ": " + err.message);
+                if (error) {
+                    error(err);
+                }
+            },
+            {enableHighAccuracy: true}
+        );
+
     };
 
     /* returns a JSON representation of the nearest station */
-    my.stopTimesByLocation = function(/*string*/ targetDivId, /*function*/ success, /*function*/ error) {
-        if (!!navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                    my.stopTimes(targetDivId, {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        accuracy: position.coords.accuracy
-                    }, success);
-                },
-                function(err) {
-                    console.error(err.code + ": " + err.message);
-                    if(error) {
-                        error(err);
-                    }
-                },
-                { enableHighAccuracy: true }
-            );
-        }
+    my.getNearestStopArea = function(location, success) {
+        jQuery.getJSON('../app/nearestStation', location, function (data) {
+            //console.log(String(data));
+            success(data);
+        });
     };
 
-    my.nearbyRoutesWithoutSchedules = function(targetDivId, params) {
+    /* returns a JSON representation of the nearest station */
+    my.getStopAreasByDistance = function(location, success) {
+        jQuery.getJSON('../app/stopAreasByDistance', location, function (data) {
+            //console.log(String(data));
+            success(data);
+        });
+    };
+
+    my.getNearbyRoutesWithoutSchedules = function(targetDivId, params) {
         var targetDiv = $(targetDivId);
         $.ajax({
             url: '../app/nearbyRoutesWithoutSchedules',
@@ -121,7 +120,7 @@ TU.SCHED = (function(my, $) {
         });
     };
 
-    my.nearbyEtas = function(targetDivId, params) {
+    my.getNearbyEtas = function(targetDivId, params) {
         var targetDiv = $(targetDivId);
         $.ajax({
             url: '../app/nearbyEtas',
@@ -147,13 +146,27 @@ TU.SCHED = (function(my, $) {
         });
     };
 
+    var safariPattern = /safari/i;
+    var iosMajorVersPattern = /(iphone|ipod|ipad); CPU OS (\d+)_/i;
+
     my.isIOS9WebView = function() {
         var standalone = 'standalone' in window.navigator && window.navigator.standalone;
-        var userAgent = window.navigator.userAgent.toLowerCase();
-        var safari = /safari/.test(userAgent);
-        var ios = /iphone|ipod|ipad/.test(userAgent);
+        if(standalone) {
+            return false;
+        }
 
-        return ios && !standalone && !safari;
+        var userAgent = window.navigator.userAgent;
+        var iosMajorVers = iosMajorVersPattern.exec(userAgent);
+        if(!iosMajorVers) {
+            return false;
+        }
+
+        if(Number.valueOf(iosMajorVers) < 9) {
+            return false;
+        }
+
+        return !safariPattern.test(userAgent);
+
     };
 
     return my;
