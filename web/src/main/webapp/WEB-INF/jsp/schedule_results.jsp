@@ -117,7 +117,8 @@
                     que <span id="instructions"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <a class="btn btn-info" href="tel:311"><i class="fa fa-phone"></i> Línea 311</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
         <!-- /.modal-content -->
