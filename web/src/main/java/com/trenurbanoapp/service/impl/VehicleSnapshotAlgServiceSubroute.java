@@ -83,6 +83,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             return;
         }
 
+
         List<LatLng> currTrail = assetPosition.getTrail();
         statsLogDao.insertAssetPosition(assetPosition);
 
@@ -151,10 +152,17 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
         }
 
 
+
         Map<SubrouteKey, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithin100Meters(currTrail.get(0), v.getTrail().get(0));
         Set<SubrouteKey> nearbySubroutes = subrouteViews.keySet();
         Set<SubrouteKey> oldPossibleSubroutes = v.getPossibleSubroutesAsSet();
         Set<SubrouteKey> newPossibleSubroutes = new HashSet<>(nearbySubroutes);
+
+        //filter possible routes by configured allowed routes in vehicle table
+        Vehicle vehicle = vehicleDao.getVehicle(v.getAssetId());
+        if(vehicle.getRoutes() != null && vehicle.getRoutes().length > 0) {
+            newPossibleSubroutes.retainAll(Arrays.asList(vehicle.getRoutes()));
+        }
         newPossibleSubroutes.retainAll(oldPossibleSubroutes);
 
         if (newPossibleSubroutes.size() == 1) {
@@ -175,7 +183,6 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             SubrouteView lastKnownSubrouteView = subrouteViews.get(v.getLastKnownSubroute());
             float currMeasure = (float) lastKnownSubrouteView.getSubrouteM();
             if (v.getSubrouteMeasure() != null && currMeasure < v.getSubrouteMeasure()) {
-                Vehicle vehicle = vehicleDao.getVehicle(v.getAssetId());
                 log.warn("Decreasing m value for vehicle {} in subroute {} to {}",
                         vehicle.getName(),
                         lastKnownSubrouteView.getSubrouteKey().getRoute(),

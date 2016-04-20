@@ -12,6 +12,7 @@ public class Vehicle {
     private Integer assetId;
     private String name;
     private Integer groupId;
+    private String[] routes;
 
 
     public Integer getAssetId() {
@@ -36,5 +37,14 @@ public class Vehicle {
 
     public void setGroupId(Integer groupId) {
         this.groupId = groupId;
+    }
+
+
+    public String[] getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(String[] routes) {
+        this.routes = routes;
     }
 }

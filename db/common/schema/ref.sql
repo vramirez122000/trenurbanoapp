@@ -141,7 +141,9 @@ CREATE TABLE vehicle (
     asset_id integer NOT NULL,
     name character varying(50),
     group_id integer,
-    plate character varying(20)
+    plate character varying(20),
+    routes text[]
+
 );
 
 

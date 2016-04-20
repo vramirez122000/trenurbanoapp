@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -46,6 +47,10 @@ public class VehicleDaoJdbc implements VehicleDao {
             v.setAssetId(rs.getInt("asset_id"));
             v.setName(rs.getString("name"));
             v.setGroupId(rs.getInt("group_id"));
+            Array routes = rs.getArray("routes");
+            if(routes != null) {
+                v.setRoutes((String[]) routes.getArray());
+            }
             return v;
         }, assetId);
         return !vehicles.isEmpty() ? vehicles.get(0) : null;

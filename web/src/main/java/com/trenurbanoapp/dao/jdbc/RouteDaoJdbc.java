@@ -1,6 +1,7 @@
 package com.trenurbanoapp.dao.jdbc;
 
 import com.trenurbanoapp.dao.RouteDao;
+import com.trenurbanoapp.model.LatLngBounds;
 import com.trenurbanoapp.model.Route;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.postgis.PGgeometry;
@@ -135,6 +136,11 @@ public class RouteDaoJdbc implements RouteDao {
                 " JOIN subroute_stop ON stop.gid = subroute_stop.stop " +
                 " WHERE stop.gid = ? ";
         return jdbcTemplate.query(sql, new SingleColumnRowMapper<>(), stopGid);
+    }
+
+    @Override
+    public LatLngBounds getMapBounds() {
+        return null;
     }
 
     private static final RowMapper<Route> rowMapper = (rs, i) -> {

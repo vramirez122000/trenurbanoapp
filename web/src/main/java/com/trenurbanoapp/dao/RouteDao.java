@@ -1,5 +1,6 @@
 package com.trenurbanoapp.dao;
 
+import com.trenurbanoapp.model.LatLngBounds;
 import com.trenurbanoapp.model.Route;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,4 +27,6 @@ public interface RouteDao {
     Set<String> getOriginDestinationRouteNamesWithinDistance(LatLng origin, LatLng destination, int distanceInMeters);
 
     List<String> getRouteNamesByStop(int stopGid);
+
+    LatLngBounds getMapBounds();
 }
