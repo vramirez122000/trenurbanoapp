@@ -47,7 +47,7 @@
                 zoomControl: false
             });
 
-            var url = ' http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png'; //cartodb
+            var url = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png'; //cartodb
             L.tileLayer(url, {
                 minZoom: 10,
                 maxZoom: 18,

@@ -10,6 +10,7 @@ public class Route {
     private String color;
     private String name;
     private String fullName;
+    private String foreignId;
 
     public String getId() {
         return id;
@@ -49,5 +50,13 @@ public class Route {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getForeignId() {
+        return foreignId;
+    }
+
+    public void setForeignId(String foreignId) {
+        this.foreignId = foreignId;
     }
 }

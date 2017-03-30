@@ -1,10 +1,10 @@
 
 INSERT INTO ref.vehicle (asset_id, name, group_id, plate, routes) values
 (1486,'983 (JARC)',337,'MU18402',null),      --Todos lados
-(1487,'976 (JARC)',337,'MU17520','{"CR"}'),
+(1487,'976 (JARC)',337,'MU17520','{"SA"}'),
 (1488,'979 (JARC)',337,'MU17521','{"CH"}'),
 (1489,'982 (JARC)',337,'MU18401',null),      --PR-1 -> Barrio Río Cañas
-(1490,'977 (JARC)',337,'MU17518','{"CR"}'),
+(1490,'977 (JARC)',337,'MU17518','{"SA"}'),
 (1491,'978 (JARC)',337,'MU17519','{"CH"}'),
 (1492,'991 (NF)',337,'MU19291',null),        --Todos lados
 (1493,'990 (NF)',337,'MU19298',null),        --Barrio Beatriz Frontera Cayey

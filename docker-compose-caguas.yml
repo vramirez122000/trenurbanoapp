@@ -1,0 +1,14 @@
+version: '2'
+services:
+  db-caguas:
+    image: mdillon/postgis:9.5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: tuapp_caguas
+    volumes:
+      - tuapp-caguas-db-data:/var/lib/postgresql/data:rw,z
+
+volumes:
+  tuapp-caguas-db-data:
+    driver: local

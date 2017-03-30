@@ -2,24 +2,27 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.5.6
+-- Dumped by pg_dump version 9.6.2
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
--- Name: ref; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: ref; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA ref;
 
 
-ALTER SCHEMA ref OWNER TO postgres;
-
 --
--- Name: SCHEMA ref; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: SCHEMA ref; Type: COMMENT; Schema: -; Owner: -
 --
 
 COMMENT ON SCHEMA ref IS 'Reference Data';
@@ -32,71 +35,65 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: configuration; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: configuration; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE configuration (
-    assets_hash character varying(100)
+    assets_hash text
 );
 
 
-ALTER TABLE configuration OWNER TO postgres;
-
 --
--- Name: route; Type: TABLE; Schema: ref; Owner: postgres; Tablespace:
+-- Name: route; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE route (
-    id character varying(100) NOT NULL,
-    "desc" character varying(255),
-    color character varying(50),
+    id text NOT NULL,
+    code text,
+    "desc" text,
+    color text,
     gpsenabled boolean,
     sort_order integer,
     priority integer,
-    route_group character varying(50)
+    route_group text,
+    foreign_id text
 );
 
 
-ALTER TABLE route OWNER TO postgres;
-
 --
--- Name: schedule; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: schedule; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE schedule (
-    route character varying(20) NOT NULL,
-    stop_area character varying(20) NOT NULL,
-    direction character varying(20) NOT NULL,
-    schedule_type character varying(20) NOT NULL,
+    route text NOT NULL,
+    stop_area text NOT NULL,
+    direction text NOT NULL,
+    schedule_type text NOT NULL,
     stop_time time without time zone NOT NULL,
     error_minutes smallint DEFAULT 0 NOT NULL
 );
 
 
-ALTER TABLE schedule OWNER TO postgres;
-
 --
--- Name: stop; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: stop; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE stop (
     gid integer,
-    routes character varying(254),
-    descriptio character varying(500),
+    routes text,
+    descriptio text,
     ama_id integer,
     geom public.geometry(Point,4326)
 );
 
 
-ALTER TABLE stop OWNER TO postgres;
-
 --
--- Name: stop_area; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: stop_area; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE stop_area (
-    id character varying(50) NOT NULL,
-    "desc" character varying(100) NOT NULL,
+    id text NOT NULL,
+    "desc" text NOT NULL,
     sort_order smallint DEFAULT 99 NOT NULL,
     lng real,
     lat real,
@@ -104,53 +101,44 @@ CREATE TABLE stop_area (
 );
 
 
-ALTER TABLE stop_area OWNER TO postgres;
-
 --
--- Name: subroute; Type: TABLE; Schema: ref; Owner: postgres; Tablespace:
+-- Name: subroute; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE subroute (
-    route character varying(100) NOT NULL,
-    direction character varying(100) NOT NULL,
+    route text NOT NULL,
+    direction text NOT NULL,
     geom public.geometry(LineStringM,32161)
 );
 
 
-ALTER TABLE subroute OWNER TO postgres;
-
 --
--- Name: subroute_stop; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: subroute_stop; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE subroute_stop (
-    route character varying(50) NOT NULL,
-    direction character varying(50) NOT NULL,
+    route text NOT NULL,
+    direction text NOT NULL,
     stop integer NOT NULL,
     stop_order integer NOT NULL
 );
 
 
-ALTER TABLE subroute_stop OWNER TO postgres;
-
 --
--- Name: vehicle; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE vehicle (
     asset_id integer NOT NULL,
-    name character varying(50),
+    name text,
     group_id integer,
-    plate character varying(20),
+    plate text,
     routes text[]
-
 );
 
 
-ALTER TABLE vehicle OWNER TO postgres;
-
 --
--- Name: vehicle_state; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle_state; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE vehicle_state (
@@ -163,66 +151,60 @@ CREATE TABLE vehicle_state (
     within_origin boolean,
     trip_id bigint,
     stop_gid integer,
-    azimuth float4,
+    azimuth real,
     location_desc text,
     trail public.geometry(LineString,4326),
-    last_known_direction character varying(50),
-    last_known_route character varying(50)
+    last_known_direction text,
+    last_known_route text
 );
 
 
-ALTER TABLE vehicle_state OWNER TO postgres;
-
 --
--- Name: vehicle_state_possible_routes; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle_state_possible_routes; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE vehicle_state_possible_routes (
-    route character varying(50) NOT NULL,
+    route text NOT NULL,
     active boolean,
     asset_id integer NOT NULL
 );
 
 
-ALTER TABLE vehicle_state_possible_routes OWNER TO postgres;
-
 --
--- Name: COLUMN vehicle_state_possible_routes.route; Type: COMMENT; Schema: ref; Owner: postgres
+-- Name: COLUMN vehicle_state_possible_routes.route; Type: COMMENT; Schema: ref; Owner: -
 --
 
 COMMENT ON COLUMN vehicle_state_possible_routes.route IS 'Route ID string e.g. ''T3''';
 
 
 --
--- Name: COLUMN vehicle_state_possible_routes.asset_id; Type: COMMENT; Schema: ref; Owner: postgres
+-- Name: COLUMN vehicle_state_possible_routes.asset_id; Type: COMMENT; Schema: ref; Owner: -
 --
 
 COMMENT ON COLUMN vehicle_state_possible_routes.asset_id IS 'Vehicle primary key';
 
 
 --
--- Name: vehicle_state_possible_subroutes; Type: TABLE; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle_state_possible_subroutes; Type: TABLE; Schema: ref; Owner: -
 --
 
 CREATE TABLE vehicle_state_possible_subroutes (
     asset_id integer NOT NULL,
-    route character varying(50) NOT NULL,
-    direction character varying(50) NOT NULL,
+    route text NOT NULL,
+    direction text NOT NULL,
     active boolean
 );
 
 
-ALTER TABLE vehicle_state_possible_subroutes OWNER TO postgres;
-
 --
--- Name: COLUMN vehicle_state_possible_subroutes.asset_id; Type: COMMENT; Schema: ref; Owner: postgres
+-- Name: COLUMN vehicle_state_possible_subroutes.asset_id; Type: COMMENT; Schema: ref; Owner: -
 --
 
 COMMENT ON COLUMN vehicle_state_possible_subroutes.asset_id IS 'Vehicle ID';
 
 
 --
--- Name: possible_routes_pk; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle_state_possible_routes possible_routes_pk; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY vehicle_state_possible_routes
@@ -230,7 +212,7 @@ ALTER TABLE ONLY vehicle_state_possible_routes
 
 
 --
--- Name: possible_subroute_pk; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: vehicle_state_possible_subroutes possible_subroute_pk; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY vehicle_state_possible_subroutes
@@ -238,7 +220,7 @@ ALTER TABLE ONLY vehicle_state_possible_subroutes
 
 
 --
--- Name: route_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace:
+-- Name: route route_pkey; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY route
@@ -246,7 +228,7 @@ ALTER TABLE ONLY route
 
 
 --
--- Name: schedule_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: schedule schedule_pkey; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY schedule
@@ -254,7 +236,7 @@ ALTER TABLE ONLY schedule
 
 
 --
--- Name: stop_area_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: stop_area stop_area_pkey; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY stop_area
@@ -262,7 +244,7 @@ ALTER TABLE ONLY stop_area
 
 
 --
--- Name: subroute_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace:
+-- Name: subroute subroute_pkey; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY subroute
@@ -270,7 +252,7 @@ ALTER TABLE ONLY subroute
 
 
 --
--- Name: subroute_stop_pkey; Type: CONSTRAINT; Schema: ref; Owner: postgres; Tablespace: 
+-- Name: subroute_stop subroute_stop_pkey; Type: CONSTRAINT; Schema: ref; Owner: -
 --
 
 ALTER TABLE ONLY subroute_stop

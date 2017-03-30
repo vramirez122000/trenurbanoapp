@@ -2,7 +2,7 @@
 
 #Import hand crafted data
 
-set -o verbose
+#set -o verbose
 
 INSTANCE=$([ -z "$1" ] && echo "tuapp" || echo "tuapp_$1")
 
@@ -28,3 +28,5 @@ echo ${_SET_SEARCH_PATH} \
  common/index/*.sql \
 | psql -U postgres -h 127.0.0.1 -d ${INSTANCE} \
 >> load_ref.log cmd 2>&1
+
+echo "Success!"
