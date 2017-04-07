@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trenurbanoapp.scraper.model.Asset;
 import com.trenurbanoapp.scraper.model.AssetPosition;
+import com.trenurbanoapp.scraper.model.AvlRoute;
 import com.trenurbanoapp.scraper.model.LatLng;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -109,6 +110,37 @@ public class WebApiRestClient {
         }
     }
 
+    public AvlRouteResponse routes() {
+        HttpClient httpClient = getHttpClient();
+        HttpGet httpGet = new HttpGet(urlbase + "/travel");
+        getRequestCallback().doWithRequest(httpGet);
+        try {
+            return httpClient.execute(httpGet, response -> {
+                int status = response.getStatusLine().getStatusCode();
+                if (!(status >= 200 && status < 300)) {
+                    return new AvlRouteResponse(status, response.getStatusLine().getReasonPhrase());
+                }
+
+                List<AvlRoute> routes = new ArrayList<>();
+                final JsonFactory jsonFactory = getObjectMapper().getFactory();
+                final JsonParser parser = jsonFactory.createParser(response.getEntity().getContent());
+                JsonToken token;
+                while ((token = parser.nextToken()) != null) {
+                    switch (token) {
+                        case START_OBJECT:
+                            JsonNode node = parser.readValueAsTree();
+                            AvlRoute route = createAvlRoute(node);
+                            routes.add(route);
+                            break;
+                    }
+                }
+                return new AvlRouteResponse(routes);
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public AssetsPositionResponse assetsPosition() {
 
         HttpClient httpClient = getHttpClient();
@@ -168,6 +200,20 @@ public class WebApiRestClient {
         asset.setDescription(node.path("DESCRIPTION").textValue());
         asset.setGroupId(String.valueOf(node.path("IDGROUP").numberValue()));
         asset.setLicensePlate(node.path("LICENSEPLATE").textValue());
+        if(!node.path("IDTRAVEL").isNull()) {
+            asset.setIdTravel(node.path("IDTRAVEL").numberValue().intValue());
+        }
+        return asset;
+    }
+
+    private AvlRoute createAvlRoute(JsonNode node) {
+        AvlRoute asset = new AvlRoute();
+        asset.setId(node.path("IDTRAVEL").numberValue().intValue());
+        asset.setDescription(node.path("DESCRIPTION").textValue());
+        asset.setRouteCode(node.path("ROUTECODE").textValue());
+        asset.setDepartureIntervalP1W(node.path("DepartureIntervalP1W").textValue());
+        asset.setDepartureIntervalP1S(node.path("DepartureIntervalP1S").textValue());
+        asset.setDepartureIntervalP1SnH(node.path("DepartureIntervalP1SnH").textValue());
         return asset;
     }
 
@@ -175,8 +221,10 @@ public class WebApiRestClient {
         WebApiRestClient client = new WebApiRestClient(args[0], args[1], args[2]);
 
         AssetsResponse assets = client.assets();
-        for (Asset asset : assets.getAssets()) {
-            System.out.println(asset.getDescription());
+        System.out.printf("%s,%s,%s,%s,%s", "asset_id", "name", "group_id", "plate", "routes");
+        for (Asset a : assets.getAssets()) {
+            System.out.printf("%s,%s,%s,%s,%s",
+                    a.getId(), a.getDescription(), a.getGroupId(), a.getLicensePlate(), a.getIdTravel());
         }
 
         AssetsPositionResponse posResponse = client.assetsPosition();

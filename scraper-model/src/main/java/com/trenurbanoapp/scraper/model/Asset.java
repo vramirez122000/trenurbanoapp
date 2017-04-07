@@ -10,6 +10,7 @@ public class Asset {
     private String description;
     private String groupId;
     private String licensePlate;
+    private Integer idTravel;
 
     public Integer getId() {
         return id;
@@ -41,5 +42,13 @@ public class Asset {
 
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
+    }
+
+    public Integer getIdTravel() {
+        return idTravel;
+    }
+
+    public void setIdTravel(Integer idTravel) {
+        this.idTravel = idTravel;
     }
 }

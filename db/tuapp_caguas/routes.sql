@@ -1,12 +1,20 @@
-INSERT INTO ref.route (id, code, "desc", color, gpsenabled, sort_order, priority, foreign_id) VALUES
+
+INSERT INTO ref.route (id, code, "desc", color, gpsenabled, sort_order, priority, foreign_id)
+VALUES
   ('AB', 'I-13-04', 'Aguas Buenas', '#D87977', TRUE, 9, 1, '1'),
+  ('BA', null, 'Bo. Bairoa', '#D87977', TRUE, 9, 1, '2'),
+  ('BE', 'I-13-30', 'Bo. Beatriz', '#D87977', TRUE, 9, 1, '3'),
   ('BO', 'L-13-03', 'Urb. Bonneville', '#5F71DD', TRUE, 7, 1, '4'),
   ('BQ', 'L-13-14', 'Bo. Borinquen', '#3F596A', TRUE, 1, 1, '5'),
   ('PC', 'L-13-06', 'Plaza Centro', '#605623', TRUE, 6, 1, '6'),
+  ('CX', 'L-13-18', 'Caguax', '#605623', TRUE, 6, 1, '7'),
   ('BC', 'L-13-05', 'Bo. Cañaboncito', '#D84CE1', TRUE, 2, 1, '8'),
+  ('CD', 'L-13-10', 'Castellon-Delgado', '#D84CE1', TRUE, 2, 1, '9'),
   ('CM', 'SJ-66-13', 'Centro Médico', '#D84184', TRUE, 14, 1, '10'),
   ('CI', 'I-13-21', 'Cidra', '#D97B34', TRUE, 11, 1, '11'),
+  ('GV', 'I-13-11', 'Guavate', '#D97B34', TRUE, 11, 1, '12'),
   ('GU', 'I-13-33', 'Gurabo', '#5BA7B9', TRUE, 12, 1, '13'),
+  ('HM', null, 'Hormigas', '#5BA7B9', TRUE, 12, 1, '14'),
   ('HO', 'L-13-E-03', 'Hospital Regional', '#7396DB', TRUE, 20, 1, '15'),
   ('JU', 'I-13-40', 'Juncos', '#9E8FB4', TRUE, 13, 1, '16'),
   ('BM', 'L-13-12', 'Bo. La Mesa, Sect. La Barra', '#63B93E', TRUE, 3, 1, '17'),
@@ -16,8 +24,15 @@ INSERT INTO ref.route (id, code, "desc", color, gpsenabled, sort_order, priority
   ('SL', 'I-13-67', 'San Lorenzo', '#B69D3A', TRUE, 10, 1, '21'),
   ('T1', 'L-13-21', 'Bo. Tomás de Castro I', '#DA403A', TRUE, 4, 1, '22'),
   ('T2', 'L-13-22', 'Bo. Tomás de Castro II', '#86377A', TRUE, 5, 1, '23'),
+  ('TA', null, 'Turabo Arriba', '#86377A', TRUE, 5, 1, '24'),
   ('TG', 'L-13-08', 'Urb. Turabo Gardens', '#D384C0', TRUE, 19, 1, '25'),
   ('VT', 'L-13-07', 'Urb. Valle Tolima', '#4FA37E', TRUE, 8, 1, '26'),
+  ('VB', 'L-13-01', 'Villa Blanca', '#4FA37E', TRUE, 8, 1, '27'),
+  ('VR', 'L-13-23', 'Villa Del Rey', '#4FA37E', TRUE, 8, 1, '28'),
+  ('VE', 'L-13-24', 'Villa Esperanza', '#4FA37E', TRUE, 8, 1, '29'),
+  ('B2', 'L-13-30', 'Bo. Beatriz', '#4FA37E', TRUE, 8, 1, '30'),
   ('CH', 'L-13-90', 'Sect. La Changa', '#534E8F', TRUE, 17, 1, '31'),
-  ('SA', 'L-13-19', 'Bo. San Antonio Sect. Salchichón', '#5C8A3F', TRUE, 16, 1, '32')
-  ;
+  ('SA', 'L-13-19', 'Bo. San Antonio Sect. Salchichón', '#5C8A3F', TRUE, 16, 1, '32'),
+  ('VC', 'L-13-28', 'Villas de Castro', '#5C8A3F', TRUE, 16, 1, '34'),
+  ('SS', 'L-13-20', 'San Salvador', '#5C8A3F', TRUE, 16, 1, '36'),
+  ('TR', 'L-13-19', 'Trolley', '#5C8A3F', TRUE, 16, 1, '37');

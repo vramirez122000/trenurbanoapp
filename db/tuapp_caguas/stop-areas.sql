@@ -6,3 +6,4 @@
 )
 insert into ref.stop_area (id, "desc", lng, lat, geom, sort_order)
   select id, "desc", lng, lat, ST_SetSRID(ST_Point(lng, lat), 4326), sort_order from stop_area_tmp;*/
+select 1;

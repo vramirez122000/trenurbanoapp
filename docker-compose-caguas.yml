@@ -1,9 +1,9 @@
 version: '2'
 services:
   db-caguas:
-    image: mdillon/postgis:9.5
+    image: mdillon/postgis:9.6
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: tuapp_caguas
     volumes:
