@@ -30,7 +30,6 @@ VALUES
   ('VB', 'L-13-01', 'Villa Blanca', '#4FA37E', TRUE, 8, 1, '27'),
   ('VR', 'L-13-23', 'Villa Del Rey', '#4FA37E', TRUE, 8, 1, '28'),
   ('VE', 'L-13-24', 'Villa Esperanza', '#4FA37E', TRUE, 8, 1, '29'),
-  ('B2', 'L-13-30', 'Bo. Beatriz', '#4FA37E', TRUE, 8, 1, '30'),
   ('CH', 'L-13-90', 'Sect. La Changa', '#534E8F', TRUE, 17, 1, '31'),
   ('SA', 'L-13-19', 'Bo. San Antonio Sect. Salchichón', '#5C8A3F', TRUE, 16, 1, '32'),
   ('VC', 'L-13-28', 'Villas de Castro', '#5C8A3F', TRUE, 16, 1, '34'),
