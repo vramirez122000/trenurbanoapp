@@ -34,4 +34,6 @@ VALUES
   ('SA', 'L-13-19', 'Bo. San Antonio Sect. Salchichón', '#5C8A3F', TRUE, 16, 1, '32'),
   ('VC', 'L-13-28', 'Villas de Castro', '#5C8A3F', TRUE, 16, 1, '34'),
   ('SS', 'L-13-20', 'San Salvador', '#5C8A3F', TRUE, 16, 1, '36'),
-  ('TR', 'L-13-19', 'Trolley', '#5C8A3F', TRUE, 16, 1, '37');
+  ('TR', 'L-13-19', 'Trolley', '#5C8A3F', TRUE, 16, 1, '37'),
+  ('VJ', 'L-13-E-33', 'Urb. Villa Blanca, Urb. Santa Juana', '#4FA37E', TRUE, 8, 1, ''),
+;
