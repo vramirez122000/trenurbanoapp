@@ -27,6 +27,6 @@ echo ${_SET_SEARCH_PATH} \
  ${INSTANCE}/vehicles.sql \
  common/index/*.sql \
 | psql -U postgres -h 127.0.0.1 -d ${INSTANCE} \
->> load_ref.log cmd 2>&1
+>> load_ref.log 2>&1
 
 echo "Success!"
