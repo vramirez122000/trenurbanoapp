@@ -2,7 +2,7 @@
 INSERT INTO ref.route (id, code, "desc", color, gpsenabled, sort_order, priority, foreign_id)
 VALUES
   ('AB', 'I-13-04', 'Aguas Buenas', '#D87977', TRUE, 9, 1, '1'),
-  ('BA', null, 'Bo. Bairoa', '#D87977', TRUE, 9, 1, '2'),
+  ('BA', 'L-13-04', 'Bo. Bairoa', '#D87977', TRUE, 9, 1, '2'),
   ('BE', 'I-13-30', 'Bo. Beatriz', '#D87977', TRUE, 9, 1, '3'),
   ('BO', 'L-13-03', 'Urb. Bonneville', '#5F71DD', TRUE, 7, 1, '4'),
   ('BQ', 'L-13-14', 'Bo. Borinquen', '#3F596A', TRUE, 1, 1, '5'),
@@ -14,8 +14,8 @@ VALUES
   ('CI', 'I-13-21', 'Cidra', '#D97B34', TRUE, 11, 1, '11'),
   ('GV', 'I-13-11', 'Guavate', '#D97B34', TRUE, 11, 1, '12'),
   ('GU', 'I-13-33', 'Gurabo', '#5BA7B9', TRUE, 12, 1, '13'),
-  ('HO', null, 'Hormigas', '#5BA7B9', TRUE, 12, 1, '14'),
-  ('HR', 'L-13-E-03', 'Hospital Regional', '#7396DB', TRUE, 20, 1, '15'),
+  ('HO', 'L-13-32', 'Bo. Hormigas', '#5BA7B9', TRUE, 12, 1, '14'),
+  ('HR', 'L-13-E-03', 'Hosp. Regional', '#7396DB', TRUE, 20, 1, '15'),
   ('JU', 'I-13-40', 'Juncos', '#9E8FB4', TRUE, 13, 1, '16'),
   ('BM', 'L-13-12', 'Bo. La Mesa, Sect. La Barra', '#63B93E', TRUE, 3, 1, '17'),
   ('CA', 'L-13-13', 'Parc. Las Carolinas', '#8D3D2A', TRUE, 15, 1, '18'),
