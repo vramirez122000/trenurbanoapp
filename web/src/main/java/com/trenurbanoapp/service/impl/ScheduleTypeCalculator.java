@@ -29,6 +29,19 @@ class ScheduleTypeCalculator {
         }
 
         final DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+        if(routeGroup == RouteGroup.TRANSCRIOLLO) {
+            if (DayOfWeek.SUNDAY == dayOfWeek || DayOfWeek.SATURDAY == dayOfWeek) {
+                return ScheduleType.RESTDAY;
+            }
+            HolidayManager atiHolidays = getHolidayManager("TRANSCRIOLLO");
+            if (atiHolidays.isHoliday(date)) {
+                return ScheduleType.RESTDAY;
+            }
+            return ScheduleType.WORKDAY;
+        }
+
+
         if(routeGroup == RouteGroup.ATI_LD) {
             if (DayOfWeek.SUNDAY == dayOfWeek || DayOfWeek.SATURDAY == dayOfWeek) {
                 return ScheduleType.RESTDAY;

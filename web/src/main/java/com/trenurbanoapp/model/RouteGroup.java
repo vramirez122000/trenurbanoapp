@@ -14,5 +14,5 @@ public enum RouteGroup {
     ATI_LD,
     TREN_URBANO,
     ACUAEXPRESO,
-    ;
+    TRANSCRIOLLO
 }
