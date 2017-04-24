@@ -8,7 +8,6 @@ with trip as (
       'WORKDAY' schedule_type
 ), stop_times as (
   SELECT TIME '05:00:00' stop_time
-  UNION SELECT TIME '05:00:00'
   UNION SELECT TIME '06:30:00'
   UNION SELECT TIME '08:00:00'
   UNION SELECT TIME '09:30:00'
@@ -32,7 +31,6 @@ with trip as (
       'RESTDAY' schedule_type
 ), stop_times as (
   SELECT TIME '07:00:00' stop_time
-  UNION SELECT TIME '07:00:00'
   UNION SELECT TIME '08:30:00'
   UNION SELECT TIME '10:00:00'
   UNION SELECT TIME '11:30:00'

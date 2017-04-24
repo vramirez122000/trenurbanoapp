@@ -1,10 +1,10 @@
 
--- Terminal de Caguas a Hormigas, Lunes a Viernes
+-- Terminal de Caguas a Turabo Arriba Lunes a Viernes
 with trip as (
     SELECT
-      'SA' route,
+      'TA' route,
       'TERM_CAGUAS' stop_area,
-      'HORMIGAS' direction,
+      'TURABO_ARRIBA' direction,
       'WORKDAY' schedule_type
 ), stop_times as (
   SELECT TIME '05:00:00' stop_time
@@ -21,13 +21,13 @@ with trip as (
   select trip.route, trip.stop_area, trip.direction, trip.schedule_type, stop_times.stop_time
   from trip, stop_times order by stop_times.stop_time;
 
--- Terminal de Caguas a Hormigas, Sabado y domingo
+-- Terminal de Caguas a Turabo Arriba, Sabado y domingo
 
 with trip as (
     SELECT
-      'SA' route,
+      'TA' route,
       'TERM_CAGUAS' stop_area,
-      'HORMIGAS' direction,
+      'TURABO_ARRIBA' direction,
       'RESTDAY' schedule_type
 ), stop_times as (
   SELECT TIME '07:00:00' stop_time
