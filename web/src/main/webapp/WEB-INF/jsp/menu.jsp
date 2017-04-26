@@ -101,5 +101,5 @@
 </div>
 <!-- /.modal -->
 <script type="text/javascript">
-    $("#aboutUs .modal-body").load("<c:url value="/html/about_us.html"/>");
+    $("#aboutUs .modal-body").load("<c:url value="${applicationScope['content.aboutus']}"/>");
 </script>
