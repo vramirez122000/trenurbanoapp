@@ -2,15 +2,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <meta charset="UTF-8"/>
-<meta name="keywords" content="tren urbano, trenurbano, trenurbanoapp"/>
+<meta name="keywords" content="transit transport"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 
-<title>Tren Urbano App</title>
-<link rel="icon" href="<c:url value="/images/trenurbano_icon16.png"/>"/>
-<link rel="icon shortcut" href="<c:url value="/images/trenurbano_icon48.png"/>"/>
-<link rel="apple-touch-icon" href="<c:url value="/images/trenurbano_icon57.png"/>"/>
-<link rel="apple-touch-icon-precomposed" href="<c:url value="/images/trenurbano_icon57.png"/>"/>
+<title>${applicationScope['app.name']}</title>
+<link rel="icon" href="<c:url value="${applicationScope['logo.16']}"/>"/>
+<link rel="icon shortcut" href="<c:url value="${applicationScope['logo.48']}"/>"/>
+<link rel="apple-touch-icon" href="<c:url value="${applicationScope['logo.57']}"/>"/>
+<link rel="apple-touch-icon-precomposed" href="<c:url value="${applicationScope['logo.57']}"/>"/>
 <link rel="apple-touch-startup-image" href="<c:url value="/images/progress.gif"/>"/>
 
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">

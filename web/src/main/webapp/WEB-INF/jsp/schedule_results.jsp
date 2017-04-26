@@ -113,11 +113,11 @@
                 <h4 class="modal-title" id="myModalLabel"><spring:message code="schedule.reportDialog.header"/> </h4>
             </div>
             <div class="modal-body">
-                <p>Llame a <a class="" href="tel:311"><i class="fa fa-phone"></i> Línea 311</a> e indique
+                <p>Llame a <a class="" href="tel:${applicationScope['report.phone']}"><i class="fa fa-phone"></i> ${applicationScope['report.phone']}</a> e indique
                     que <span id="instructions"></span></p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-info" href="tel:311"><i class="fa fa-phone"></i> Línea 311</a>
+                <a class="btn btn-info" href="tel:${applicationScope['report.phone']}"><i class="fa fa-phone"></i> ${applicationScope['report.phone']}</a>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

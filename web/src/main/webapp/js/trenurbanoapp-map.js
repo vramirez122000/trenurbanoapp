@@ -52,6 +52,7 @@ TU.MAP = (function(my, $, Leaf) {
     var snapshotIntervalId;
     var gpsEnabled = false;
     var debug = true;
+    var mapCenter = my.DEFAULTS.CENTER;
     var route = TU.UTIL.getParam('route');
     var locationMarker = Leaf.marker(my.DEFAULTS.CENTER, {
         icon: markerIcon('/images/dude')
@@ -115,6 +116,8 @@ TU.MAP = (function(my, $, Leaf) {
         contextPath = typeof options.contextPath !== 'undefined' && options.contextPath || contextPath;
         gpsEnabled = typeof options.gpsEnabled !== 'undefined' && options.gpsEnabled || gpsEnabled;
         debug = typeof options.debug !== 'undefined' && options.debug || debug;
+        mapCenter = typeof options.mapCenter !== 'undefined' && options.mapCenter || mapCenter;
+
 
         if(gpsEnabled) {
             getVehicleSnapshots(map, contextPath);
@@ -163,7 +166,8 @@ TU.MAP = (function(my, $, Leaf) {
             if(route) {
                 return;
             }
-            map.setView(my.DEFAULTS.CENTER, my.DEFAULTS.ZOOM);
+            console.debug(JSON.stringify(mapCenter));
+            map.setView(mapCenter, my.DEFAULTS.ZOOM);
         });
 
         map.on('zoomend', function() {

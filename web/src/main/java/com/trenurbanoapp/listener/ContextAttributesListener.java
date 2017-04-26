@@ -25,6 +25,22 @@ public class ContextAttributesListener implements ServletContextListener {
         servletContext.setAttribute("javascript.useSource", Boolean.valueOf(resolver.resolvePlaceholders("${javascript.useSource:false}")));
         servletContext.setAttribute("routeAlgorithm.useRoutes", Boolean.valueOf(resolver.resolvePlaceholders("${routeAlgorithm.useRoutes:false}")));
         servletContext.setAttribute("alert.message", resolver.resolvePlaceholders("${alert.message:}"));
+
+        servletContext.setAttribute("app.name", resolver.resolvePlaceholders("${app.name:Tren Urbano App}"));
+        servletContext.setAttribute("report.phone", resolver.resolvePlaceholders("${report.phone:311}"));
+        servletContext.setAttribute("map.center.lat", resolver.resolvePlaceholders("${map.center.lat:18.430189}"));
+        servletContext.setAttribute("map.center.lng", resolver.resolvePlaceholders("${map.center.lng:-66.060061}"));
+        servletContext.setAttribute("links.ios", resolver.resolvePlaceholders("${links.ios:http://itunes.apple.com/us/app/tren-urbano-app/id484781635}"));
+        servletContext.setAttribute("links.android", resolver.resolvePlaceholders("${links.android:https://market.android.com/details?id=com.trenurbanoapp}"));
+
+
+        servletContext.setAttribute("logo.16", resolver.resolvePlaceholders("${logo.16:/images/trenurbano_icon16.png}"));
+        servletContext.setAttribute("logo.48", resolver.resolvePlaceholders("${logo.48:/images/trenurbano_icon48.png}"));
+        servletContext.setAttribute("logo.57", resolver.resolvePlaceholders("${logo.57:/images/trenurbano_icon57.png}"));
+
+        servletContext.setAttribute("banner.231", resolver.resolvePlaceholders("${banner.231:/images/trenurbano_icon_banner231.png}"));
+        servletContext.setAttribute("banner.468", resolver.resolvePlaceholders("${banner.468:/images/trenurbano_icon_banner468.png}"));
+        servletContext.setAttribute("banner.468", resolver.resolvePlaceholders("${banner.468:/images/trenurbano_icon_banner468.png}"));
     }
 
     @Override

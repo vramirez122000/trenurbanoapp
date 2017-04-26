@@ -40,9 +40,10 @@
 
             resizeMapDiv();
 
+            var mapCenter = [${applicationScope['map.center.lat']}, ${applicationScope['map.center.lng']}];
 
             var map = L.map('map', {
-                center: TU.MAP.DEFAULTS.CENTER,
+                center: mapCenter,
                 zoom: TU.MAP.DEFAULTS.ZOOM,
                 zoomControl: false
             });
@@ -58,13 +59,14 @@
 
             L.control.geocoder('search-uUAFZ_4', {
                 bounds: TU.MAP.DEFAULTS.BOUNDS,
-                latlng: TU.MAP.DEFAULTS.CENTER,
+                latlng: mapCenter,
                 autocomplete: true
             }).addTo(map);
 
             L.control.zoom().addTo(map);
 
             TU.MAP.main(map, {
+                mapCenter: mapCenter,
                 gpsEnabled: ${applicationScope['gps.enabled']},
                 contextPath: '${pageContext.request.contextPath}',
                 debug: ${applicationScope['javascript.useSource']}

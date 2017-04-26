@@ -9,7 +9,7 @@
 
         <div class="navbar-header pull-left">
             <span class="navbar-brand visible-xs">
-                <img src="<c:url value="/images/trenurbano_icon_banner231.png"/>"
+                <img src="<c:url value="${applicationScope['banner.231']}"/>"
                      class="img-responsive"
                      style="max-height: 1.2em; max-width: 184px"/>
             </span>
@@ -47,14 +47,19 @@
                     <a onclick="location = '<c:url value="/app/map"/>'"><i class="fa fa-map"></i>
                         <spring:message code="menu.map"/></a>
                 </li>
+                <c:if test="${not empty applicationScope['links.ios']}">
                 <li>
                     <a href="http://itunes.apple.com/us/app/tren-urbano-app/id484781635" target="_blank"><i class="fa fa-apple"></i>
                         <spring:message code="menu.apple"/></a>
                 </li>
+                </c:if>
+
+                <c:if test="${not empty applicationScope['links.android']}">
                 <li>
                     <a href="https://market.android.com/details?id=com.trenurbanoapp" target="_blank"><i class="fa fa-android"></i>
                         <spring:message code="menu.android"/></a>
                 </li>
+                </c:if>
                 <li>
                     <c:if test="${param['lang'] == 'en' || (empty param['lang'] && fn:startsWith(locale,'en'))}">
                         <a onclick="location = '<c:url value="?lang=es"/>'">Español</a>
@@ -83,7 +88,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Acerca de Tren Urbano App</h4>
+                <h4 class="modal-title" id="myModalLabel">Acerca de ${applicationScope['app.name']}</h4>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">

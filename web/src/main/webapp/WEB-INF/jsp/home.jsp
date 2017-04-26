@@ -30,8 +30,8 @@
     <div class="container">
         <div class="col-xs-12">
             <h1 style="text-align: center">
-                <img alt="TrenUrbanoApp.com banner"
-                     src="<c:url value="/images/trenurbano_icon_banner468.png"/>"/>
+                <img alt="${applicationScope['app.name']} banner"
+                     src="<c:url value="${applicationScope['banner.468']}"/>"/>
             </h1>
             <jsp:useBean id="stations" scope="request" type="java.util.List"/>
             <c:if test="${not empty stations}">
