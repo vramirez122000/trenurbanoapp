@@ -4,7 +4,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.trenurbanoapp.dao.VehicleStateDao;
 import com.trenurbanoapp.model.SubrouteKey;
+import com.trenurbanoapp.model.Vehicle;
 import com.trenurbanoapp.model.VehicleState;
+import com.trenurbanoapp.model.VehicleStateContainer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -73,6 +75,35 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
             v.setPossibleSubroutes(getPossibleSubroutes(assetId));
         } else {
             v.setPossibleRoutes(getPossibleRoutes(assetId));
+        }
+
+        return v;
+    }
+
+    private static final VehicleMapper VEH_MAPPER = new VehicleMapper("veh_");
+    @Override
+    public VehicleStateContainer getVehicleStateContainer(final int assetId) {
+        String sql = "SELECT state.*, " +
+                " veh.asset_id veh_asset_id, " +
+                " veh.name veh_name, veh.group_id veh_group_id, " +
+                " veh.plate veh_plate, veh.routes veh_routes " +
+                " FROM ref.vehicle_state state " +
+                " join ref.vehicle veh on state.asset_id = veh.asset_id WHERE state.asset_id = ?";
+        List<VehicleStateContainer> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            VehicleState state = VEHICLE_STATE_MAPPER.mapRow(rs, rowNum);
+            Vehicle veh = VEH_MAPPER.mapRow(rs, rowNum);
+            return new VehicleStateContainer(state, veh);
+        }, assetId);
+
+        if (results.isEmpty()) {
+            return null;
+        }
+
+        VehicleStateContainer v = results.get(0);
+        if(useRoutes != null && useRoutes) {
+            v.getState().setPossibleSubroutes(getPossibleSubroutes(assetId));
+        } else {
+            v.getState().setPossibleRoutes(getPossibleRoutes(assetId));
         }
 
         return v;

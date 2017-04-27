@@ -17,9 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by victor on 4/23/14.
@@ -52,19 +50,35 @@ public class SubrouteDaoJdbc implements SubrouteDao {
     }
 
     @Override
-    public Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithin100Meters(LatLng currPos, LatLng prevPos) {
-        return jdbcTemplate.query("WITH tmp AS ( " +
-                        " SELECT " +
-                        "   ST_Transform(ST_SetSRID(ST_Point(?,?), 4326), 32161) curr_pos, " +
-                        "   ST_Transform(ST_SetSRID(ST_Point(?,?), 4326), 32161) prev_pos " +
-                        ") SELECT route, direction, " +
-                        "   ST_InterpolatePoint(subroute.geom, tmp.curr_pos) subroute_m, " +
-                        "   ST_Azimuth(tmp.prev_pos, tmp.curr_pos) azimuth " +
-                        " FROM tmp " +
-                        " JOIN subroute ON ST_DWithin(subroute.geom, tmp.curr_pos, 100) " +
-                        " JOIN route ON subroute.route = route.id " +
-                        " WHERE route.gpsenabled " +
-                        " AND ST_InterpolatePoint(subroute.geom, tmp.curr_pos) - ST_InterpolatePoint(subroute.geom, tmp.prev_pos) > 0 ",
+    public Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithin100Meters(LatLng currPos, LatLng prevPos, String... routeIds) {
+        String sql = "WITH tmp AS ( " +
+                " SELECT " +
+                "   ST_Transform(ST_SetSRID(ST_Point(?,?), 4326), 32161) curr_pos, " +
+                "   ST_Transform(ST_SetSRID(ST_Point(?,?), 4326), 32161) prev_pos " +
+                ") SELECT route, direction, " +
+                "   ST_InterpolatePoint(subroute.geom, tmp.curr_pos) subroute_m, " +
+                "   ST_Azimuth(tmp.prev_pos, tmp.curr_pos) azimuth " +
+                " FROM tmp " +
+                " JOIN subroute ON ST_DWithin(subroute.geom, tmp.curr_pos, 100) " +
+                " JOIN route ON subroute.route = route.id " +
+                " WHERE route.gpsenabled " +
+                " AND ST_InterpolatePoint(subroute.geom, tmp.curr_pos) - ST_InterpolatePoint(subroute.geom, tmp.prev_pos) > 0 ";
+        List<Object> values = new ArrayList<>(Arrays.asList(
+                currPos.getLng(), currPos.getLat(),
+                prevPos.getLng(), prevPos.getLat())
+        );
+        if(routeIds != null && routeIds.length > 0) {
+            StringBuilder tmp = new StringBuilder(" and route.id in (");
+            for (String routeId : routeIds) {
+                tmp.append("?,");
+                values.add(routeId);
+            }
+            //delete last comma
+            tmp.deleteCharAt(tmp.length() - 1);
+            tmp.append(") ");
+            sql += tmp.toString();
+        }
+        return jdbcTemplate.query(sql,
                 (ResultSet rs) -> {
                     Map<SubrouteKey, SubrouteView> results = new HashMap<>();
                     for (int i = 0; rs.next(); i++) {
@@ -77,8 +91,7 @@ public class SubrouteDaoJdbc implements SubrouteDao {
                     }
                     return results;
                 },
-                currPos.getLng(), currPos.getLat(),
-                prevPos.getLng(), prevPos.getLat());
+                values.toArray(new Object[values.size()]));
     }
 
     @Override

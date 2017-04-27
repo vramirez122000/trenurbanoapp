@@ -2,6 +2,7 @@ package com.trenurbanoapp.dao;
 
 import com.trenurbanoapp.model.SubrouteKey;
 import com.trenurbanoapp.model.VehicleState;
+import com.trenurbanoapp.model.VehicleStateContainer;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.Map;
 public interface VehicleStateDao {
 
     VehicleState getVehicleState(int assetId);
+
+    VehicleStateContainer getVehicleStateContainer(int assetId);
 
     List<VehicleState> getMovingVehicleStatesWithinServiceArea();
 

@@ -78,7 +78,8 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     @Override
     public void updateVehicleState(AssetPosition assetPosition) {
 
-        VehicleState v = vehicleStateDao.getVehicleState(assetPosition.getAssetId());
+        VehicleStateContainer container = vehicleStateDao.getVehicleStateContainer(assetPosition.getAssetId());
+        VehicleState v = container.getState();
         if(!passesPreliminaryChecks(assetPosition, v)) {
             return;
         }
@@ -153,16 +154,12 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
 
 
 
-        Map<SubrouteKey, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithin100Meters(currTrail.get(0), v.getTrail().get(0));
+        Map<SubrouteKey, SubrouteView> subrouteViews = subrouteDao.getGpsEnabledSubroutesWithin100Meters(currTrail.get(0), v.getTrail().get(0), container.getVehicle().getRoutes());
         Set<SubrouteKey> nearbySubroutes = subrouteViews.keySet();
         Set<SubrouteKey> oldPossibleSubroutes = v.getPossibleSubroutesAsSet();
         Set<SubrouteKey> newPossibleSubroutes = new HashSet<>(nearbySubroutes);
 
         //filter possible routes by configured allowed routes in vehicle table
-        Vehicle vehicle = vehicleDao.getVehicle(v.getAssetId());
-        if(vehicle.getRoutes() != null && vehicle.getRoutes().length > 0) {
-            newPossibleSubroutes.retainAll(Arrays.asList(vehicle.getRoutes()));
-        }
         newPossibleSubroutes.retainAll(oldPossibleSubroutes);
 
         if (newPossibleSubroutes.size() == 1) {
@@ -184,7 +181,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             float currMeasure = (float) lastKnownSubrouteView.getSubrouteM();
             if (v.getSubrouteMeasure() != null && currMeasure < v.getSubrouteMeasure()) {
                 log.warn("Decreasing m value for vehicle {} in subroute {} to {}",
-                        vehicle.getName(),
+                        container.getVehicle().getName(),
                         lastKnownSubrouteView.getSubrouteKey().getRoute(),
                         lastKnownSubrouteView.getSubrouteKey().getDirection());
             }

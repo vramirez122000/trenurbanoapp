@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface SubrouteDao {
 
-    Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithin100Meters(LatLng currPos, LatLng prevPos);
+    Map<SubrouteKey, SubrouteView> getGpsEnabledSubroutesWithin100Meters(LatLng currPos, LatLng prevPos, String... routeIds);
 
     List<Map<String, Object>> getEtas(LatLng position);
 

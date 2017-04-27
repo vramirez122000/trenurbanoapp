@@ -40,7 +40,7 @@ public class ContextAttributesListener implements ServletContextListener {
 
         servletContext.setAttribute("banner.231", resolver.resolvePlaceholders("${banner.231:/images/trenurbano_icon_banner231.png}"));
         servletContext.setAttribute("banner.468", resolver.resolvePlaceholders("${banner.468:/images/trenurbano_icon_banner468.png}"));
-        servletContext.setAttribute("banner.468", resolver.resolvePlaceholders("${banner.468:/images/trenurbano_icon_banner468.png}"));
+
         servletContext.setAttribute("content.aboutus", resolver.resolvePlaceholders("${content.aboutus:/html/about_us.html}"));
     }
 

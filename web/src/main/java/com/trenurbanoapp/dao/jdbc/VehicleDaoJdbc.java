@@ -32,6 +32,7 @@ public class VehicleDaoJdbc implements VehicleDao {
 
     private SimpleJdbcInsertOperations vehicleInsert;
     private JdbcOperations jdbcTemplate;
+    private final static VehicleMapper VEH_MAPPER = new VehicleMapper();
 
     @Inject
     public void setDataSource(DataSource dataSource) {
@@ -42,17 +43,8 @@ public class VehicleDaoJdbc implements VehicleDao {
     @Override
     @Cacheable(value = "vehicleCache", key = "#assetId")
     public Vehicle getVehicle(int assetId) {
-        List<Vehicle> vehicles = jdbcTemplate.query("select * from ref.vehicle where asset_id = ?", (rs, rowNum) -> {
-            Vehicle v = new Vehicle();
-            v.setAssetId(rs.getInt("asset_id"));
-            v.setName(rs.getString("name"));
-            v.setGroupId(rs.getInt("group_id"));
-            Array routes = rs.getArray("routes");
-            if(routes != null) {
-                v.setRoutes((String[]) routes.getArray());
-            }
-            return v;
-        }, assetId);
+        List<Vehicle> vehicles = jdbcTemplate.query("select * from ref.vehicle where asset_id = ?",
+                VEH_MAPPER, assetId);
         return !vehicles.isEmpty() ? vehicles.get(0) : null;
     }
 
@@ -67,14 +59,14 @@ public class VehicleDaoJdbc implements VehicleDao {
     @CacheEvict(value = "vehicleCache", key = "#vehicle.assetId")
     public void updateVehicle(Vehicle vehicle) {
         UpdateBuilder builder = new UpdateBuilder("ref.vehicle");
-        builder.appendAll(new VehicleMapper().reverseMap(vehicle, ReverseRowMapper.Action.UPDATE));
+        builder.appendAll(VEH_MAPPER.reverseMap(vehicle, ReverseRowMapper.Action.UPDATE));
         builder.whereEquals("asset_id", vehicle.getAssetId());
         jdbcTemplate.update(builder.sql(), builder.values());
     }
 
     @Override
     public void insertVehicle(Vehicle vehicle) {
-        Map<String, Object> map = new VehicleMapper().reverseMap(vehicle, ReverseRowMapper.Action.INSERT);
+        Map<String, Object> map = VEH_MAPPER.reverseMap(vehicle, ReverseRowMapper.Action.INSERT);
         vehicleInsert.execute(map);
     }
 }
