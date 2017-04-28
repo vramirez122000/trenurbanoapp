@@ -619,7 +619,7 @@ TU.MAP = (function(my, $, Leaf) {
 
     function getAttributionPrefixText() {
         var ageInDecimalSeconds = (ageInMillis / 1000).toFixed(1);
-        return "GPS NO incluye M1, M3, ME. Ultima Lectura " + ageInDecimalSeconds + "s";
+        return "Última lectura " + ageInDecimalSeconds + "s";
     }
 
     function updateVehicleRoutePopup(map, vehicleLayer) {

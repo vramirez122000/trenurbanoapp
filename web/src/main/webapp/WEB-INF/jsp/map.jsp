@@ -91,7 +91,7 @@
                 <h4 class="modal-title" id="timeoutModalLabel">&iquest;Sigue ah&iacute;?</h4>
             </div>
             <div class="modal-body">Cierre esta notificaci&oacute;n o presione 'Continuar' para regresar al mapa de
-                rastreo GPS de la AMA.
+                rastreo GPS.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Continuar</button>
