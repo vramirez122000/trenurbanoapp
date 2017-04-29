@@ -1,26 +1,38 @@
-
 -- Terminal de Caguas a Urb. Bonneville Lunes a Viernes
 with trip as (
     SELECT
-      'CM' route,
+      'CI' route,
       'TERM_CAGUAS' stop_area,
-      'CENTRO_MEDICO' direction,
+      'CIDRA' direction,
       'WORKDAY' schedule_type
 ), stop_times as (
-  SELECT TIME '05:00:00' stop_time
-  UNION SELECT TIME '05:30:00'
+        SELECT TIME '05:00:00' stop_time
+  UNION SELECT TIME '05:20:00'
+  UNION SELECT TIME '05:40:00'
   UNION SELECT TIME '06:00:00'
-  UNION SELECT TIME '06:30:00'
+  UNION SELECT TIME '06:20:00'
+  UNION SELECT TIME '06:40:00'
   UNION SELECT TIME '07:00:00'
+  UNION SELECT TIME '07:20:00'
+  UNION SELECT TIME '07:40:00'
   UNION SELECT TIME '08:00:00'
+  UNION SELECT TIME '08:30:00'
   UNION SELECT TIME '09:00:00'
+  UNION SELECT TIME '09:30:00'
   UNION SELECT TIME '10:00:00'
+  UNION SELECT TIME '10:30:00'
   UNION SELECT TIME '11:00:00'
+  UNION SELECT TIME '11:30:00'
   UNION SELECT TIME '12:00:00'
+  UNION SELECT TIME '12:30:00'
   UNION SELECT TIME '13:00:00'
+  UNION SELECT TIME '13:30:00'
   UNION SELECT TIME '14:00:00'
+  UNION SELECT TIME '14:30:00'
   UNION SELECT TIME '15:00:00'
+  UNION SELECT TIME '15:30:00'
   UNION SELECT TIME '16:00:00'
+  UNION SELECT TIME '16:30:00'
   UNION SELECT TIME '17:00:00'
   UNION SELECT TIME '17:10:00'
   UNION SELECT TIME '18:00:00'
@@ -33,17 +45,17 @@ with trip as (
 
 with trip as (
     SELECT
-      'CM' route,
+      'CI' route,
       'TERM_CAGUAS' stop_area,
-      'CENTRO_MEDICO' direction,
+      'CIDRA' direction,
       'RESTDAY' schedule_type
 ), stop_times as (
-        SELECT TIME '07:00:00' stop_time
-  UNION SELECT TIME '08:30:00'
-  UNION SELECT TIME '10:00:00'
-  UNION SELECT TIME '11:30:00'
-  UNION SELECT TIME '13:00:00'
-  UNION SELECT TIME '14:30:00'
+        SELECT TIME '07:30:00' stop_time
+  UNION SELECT TIME '09:00:00'
+  UNION SELECT TIME '10:30:00'
+  UNION SELECT TIME '12:00:00'
+  UNION SELECT TIME '13:45:00'
+  UNION SELECT TIME '15:00:00'
   UNION SELECT TIME '16:00:00'
 ) INSERT INTO schedule (route, stop_area, direction, schedule_type, stop_time)
   select trip.route, trip.stop_area, trip.direction, trip.schedule_type, stop_times.stop_time
