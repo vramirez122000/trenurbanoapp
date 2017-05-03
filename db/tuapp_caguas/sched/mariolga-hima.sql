@@ -7,30 +7,30 @@ with trip as (
    'MARIOLGA_HIMA' direction,
    'WORKDAY' schedule_type 
 ), stop_times as ( 
- select '05:00:00' stop_time
- union select '05:30:00'
- union select '06:00:00'
- union select '06:30:00'
- union select '07:00:00'
- union select '07:30:00'
- union select '08:00:00'
- union select '08:45:00'
- union select '09:30:00'
- union select '10:15:00'
- union select '11:00:00'
- union select '11:45:00'
- union select '12:30:00'
- union select '13:15:00'
- union select '14:00:00'
- union select '14:30:00'
- union select '15:00:00'
- union select '15:30:00'
- union select '16:00:00'
- union select '16:30:00'
- union select '17:00:00'
- union select '17:10:00'
- union select '18:00:00'
- union select '18:10:00'
+ select time '05:00:00' stop_time
+ union select time '05:30:00'
+ union select time '06:00:00'
+ union select time '06:30:00'
+ union select time '07:00:00'
+ union select time '07:30:00'
+ union select time '08:00:00'
+ union select time '08:45:00'
+ union select time '09:30:00'
+ union select time '10:15:00'
+ union select time '11:00:00'
+ union select time '11:45:00'
+ union select time '12:30:00'
+ union select time '13:15:00'
+ union select time '14:00:00'
+ union select time '14:30:00'
+ union select time '15:00:00'
+ union select time '15:30:00'
+ union select time '16:00:00'
+ union select time '16:30:00'
+ union select time '17:00:00'
+ union select time '17:10:00'
+ union select time '18:00:00'
+ union select time '18:10:00'
 
 ) INSERT INTO schedule (route, stop_area, direction, schedule_type, stop_time)
   select trip.route, trip.stop_area, trip.direction, trip.schedule_type, stop_times.stop_time
@@ -45,16 +45,16 @@ with trip as (
    'MARIOLGA_HIMA' direction,
    'RESTDAY' schedule_type 
 ), stop_times as ( 
- select '07:00:00' stop_time
- union select '08:00:00'
- union select '09:00:00'
- union select '10:00:00'
- union select '11:00:00'
- union select '12:00:00'
- union select '13:00:00'
- union select '14:00:00'
- union select '15:00:00'
- union select '16:00:00'
+ select time '07:00:00' stop_time
+ union select time '08:00:00'
+ union select time '09:00:00'
+ union select time '10:00:00'
+ union select time '11:00:00'
+ union select time '12:00:00'
+ union select time '13:00:00'
+ union select time '14:00:00'
+ union select time '15:00:00'
+ union select time '16:00:00'
 
 ) INSERT INTO schedule (route, stop_area, direction, schedule_type, stop_time)
   select trip.route, trip.stop_area, trip.direction, trip.schedule_type, stop_times.stop_time

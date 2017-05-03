@@ -79,8 +79,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     public void updateVehicleState(AssetPosition assetPosition) {
 
         VehicleStateContainer container = vehicleStateDao.getVehicleStateContainer(assetPosition.getAssetId());
-        VehicleState v = container.getState();
-        if(!passesPreliminaryChecks(assetPosition, v)) {
+        if(container == null || !passesPreliminaryChecks(assetPosition, container.getState())) {
             return;
         }
 
@@ -88,6 +87,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
         List<LatLng> currTrail = assetPosition.getTrail();
         statsLogDao.insertAssetPosition(assetPosition);
 
+        VehicleState v = container.getState();
         if(v.hasLastKnownRoute()) {
             Map<String, Object> withinOrigOrDest = subrouteDao.isWithinOriginOrDestination(currTrail, v.getLastKnownSubroute());
             if(withinOrigOrDest != null) {

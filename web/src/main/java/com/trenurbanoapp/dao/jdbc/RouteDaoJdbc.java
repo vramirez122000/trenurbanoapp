@@ -51,7 +51,7 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     @Cacheable("allRoutes")
     public List<Route> getAllRoutes() {
-        return jdbcTemplate.query("SELECT route.id, route.color, route.desc, " +
+        return jdbcTemplate.query("SELECT route.id, route.color, route.desc, route.code, route.foreign_id, " +
                         " ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union(ST_Simplify(subroute.geom, ?))), 4326)) geojson " +
                         " FROM route " +
                         " JOIN subroute ON route.id = subroute.route " +
@@ -68,7 +68,7 @@ public class RouteDaoJdbc implements RouteDao {
                 "select ida.route, ida.direction, ST_Dump(ST_Difference(ST_Simplify(ida.geom, ?), ST_Buffer(vuelta.geom, 50))) geom_dump " +
                 "from subroute ida " +
                 "join subroute vuelta on ida.route = vuelta.route and ida.direction <> vuelta.direction " +
-                ") select route.id, route.desc, route.color, ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union((tmp.geom_dump).geom)), 4326)) geojson " +
+                ") select route.id, route.desc, route.color, route.code, route.foreign_id, ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union((tmp.geom_dump).geom)), 4326)) geojson " +
                 "from tmp " +
                 "join route on tmp.route = route.id " +
                 "where ST_Length((tmp.geom_dump).geom) > 100 " +
@@ -83,7 +83,8 @@ public class RouteDaoJdbc implements RouteDao {
     @Override
     @Cacheable("routeById")
     public Route findById(String route) {
-        List<Route> results = jdbcTemplate.query("SELECT route.id, route.color, route.desc, " +
+        List<Route> results = jdbcTemplate.query(
+                "SELECT route.id, route.color, route.desc, route.code, route.foreign_id, " +
                         " ST_AsGeoJSON(ST_Transform(ST_Multi(ST_Union(ST_Simplify(subroute.geom, ?))), 4326)) geojson " +
                         " FROM route " +
                         " JOIN subroute ON route.id = subroute.route " +
@@ -148,8 +149,9 @@ public class RouteDaoJdbc implements RouteDao {
         route.setId(rs.getString("id"));
         route.setColor(rs.getString("color"));
         route.setGeometryAsGeoJson(rs.getString("geojson"));
-        route.setName(rs.getString("id"));
         route.setFullName(rs.getString("desc"));
+        route.setCode(rs.getString("code"));
+        route.setForeignId(rs.getString("foreign_id"));
         return route;
     };
 }

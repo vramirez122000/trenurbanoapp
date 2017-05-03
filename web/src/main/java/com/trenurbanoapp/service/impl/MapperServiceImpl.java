@@ -164,7 +164,8 @@ public class MapperServiceImpl implements MapperService {
     private Feature mapToFeature(Route route) {
         try {
             Feature f = new Feature();
-            f.setId(route.getName());
+            f.setId(route.getId());
+            f.setProperty("code", route.getCode());
             f.setProperty("color", route.getColor());
             f.setProperty("fullName", route.getFullName());
             f.setGeometry(objectMapper.readValue(route.getGeometryAsGeoJson(), MultiLineString.class));

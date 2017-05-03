@@ -17,6 +17,7 @@ public class StopTime {
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.US);
     private String route;
+    private String routeCode;
     private String routeFullName;
     private RouteGroup routeGroup;
     private String stopArea;
@@ -33,6 +34,14 @@ public class StopTime {
 
     public void setRoute(String route) {
         this.route = route;
+    }
+
+    public String getRouteCode() {
+        return routeCode;
+    }
+
+    public void setRouteCode(String routeCode) {
+        this.routeCode = routeCode;
     }
 
     public String getRouteFullName() {

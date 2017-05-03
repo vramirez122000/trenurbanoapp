@@ -24,7 +24,7 @@ VALUES
   ('SL', 'I-13-67', 'San Lorenzo', '#B69D3A', TRUE, 10, 1, '21', 'TRANSCRIOLLO'),
   ('T1', 'L-13-21', 'Bo. Tomás de Castro I', '#DA403A', TRUE, 4, 1, '22', 'TRANSCRIOLLO'),
   ('T2', 'L-13-22', 'Bo. Tomás de Castro II', '#86377A', TRUE, 5, 1, '23', 'TRANSCRIOLLO'),
-  ('TA', null, 'Turabo Arriba', '#86377A', TRUE, 5, 1, '24', 'TRANSCRIOLLO'),
+  ('TA', 'L-13-34', 'Turabo Arriba', '#86377A', TRUE, 5, 1, '24', 'TRANSCRIOLLO'),
   ('TG', 'L-13-08', 'Urb. Turabo Gardens', '#D384C0', TRUE, 19, 1, '25', 'TRANSCRIOLLO'),
   ('VT', 'L-13-07', 'Urb. Valle Tolima', '#4FA37E', TRUE, 8, 1, '26', 'TRANSCRIOLLO'),
   ('VB', 'L-13-01', 'Villa Blanca', '#4FA37E', TRUE, 8, 1, '27', 'TRANSCRIOLLO'),
@@ -34,6 +34,5 @@ VALUES
   ('SA', 'L-13-19', 'Bo. San Antonio Sect. Salchichón', '#5C8A3F', TRUE, 16, 1, '32', 'TRANSCRIOLLO'),
   ('VC', 'L-13-28', 'Villas de Castro', '#5C8A3F', TRUE, 16, 1, '34', 'TRANSCRIOLLO'),
   ('SS', 'L-13-20', 'San Salvador', '#5C8A3F', TRUE, 16, 1, '36', 'TRANSCRIOLLO'),
-  ('TR', 'L-13-19', 'Trolley', '#5C8A3F', TRUE, 16, 1, '37', 'TRANSCRIOLLO'),
   ('VJ', 'L-13-E-33', 'Urb. Villa Blanca, Urb. Santa Juana', '#4FA37E', TRUE, 8, 1, '', 'TRANSCRIOLLO')
 ;

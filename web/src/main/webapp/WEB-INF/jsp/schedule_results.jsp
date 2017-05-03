@@ -40,7 +40,7 @@
                                     <span class="routeLabel" style="
                                             background-color: ${stopTime.color};
                                             text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                            border-color: ${darkColor}">${stopTime.routeFullName}</span>
+                                            border-color: ${darkColor}">${stopTime.routeCode}</span>
                                         <spring:message code="to"/> ${stopTime.dest}
                                 </div>
                             </div>

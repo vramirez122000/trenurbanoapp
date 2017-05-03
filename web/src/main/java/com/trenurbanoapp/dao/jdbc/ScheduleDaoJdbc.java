@@ -29,6 +29,7 @@ public class ScheduleDaoJdbc implements ScheduleDao {
     private static final RowMapper<StopTime> stopTimeMapper = (rs, rowNum) -> {
         StopTime s = new StopTime();
         s.setRoute(rs.getString("route"));
+        s.setRouteCode(rs.getString("route_code"));
         s.setRouteFullName(rs.getString("route_full_name"));
         String routeGroupStr = rs.getString("route_group");
         s.setRouteGroup(RouteGroup.valueOf(routeGroupStr));
@@ -51,6 +52,7 @@ public class ScheduleDaoJdbc implements ScheduleDao {
 
     private static final String STOP_TIME_QUERY = "SELECT " +
             "  route.id          route, " +
+            "  route.code     route_code, " +
             "  route.desc     route_full_name, " +
             "  route.route_group, " +
             "  route.color, " +
