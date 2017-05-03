@@ -1,6 +1,6 @@
 var clockIntervalId;
 
-function main() {
+function main(options) {
 
     if(TU.SCHED.isIOS9WebView()) {
         var $alertMsg = $('#alertMsg');
@@ -10,36 +10,30 @@ function main() {
         $alertMsg.css('display', 'block');
     }
 
-    TU.SCHED.getGeolocation(function(location) {
-        TU.SCHED.getStopTimes('#stopTimes', location, function(params) {
-            var resultsStation = $('input#resultsStation').val();
-            var stationSelect = $(".station-select:visible");
-            stationSelect.val(resultsStation);
-
-            if(gpsEnabled) {
-                TU.SCHED.getNearbyEtas('#nearbyEtas', params)
-            }
-
-            TU.SCHED.getNearbyRoutesWithoutSchedules('#nearbyRoutesWithoutSchedules', params);
-            TU.SCHED.getStopAreasByDistance(params, function(stopAreas) {
-                if(!stopAreas || stopAreas.length == 0) {
-                    return
+    if(options.latLng && options.latLng.length === 2) {
+        getInfoByLocation({
+            lat: options.latLng[0],
+            lng: options.latLng[1],
+            accuracy: 50.0
+        }, options)
+    } else {
+        TU.SCHED.getGeolocation(
+            function(location) {
+                getInfoByLocation(location, options);
+            },
+            function() {
+                var stationSelect = $('.station-select:visible');
+                var station = stationSelect.val();
+                if (station && jQuery.trim(station).length > 0) {
+                    TU.SCHED.getStopTimes('#stopTimes', {
+                        station: station
+                    });
                 }
-                stationSelect.html(stopAreas.map(function(it) {
-                    return '<option value="' + it.id + '">'+ it.desc +'</option>'
-                }));
-                stationSelect.val(resultsStation);
-            });
-        })
-    }, function() {
-        var stationSelect = $('.station-select:visible');
-        var station = stationSelect.val();
-        if (station != null && jQuery.trim(station) != "") {
-            TU.SCHED.getStopTimes('#stopTimes', {
-                station: station
-            });
-        }
-    });
+            }
+        );
+    }
+
+
 
     var $stationSelect = $('.station-select:visible');
     $stationSelect.change(function () {
@@ -86,6 +80,28 @@ function main() {
     });
 }
 
+function getInfoByLocation(location, options) {
+    TU.SCHED.getStopTimes('#stopTimes', location, function(params) {
+        var resultsStation = $('input#resultsStation').val();
+        var stationSelect = $(".station-select:visible");
+        stationSelect.val(resultsStation);
+
+        if(options.gpsEnabled) {
+            TU.SCHED.getNearbyEtas('#nearbyEtas', params)
+        }
+
+        TU.SCHED.getNearbyRoutesWithoutSchedules('#nearbyRoutesWithoutSchedules', params);
+        TU.SCHED.getStopAreasByDistance(params, function(stopAreas) {
+            if(!stopAreas || stopAreas.length == 0) {
+                return
+            }
+            stationSelect.html(stopAreas.map(function(it) {
+                return '<option value="' + it.id + '">'+ it.desc +'</option>'
+            }));
+            stationSelect.val(resultsStation);
+        });
+    });
+}
 
 function getInputTime() {
     var $timeInput = $('.clock:visible input[type=time]');
@@ -162,3 +178,5 @@ function updateClocks() {
         $this.find('.etaString').text((Math.abs(duration.hours()) > 0 && (duration.hours() + ' hr   ')) + duration.minutes() + ' min ' + duration.seconds() + ' s')
     });
 }
+
+

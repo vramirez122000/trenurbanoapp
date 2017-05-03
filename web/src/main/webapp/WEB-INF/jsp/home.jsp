@@ -138,9 +138,17 @@
 
 <script type="text/javascript" src="<c:url value="/js/home.js"/>"></script>
 <script>
-    var gpsEnabled = ${applicationScope['gps.enabled']};
-    var alertMessage = '${applicationScope['alert.message']}';
-    $(document).ready(main);
+    $(document).ready(function() {
+        var options = {
+            gpsEnabled: ${applicationScope['gps.enabled']},
+            alertMessage: '${applicationScope['alert.message']}'
+        };
+
+        <c:if test="${not empty param['latLng']}">
+            options.latLng = [${param['latLng']}];
+        </c:if>
+        main(options)
+    });
 </script>
 
 </body>
