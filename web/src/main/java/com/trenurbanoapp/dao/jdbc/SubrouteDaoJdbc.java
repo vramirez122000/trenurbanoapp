@@ -98,7 +98,7 @@ public class SubrouteDaoJdbc implements SubrouteDao {
     public List<Map<String, Object>> getEtas(LatLng position) {
         return jdbcTemplate.queryForList("WITH tmp AS ( " +
                         " SELECT ST_Transform(ST_SetSRID(ST_Point(?,?), 4326), 32161) curr_pos " +
-                        ") SELECT subroute.route, subroute.direction, route.color, route.desc fullName, " +
+                        ") SELECT subroute.route, subroute.direction, route.color, route.desc fullName, route.code, " +
                         "   cast(ST_InterpolatePoint(subroute.geom, tmp.curr_pos) - vehicle_state.subroute_m as int) distance, " +
                         "   cast(vehicle_state.avg_speed as numeric(4,1)) avg_speed, " +
                         "   cast((ST_InterpolatePoint(subroute.geom, tmp.curr_pos) - vehicle_state.subroute_m) / vehicle_state.avg_speed as int) as eta " +

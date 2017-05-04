@@ -2,6 +2,7 @@
 <%@ taglib prefix="tu" uri="/WEB-INF/tld/tu" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: victor
@@ -24,17 +25,16 @@
             <td>
                 <div class="row">
                     <div class="col-xs-10" style="font-weight:bold">
-                        Ruta
                         <span class="routeLabel" style="
                                 background-color: ${eta.color};
                                 text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};
-                                border-color: ${darkColor}">${eta.fullName}</span>
+                                border-color: ${darkColor}">${eta.code}</span>
                         <c:if test="${not empty eta.direction}">hacia <span style="text-transform: capitalize">${fn:replace(fn:toLowerCase(eta.direction), '_', ' ')}</span></c:if>
                     </div>
-                    <div class="col-xs-2 text-right">
-                        <div>
-                            <a href="<c:url value="/app/map?route=${eta.route}"/>" title="Ver en mapa">
-                                <i class="fa fa-map-o"></i>
+                    <div class="col-xs-3 text-right" style="vertical-align: middle">
+                        <div class="btn-group-vertical btn-group-sm">
+                            <a class="btn btn-sm btn-default" href="<c:url value="/app/map?route=${eta.route}"/>" title="Ver en mapa">
+                                <i class="fa fa-map-o"></i><span class="hidden-xs"> <spring:message code="menu.map"/></span>
                             </a>
                         </div>
                     </div>

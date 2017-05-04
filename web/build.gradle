@@ -11,6 +11,10 @@ plugins {
 description = 'Tren Urbano App Web'
 
 apply plugin: 'spring-boot'
+springBoot {
+    mainClass = 'com.trenurbanoapp.Application'
+}
+
 apply plugin: 'war'
 apply plugin: "com.moowork.node"
 apply plugin: "com.moowork.gulp"
