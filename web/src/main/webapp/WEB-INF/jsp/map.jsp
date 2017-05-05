@@ -106,7 +106,10 @@
         <li><a tabindex="-1" onclick="TU.MAP.setDestination()">Rutas hacia aqu&iacute;</a></li>
         <li><a tabindex="-1" onclick="TU.MAP.clearOriginDestination()">Eliminar origen y destino</a></li>
         <li><a tabindex="-1" onclick="TU.MAP.clearRoutes()">Esconder Todas las rutas</a></li>
-        <li style="display: ${applicationScope['javascript.useSource'] ? 'block' : 'none'}"><a id="latlng" tabindex="-1"></a></li>
+        <%-- TODO hide this menu entry --%>
+        <li style="display: ${applicationScope['javascript.useSource'] ? 'block' : 'block'}">
+            <a id="latlng" tabindex="-1" onclick="TU.MAP.copyLatLngToClipboard()"></a>
+        </li>
     </ul>
 </div>
 
