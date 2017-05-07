@@ -22,6 +22,16 @@ TU.MAP = (function(my, $, Leaf) {
         }
     });
 
+    var VehicleSvgIcon = Leaf.DivIcon.extend({
+        options: {
+            iconSize: [21, 33],
+            iconAnchor: [11, 33],
+            popupAnchor: [1, -27],
+            shadowSize: [41, 41],
+            shadowAnchor: [12, 41]
+        }
+    });
+
     var StopMarker = Leaf.CircleMarker.extend({
         options: {
             radius: +4,
@@ -375,7 +385,6 @@ TU.MAP = (function(my, $, Leaf) {
                 for (var i = 0; i < geojsonRoutes.features.length; i++) {
                     var data = geojsonRoutes.features[i];
                     colors[data.id] = data.properties.color;
-                    routeMarkerIcons[data.id] = markerIcon('/app/icon/' + data.id);
                     var geoJsonLayer = Leaf.geoJson(data, {
                         style: routeStyle,
                         onEachFeature: routeBindPopup
@@ -386,6 +395,13 @@ TU.MAP = (function(my, $, Leaf) {
                         'background-color: ' + data.properties.color +
                         '; text-shadow: -1px 0 ' + darkColor + ', 0 1px ' + darkColor + ', 1px 0 ' + darkColor + ', 0 -1px ' + darkColor +
                         '; border-color: ' + darkColor + '">' + data.properties.code + ' ' + data.properties.fullName + '</span>';
+                    routeMarkerIcons[data.id] = markerIcon('/app/icon/' + data.id);
+                    /*routeMarkerIcons[data.id] = getSvgIcon({
+                        route: data.id,
+                        darkColor: darkColor,
+                        lightColor: data.properties.color
+                    });*/
+                    
                     layerControl.addOverlay(geoJsonLayer, routeLabel);
                     if(route === data.id) {
                         activeRoutes.push(route);
@@ -746,11 +762,13 @@ TU.MAP = (function(my, $, Leaf) {
     }
 
     function createPopupContent(vehicleSnapshot, currentTimestamp) {
-        var popupContent = 'Veh&iacute;culo: ' + (vehicleSnapshot.vehicle || '') +
-            '<br/>' + (!vehicleSnapshot.inRoute && '&Uacute;ltima ' || '') +
-            'Ruta: ' + (vehicleSnapshot.code || 'Desconocida');
 
-        
+        var routeLabel = $('*[data-route-id="'+vehicleSnapshot.route+'"]').text();
+
+
+        var popupContent = 'Veh&iacute;culo: ' + (vehicleSnapshot.vehicle || '') +
+            '<br/>' + (!vehicleSnapshot.inRoute && '&Uacute;ltima ' || '') + 'Ruta: ' +
+            (routeLabel || vehicleSnapshot.route || 'Desconocida');
 
         if (vehicleSnapshot.inRoute && vehicleSnapshot.direction) {
             popupContent += "<br/>Hacia: " + vehicleSnapshot.direction;
@@ -781,6 +799,23 @@ TU.MAP = (function(my, $, Leaf) {
         return popupContent;
     }
 
+    function getSvgIcon(opts) {
+        var svgRoot = document.querySelector('#vehicle-icon-svg').cloneNode(true);
+        svgRoot.id = 'vehicle-icon-svg-' + opts.route;
+        svgRoot.querySelector('.borderGradient stop[offset="0"]').style.stopColor = opts.darkColor;
+        svgRoot.querySelector('.borderGradient stop[offset="1"]').style.stopColor = opts.lightColor;
+        svgRoot.querySelector('.fillGradient stop[offset="0"]').style.stopColor = opts.darkColor;
+        svgRoot.querySelector('.fillGradient stop[offset="1"]').style.stopColor = opts.lightColor;
+
+        var routeTextElem = svgRoot.querySelector('.svgRouteText');
+        routeTextElem.stroke = opts.darkColor;
+        routeTextElem.innerHTML = opts.route;
+
+        return new VehicleSvgIcon({
+            html: svgRoot.outerHTML
+        });
+
+    }
 
     return my;
 
