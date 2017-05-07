@@ -312,15 +312,24 @@ TU.MAP = (function(my, $, Leaf) {
     };
 
     function onOverlayAdd(event) {
-        var routeName = $(event.name).text();
-        activeRoutes.push(routeName);
+        var routeName = $(event.name).data('routeId');
+        addActiveRoute(routeName);
+    }
+
+    function addActiveRoute(routeId) {
+        activeRoutes.push(routeId);
         updateDecorations();
         updateStops();
     }
 
     function onOverlayRemove(event) {
-        var routeName = $(event.name).text();
-        var index = activeRoutes.indexOf(routeName);
+        var routeId = $(event.name).data('routeId');
+        removeActiveRoute(routeId);
+
+    }
+
+    function removeActiveRoute(routeId) {
+        var index = activeRoutes.indexOf(routeId);
         if (index > -1) {
             activeRoutes.splice(index, 1);
         }
@@ -361,12 +370,12 @@ TU.MAP = (function(my, $, Leaf) {
                     });
                     routeLayers[data.id] = geoJsonLayer;
                     var darkColor = TU.UTIL.shadeColor(data.properties.color, -25);
-                    var routeLabel = '<span class="routeLabel" style="' +
+                    var routeLabel = '<span class="routeLabel" data-route-id="'+ data.id + '" style="' +
                         'background-color: ' + data.properties.color +
                         '; text-shadow: -1px 0 ' + darkColor + ', 0 1px ' + darkColor + ', 1px 0 ' + darkColor + ', 0 -1px ' + darkColor +
                         '; border-color: ' + darkColor + '">' + data.properties.fullName + '</span>';
                     layerControl.addOverlay(geoJsonLayer, routeLabel);
-                    if(route == data.id) {
+                    if(route === data.id) {
                         activeRoutes.push(route);
                         routeLayerGroup.addLayer(geoJsonLayer);
                         map.fitBounds(geoJsonLayer.getBounds());
@@ -472,7 +481,7 @@ TU.MAP = (function(my, $, Leaf) {
 
                         // actualizar layer existente para el vehiculo
                         var trailHasChanged = false;
-                        if(trailLatLngs.length != vehicleLayer.trail.length) {
+                        if(trailLatLngs.length !== vehicleLayer.trail.length) {
                             trailHasChanged = true;
                         } else {
                             for (var k = 0; k < trailLatLngs.length; k++) {
@@ -489,7 +498,7 @@ TU.MAP = (function(my, $, Leaf) {
                         }
 
                         var newRoute = vehicleSnapshot.inRoute ? vehicleSnapshot.route : null;
-                        if (newRoute != vehicleLayer.route) {
+                        if (newRoute !== vehicleLayer.route) {
                             vehicleLayer.route = newRoute;
                             updateVehicleRoutePopup(map, vehicleLayer);
                         }
@@ -525,9 +534,6 @@ TU.MAP = (function(my, $, Leaf) {
                     }
 
                     vehicleLayer.marker.bindPopup(popupContent);
-                    /*if(vehicleSnapshot.route == '50') {
-                        safeLog('50');
-                    }*/
                     var routeMarkerKey = (vehicleSnapshot.inRoute || (vehicleSnapshot.props && vehicleSnapshot.props.withinOrigin === 'true')) ? vehicleSnapshot.route : "unknown";
                     if (routeMarkerKey && routeMarkerIcons[routeMarkerKey]) {
                         //se conoce la ruta, colocar icono
@@ -576,7 +582,7 @@ TU.MAP = (function(my, $, Leaf) {
         var removeFromActive = [];
         for (i = 0; i < activeRoutes.length; i++) {
             var activeRoute = activeRoutes[i];
-            if(nearbyRouteNames.indexOf(activeRoute) == -1) {
+            if(nearbyRouteNames.indexOf(activeRoute) === -1) {
                 removeFromActive.push(activeRoute);
                 routeLayer = routeLayers[activeRoute];
                 if(routeLayer) {
@@ -592,7 +598,7 @@ TU.MAP = (function(my, $, Leaf) {
         map.off('overlayadd');
         for (i = 0; i < nearbyRouteNames.length; i++) {
             var nearbyRouteName = nearbyRouteNames[i];
-            if(activeRoutes.indexOf(nearbyRouteName) == -1) {
+            if(activeRoutes.indexOf(nearbyRouteName) === -1) {
                 activeRoutes.push(nearbyRouteName);
                 routeLayer = routeLayers[nearbyRouteName];
                 if (routeLayer) {
@@ -647,7 +653,7 @@ TU.MAP = (function(my, $, Leaf) {
                         fillColor: '#eeeeee',
                         color: '#333333'
                     };
-                    if(routesByStop.length == 1) {
+                    if(routesByStop.length === 1) {
                         markerColors.fillColor = colors[routesByStop];
                         markerColors.color = TU.UTIL.shadeColor(colors[routesByStop], -35);
                     }
@@ -689,7 +695,7 @@ TU.MAP = (function(my, $, Leaf) {
             if(!routeLayers[route]) {
                 return;
             }
-            routeLayerGroup.addLayer(routeLayers[route]);
+            routeLayers[route].addTo(map);
         });
         vehicleLayer.marker.on("popupclose", function () {
             if(!routeLayers[route]) {
@@ -714,7 +720,7 @@ TU.MAP = (function(my, $, Leaf) {
 
     function isVehicleValidForDisplay(vehicleSnapshot, currentTimestamp) {
 
-        if (vehicleSnapshot.status == 'NOT_REPORTING') {
+        if (vehicleSnapshot.status === 'NOT_REPORTING') {
             return false;
         }
 
