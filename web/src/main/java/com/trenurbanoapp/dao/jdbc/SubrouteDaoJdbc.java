@@ -108,6 +108,7 @@ public class SubrouteDaoJdbc implements SubrouteDao {
                         " JOIN vehicle_state on subroute.route = vehicle_state.last_known_route " +
                         "     and subroute.direction = vehicle_state.last_known_direction\n" +
                         " where ST_InterpolatePoint(subroute.geom, tmp.curr_pos) > vehicle_state.subroute_m " +
+                        "   and vehicle_state.avg_speed != 0 " +
                         " order by (ST_InterpolatePoint(subroute.geom, tmp.curr_pos) - vehicle_state.subroute_m) / vehicle_state.avg_speed ",
                 position.getLng(), position.getLat());
     }

@@ -79,7 +79,7 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
     public void updateVehicleState(AssetPosition assetPosition) {
 
         VehicleStateContainer container = vehicleStateDao.getVehicleStateContainer(assetPosition.getAssetId());
-        if(container == null || !passesPreliminaryChecks(assetPosition, container.getState())) {
+        if(!passesPreliminaryChecks(assetPosition, container != null ? container.getState() : null)) {
             return;
         }
 

@@ -24,7 +24,7 @@
         <tr>
             <td>
                 <div class="row">
-                    <div class="col-xs-10" style="font-weight:bold">
+                    <div class="col-xs-9" style="font-weight:bold">
                         <span class="routeLabel" style="
                                 background-color: ${eta.color};
                                 text-shadow: -1px 0 ${darkColor}, 0 1px ${darkColor}, 1px 0 ${darkColor}, 0 -1px ${darkColor};

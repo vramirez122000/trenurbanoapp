@@ -51,7 +51,7 @@ TU.MAP = (function(my, $, Leaf) {
     var sessionIdleTimeInSeconds = 0;
     var snapshotIntervalId;
     var gpsEnabled = false;
-    var debug = true;
+    var debug = false;
     var mapCenter = my.DEFAULTS.CENTER;
     var route = TU.UTIL.getParam('route');
     var locationMarker = Leaf.marker(my.DEFAULTS.CENTER, {
@@ -91,7 +91,7 @@ TU.MAP = (function(my, $, Leaf) {
             latLngs.push(vehicleMarker.getLatLng());
         }
 
-        if(latLngs.length == 1) {
+        if(latLngs.length === 1) {
             map.panTo(latLngs[0]);
             return;
         }
@@ -418,7 +418,8 @@ TU.MAP = (function(my, $, Leaf) {
     }
 
     function routeBindPopup(feature, layer) {
-        var popupHtml = 'Ruta ' + feature.properties.fullName;
+        var popupHtml = 'Ruta ' + feature.properties.code +
+            ' ' + feature.properties.fullName;
         layer.bindPopup(popupHtml);
         layer.on("click", function() {
             layer.bringToFront();
@@ -688,7 +689,7 @@ TU.MAP = (function(my, $, Leaf) {
             if(!routeLayers[route]) {
                 return;
             }
-            routeLayers[route].addTo(routeLayerGroup).bringToBack();
+            routeLayerGroup.addLayer(routeLayers[route]);
         });
         vehicleLayer.marker.on("popupclose", function () {
             if(!routeLayers[route]) {
@@ -745,8 +746,8 @@ TU.MAP = (function(my, $, Leaf) {
             popupContent += "<br/>Rutas Posibles: " + vehicleSnapshot.possibleRoutes;
         }
 
-        if (vehicleSnapshot.status == 'STOPPED') {
-            popupContent += "<br/>" + vehicleSnapshot.status == 'STOPPED' && 'Veh&iacute;culo Apagado' || '';
+        if (vehicleSnapshot.status === 'STOPPED') {
+            popupContent += "<br/>" + vehicleSnapshot.status === 'STOPPED' && 'Veh&iacute;culo Apagado' || '';
         }
 
         if(debug) {

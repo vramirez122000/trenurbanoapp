@@ -87,19 +87,21 @@ public class ScheduleDaoJdbc implements ScheduleDao {
     @Override
     @Cacheable("allStopAreas")
     public List<IdDesc> findAllStopAreas() {
-        String sql = "SELECT * FROM stop_area order by sort_order";
+        String sql = "SELECT * FROM stop_area where sched_origin = true order by sort_order";
         return jdbcTemplate.query(sql, ScheduleDaoJdbc::mapStopArea);
     }
 
     @Override
     public IdDesc findNearestStopArea(double lat, double lng) {
-        String sql = "select * from stop_area order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) ) limit 1";
+        String sql = "select * from stop_area where sched_origin = true " +
+                " order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) ) limit 1";
         return jdbcTemplate.queryForObject(sql, ScheduleDaoJdbc::mapStopArea, lng, lat);
     }
 
     @Override
     public List<IdDesc> findStopAreasByDistance(double lat, double lng) {
-        String sql = "select * from stop_area order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) )";
+        String sql = "select * from stop_area where sched_origin = true " +
+                " order by st_distance(geom, st_setsrid(st_point(?, ?), 4326) )";
         return jdbcTemplate.query(sql, ScheduleDaoJdbc::mapStopArea, lng, lat);
     }
 

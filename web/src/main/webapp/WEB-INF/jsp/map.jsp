@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
+
 <!doctype html>
 <html <c:if test="${!applicationScope['appCache.disabled']}">manifest="<c:url value="/cache.manifest"/>"</c:if>>
 <head>
