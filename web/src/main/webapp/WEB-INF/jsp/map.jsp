@@ -42,6 +42,10 @@
             resizeMapDiv();
 
             var mapCenter = [${applicationScope['map.center.lat']}, ${applicationScope['map.center.lng']}];
+            var mapBounds = [
+                [${applicationScope['map.bounds.southwest.lat']}, ${applicationScope['map.bounds.southwest.lng']}],
+                [${applicationScope['map.bounds.northeast.lat']}, ${applicationScope['map.bounds.northeast.lng']}]
+            ];
 
             var map = L.map('map', {
                 center: mapCenter,
@@ -53,13 +57,13 @@
             L.tileLayer(url, {
                 minZoom: 10,
                 maxZoom: 18,
-                maxBounds: TU.MAP.DEFAULTS.BOUNDS,
+                maxBounds: mapBounds,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
                 '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
             }).addTo(map);
 
             L.control.geocoder('search-uUAFZ_4', {
-                bounds: TU.MAP.DEFAULTS.BOUNDS,
+                bounds: L.latLngBounds(mapBounds).pad(1),
                 latlng: mapCenter,
                 autocomplete: true
             }).addTo(map);

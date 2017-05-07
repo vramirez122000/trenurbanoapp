@@ -206,6 +206,18 @@ TU.MAP = (function(my, $, Leaf) {
             $('#contextMenu').hide();
         });
 
+        var screenHeight = document.documentElement.clientHeight;
+        $('.leaflet-control-layers-overlays').css('max-height', '' + (screenHeight - 110) + 'px');
+
+        var div = document.querySelector('.leaflet-control-layers');
+        if (!Leaf.Browser.touch) {
+            Leaf.DomEvent.disableClickPropagation(div);
+            Leaf.DomEvent.on(div, 'mousewheel', Leaf.DomEvent.stopPropagation);
+        } else {
+            Leaf.DomEvent.on(div, 'click', Leaf.DomEvent.stopPropagation);
+            Leaf.DomEvent.on(div, 'touchstart', Leaf.DomEvent.stopPropagation);
+        }
+
     };
 
     my.copyLatLngToClipboard = function() {
@@ -373,7 +385,7 @@ TU.MAP = (function(my, $, Leaf) {
                     var routeLabel = '<span class="routeLabel" data-route-id="'+ data.id + '" style="' +
                         'background-color: ' + data.properties.color +
                         '; text-shadow: -1px 0 ' + darkColor + ', 0 1px ' + darkColor + ', 1px 0 ' + darkColor + ', 0 -1px ' + darkColor +
-                        '; border-color: ' + darkColor + '">' + data.properties.fullName + '</span>';
+                        '; border-color: ' + darkColor + '">' + data.properties.code + ' ' + data.properties.fullName + '</span>';
                     layerControl.addOverlay(geoJsonLayer, routeLabel);
                     if(route === data.id) {
                         activeRoutes.push(route);

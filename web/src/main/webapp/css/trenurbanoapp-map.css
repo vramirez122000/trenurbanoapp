@@ -1,10 +1,14 @@
-.leaflet-control-layers label {
+/*.leaflet-control-layers label {
     display: inline;
     float: left;
 }
 
 .leaflet-control-layers-overlays > label:nth-child(4n+1) {
     clear: left;
+}*/
+
+.leaflet-control-layers-overlays {
+    overflow-y: auto;
 }
 
 .navbar {

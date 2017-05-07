@@ -30,6 +30,10 @@ public class ContextAttributesListener implements ServletContextListener {
         servletContext.setAttribute("report.phone", resolver.resolvePlaceholders("${report.phone:311}"));
         servletContext.setAttribute("map.center.lat", resolver.resolvePlaceholders("${map.center.lat:18.430189}"));
         servletContext.setAttribute("map.center.lng", resolver.resolvePlaceholders("${map.center.lng:-66.060061}"));
+        servletContext.setAttribute("map.bounds.southwest.lat", resolver.resolvePlaceholders("${map.bounds.southwest.lat:18.352687}"));
+        servletContext.setAttribute("map.bounds.southwest.lng", resolver.resolvePlaceholders("${map.bounds.southwest.lng:-66.179752}"));
+        servletContext.setAttribute("map.bounds.northeast.lat", resolver.resolvePlaceholders("${map.bounds.northeast.lat:18.477284}"));
+        servletContext.setAttribute("map.bounds.northeast.lng", resolver.resolvePlaceholders("${map.bounds.northeast.lng:-65.928097}"));
         servletContext.setAttribute("links.ios", resolver.resolvePlaceholders("${links.ios:http://itunes.apple.com/us/app/tren-urbano-app/id484781635}"));
         servletContext.setAttribute("links.android", resolver.resolvePlaceholders("${links.android:https://market.android.com/details?id=com.trenurbanoapp}"));
 
