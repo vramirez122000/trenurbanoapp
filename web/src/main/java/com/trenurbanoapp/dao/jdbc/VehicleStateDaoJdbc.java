@@ -138,6 +138,21 @@ public class VehicleStateDaoJdbc implements VehicleStateDao {
     }
 
     @Override
+    public List<VehicleStateContainer> getAllContainers() {
+        String sql = "SELECT state.*, " +
+                " veh.asset_id veh_asset_id, " +
+                " veh.name veh_name, veh.group_id veh_group_id, " +
+                " veh.plate veh_plate, veh.routes veh_routes " +
+                " FROM ref.vehicle_state state " +
+                " join ref.vehicle veh on state.asset_id = veh.asset_id ";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            VehicleState state = VEHICLE_STATE_MAPPER.mapRow(rs, rowNum);
+            Vehicle veh = VEH_MAPPER.mapRow(rs, rowNum);
+            return new VehicleStateContainer(state, veh);
+        });
+    }
+
+    @Override
     public boolean existsVehicleState(int assetId) {
         String sql = "SELECT 1 FROM ref.vehicle_state WHERE asset_id = ?";
         List<Object> results = jdbcTemplate.query(sql, new SingleColumnRowMapper<>(), assetId);

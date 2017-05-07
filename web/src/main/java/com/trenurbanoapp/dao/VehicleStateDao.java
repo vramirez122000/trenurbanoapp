@@ -26,6 +26,8 @@ public interface VehicleStateDao {
 
     List<VehicleState> getAll();
 
+    List<VehicleStateContainer> getAllContainers();
+
     boolean existsVehicleState(int assetId);
 
     void insertVehicleState(VehicleState vehicleState);

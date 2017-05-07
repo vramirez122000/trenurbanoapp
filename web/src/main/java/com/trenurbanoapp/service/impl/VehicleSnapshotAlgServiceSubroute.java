@@ -38,8 +38,9 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
         view.setTrail(assetPosition.getTrail());
         view.setStatus(RunningStatus.forStatusCode(assetPosition.getStatus()));
 
-        VehicleState vehicleState = vehicleStateDao.getVehicleState(assetPosition.getAssetId());
-        if(vehicleState != null) {
+        VehicleStateContainer container = vehicleStateDao.getVehicleStateContainer(assetPosition.getAssetId());
+        if(container != null && container.getState() != null) {
+            VehicleState vehicleState = container.getState();
             List<LatLng> currTrail = assetPosition.getTrail();
             if(currTrail.size() == 1) {
                 currTrail = new ArrayList<>(currTrail);
@@ -68,7 +69,10 @@ public class VehicleSnapshotAlgServiceSubroute extends VehicleSnapshotAlgService
             view.getProps().put("withinOrigin", String.valueOf(vehicleState.isWithinOrigin()));
             view.getProps().put("avgSpeed", String.valueOf(vehicleState.getAvgSpeed()));
         }
-        Vehicle vehicle = vehicleDao.getVehicle(assetPosition.getAssetId());
+
+        Vehicle vehicle;
+        if (container != null && container.getVehicle() != null) vehicle = container.getVehicle();
+        else vehicle = vehicleDao.getVehicle(assetPosition.getAssetId());
         if(vehicle != null) {
             view.setVehicle(vehicle.getName());
         }

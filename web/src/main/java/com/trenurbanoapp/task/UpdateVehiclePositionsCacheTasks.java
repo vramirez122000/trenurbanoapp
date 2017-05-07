@@ -7,10 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import com.trenurbanoapp.dao.SubrouteDao;
 import com.trenurbanoapp.dao.VehicleDao;
 import com.trenurbanoapp.dao.VehicleStateDao;
-import com.trenurbanoapp.model.SubrouteKey;
-import com.trenurbanoapp.model.Vehicle;
-import com.trenurbanoapp.model.VehiclePositionView;
-import com.trenurbanoapp.model.VehicleState;
+import com.trenurbanoapp.model.*;
 import com.trenurbanoapp.service.VehicleSnapshotService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,15 +52,13 @@ public class UpdateVehiclePositionsCacheTasks {
             return;
         }
         log.debug("begin update vehicle position views");
-        List<VehicleState> vehicleStates  = vehicleStateDao.getAll();
+        List<VehicleStateContainer> vehicleStates  = vehicleStateDao.getAllContainers();
         List<VehiclePositionView> vehiclePositionViews = new ArrayList<>(vehicleStates.size());
-        for (VehicleState state : vehicleStates) {
-            if(state.getAssetId() == 834) {
-                log.debug("bogus");
-            }
+        for (VehicleStateContainer container: vehicleStates) {
+            VehicleState state = container.getState();
             VehiclePositionView position = new VehiclePositionView();
             position.setAssetId(state.getAssetId());
-            Vehicle vehicle = vehicleDao.getVehicle(state.getAssetId());
+            Vehicle vehicle = container.getVehicle();
             if(vehicle != null) {
                 position.setVehicle(vehicle.getName());
             }

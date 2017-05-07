@@ -747,7 +747,10 @@ TU.MAP = (function(my, $, Leaf) {
 
     function createPopupContent(vehicleSnapshot, currentTimestamp) {
         var popupContent = 'Veh&iacute;culo: ' + (vehicleSnapshot.vehicle || '') +
-            '<br/>' + (!vehicleSnapshot.inRoute && '&Uacute;ltima ' || '') + 'Ruta: ' + (vehicleSnapshot.route || 'Desconocida');
+            '<br/>' + (!vehicleSnapshot.inRoute && '&Uacute;ltima ' || '') +
+            'Ruta: ' + (vehicleSnapshot.code || 'Desconocida');
+
+        
 
         if (vehicleSnapshot.inRoute && vehicleSnapshot.direction) {
             popupContent += "<br/>Hacia: " + vehicleSnapshot.direction;
